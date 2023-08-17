@@ -136,7 +136,7 @@ def shopCategory(request, name):
     if ProductCategory.objects.filter(category_name=category_name).exists():
         # if exists
         selectedCategory = ProductCategory.objects.get(category_name=category_name)
-        products = Product.objects.filter(product__category=selectedCategory)
+        products = Product.objects.filter(category=selectedCategory)
 
         if 'search' in request.POST:
             search_data = request.POST.get("search_data")

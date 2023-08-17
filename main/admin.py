@@ -41,7 +41,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('product_name','category','description','price','all_details',)
+    list_display = ('product_name','category','description','price','all_images',)
     list_filter = ('category',)
     fieldsets = (
         ('Product Info', {'fields': ('category','product_name','description','price', 'color', 'quantity',)}),
@@ -55,8 +55,8 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [
         ProductImageInline,
     ]
-    def all_details(self, obj):
-        return obj.details.count()
+    def all_images(self, obj):
+        return obj.product_images.count()
 
 
 

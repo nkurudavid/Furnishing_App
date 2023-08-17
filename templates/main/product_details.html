@@ -39,7 +39,7 @@
                 <div class="col-md-6">
                   <div id="carouselControls" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
-                      {% for p_image in p_data.images.all %}
+                      {% for p_image in p_data.product_images.all %}
                       <div class="carousel-item {% if forloop.first %}active{% endif %}">
                         <!-- Single Slide -->
                         {% if p_image.picture %}
