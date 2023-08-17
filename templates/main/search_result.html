@@ -53,7 +53,7 @@
                       <div class="product product-11 text-center">
                         <figure class="product-media">
                           <a href="{% url 'product_details' data.id %}">
-                            {% if data.picture %}
+                            {% if data.product_images.first.picture %}
                             <img
                               src="{{data.product_images.first.picture.url}}"
                               alt="{{data.product_name}} Image"

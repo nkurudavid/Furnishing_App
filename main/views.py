@@ -50,9 +50,18 @@ def home(request):
             return redirect(shop)
     else:
         categories = ProductCategory.objects.filter()
+        selected_products = []
+
+        for category in categories:
+            product = Product.objects.filter(category=category).first()
+            if product:
+                selected_products.append(product)
+
+        selected_products = selected_products[:6]
         context = {
             'title': 'Welcome',
             'categories': categories,
+            'products': selected_products,
         }
         return render(request, 'main/home.html', context)
 
@@ -226,7 +235,7 @@ def shop_cart(request):
 def addToCart(request, product_id):
     # get quantity is provided
     if request.POST.get('qty'):
-        quantity = float(request.POST.get('qty'))
+        quantity = int(request.POST.get('qty'))
     else:
         quantity = 1
 

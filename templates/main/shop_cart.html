@@ -44,7 +44,7 @@
                         <tr>
                           <th style="width: 35%">Product</th>
                           <th>Price</th>
-                          <th>Quantity(m)</th>
+                          <th>Quantity</th>
                           <th>Subtotal</th>
                           <th></th>
                         </tr>
@@ -71,7 +71,6 @@
 
                               <h3 class="product-title">
                                 <a href="{% url 'product_details' item.p_data.id %}">
-                                  {{item.p_data.color}}
                                   {{item.p_data.product_name}}
                                 </a>
                               </h3>
@@ -131,7 +130,6 @@
                         {% for item in cart_items %}
                         <tr>
                           <th>
-                            {{item.p_data.color}}
                             {{item.p_data.product_name}}:
                           </th>
                           <td>Frw {{item.subtotal}}</td>

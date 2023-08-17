@@ -56,11 +56,11 @@
                       </div>
                       {% endfor %}
                       <a class="carousel-control-prev" href="#carouselControls" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"><span>
+                        <span class="carousel-control-prev-icon text-primary" aria-hidden="true"><span>
                         <span class="sr-only">Previous<span>
                       </a>
                       <a class="carousel-control-next" href="#carouselControls" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"><span>
+                        <span class="carousel-control-next-icon text-primary" aria-hidden="true"><span>
                         <span class="sr-only">Next<span>
                       </a>
                     </div>
@@ -70,7 +70,7 @@
 
                 <div class="col-md-6">
                   <div class="product-details">
-                    <h1 class="product-title">{{p_data.color}} {{p_data.product_name}}</h1>
+                    <h1 class="product-title">{{p_data.product_name}}</h1>
                     <!-- End .product-title -->
 
                     <div class="product-price">Frw {{p_data.price}}</div>
@@ -83,7 +83,7 @@
                     <form action="{% url 'add_to_cart' p_data.id %}" method="post">
                       {% csrf_token %}
                     <div class="details-filter-row details-row-size">
-                      <label for="qty">Qty (length in meter):</label>
+                      <label for="qty">Quantity:</label>
                       <div class="product-details-quantity">
                         <input
                           type="number"
