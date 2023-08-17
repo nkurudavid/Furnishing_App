@@ -39,13 +39,22 @@
                 <div class="col-md-6">
                   <div id="carouselControls" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
-                      <div class="carousel-item active">
+                      {% for p_image in p_data.images.all %}
+                      <div class="carousel-item {% if forloop.first %}active{% endif %}">
                         <!-- Single Slide -->
+                        {% if p_image.picture %}
                         <img class="d-block w-100"
-                          src="{{p_data.picture.url}}"
-                          alt="{{p_data.product.product_name}} Image"
+                          src="{{p_image.picture.url}}"
+                          alt="{{p_data.product_name}} Image"
                         />
+                        {% else %}
+                        <img class="d-block w-100"
+                          src=""
+                          alt="{{p_data.product_name}} Image"
+                        />
+                        {% endif %}
                       </div>
+                      {% endfor %}
                       <a class="carousel-control-prev" href="#carouselControls" role="button" data-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"><span>
                         <span class="sr-only">Previous<span>
@@ -61,14 +70,14 @@
 
                 <div class="col-md-6">
                   <div class="product-details">
-                    <h1 class="product-title">{{p_data.color}} {{p_data.product.product_name}}</h1>
+                    <h1 class="product-title">{{p_data.color}} {{p_data.product_name}}</h1>
                     <!-- End .product-title -->
 
-                    <div class="product-price">Frw {{p_data.product.price}}</div>
+                    <div class="product-price">Frw {{p_data.price}}</div>
                     <!-- End .product-price -->
 
                     <div class="product-content">
-                      <p>{{p_data.product.description}}</p>
+                      <p>{{p_data.description}}</p>
                     </div>
                     <!-- End .product-content -->
                     <form action="{% url 'add_to_cart' p_data.id %}" method="post">
@@ -104,7 +113,7 @@
                     <div class="product-details-footer">
                       <div class="product-cat">
                         <span>Category:</span>
-                        <a href="#">{{p_data.product.category.category_name}}</a>
+                        <a href="#">{{p_data.category.category_name}}</a>
                       </div>
                       <!-- End .product-cat -->
                     </div>

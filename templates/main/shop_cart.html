@@ -57,17 +57,22 @@
                             <div class="product">
                               <figure class="product-media">
                                 <a href="{% url 'product_details' item.p_data.id %}">
+                                  {% if item.p_data.product_images.first.picture %}
                                   <img
-                                    src="{{item.p_data.picture.url}}"
-                                    alt="Product image"
+                                    src="{{item.p_data.product_images.first.picture.url}}"
+                                    alt="{{item.p_data.product_name}} image"
                                   />
+                                  {% else %}
+                                  <img src="" alt="{{item.p_data.product_name}} Image"
+                                  />
+                                  {% endif %}
                                 </a>
                               </figure>
 
                               <h3 class="product-title">
                                 <a href="{% url 'product_details' item.p_data.id %}">
                                   {{item.p_data.color}}
-                                  {{item.p_data.product.product_name}}
+                                  {{item.p_data.product_name}}
                                 </a>
                               </h3>
                               <!-- End .product-title -->
@@ -75,7 +80,7 @@
                             <!-- End .product -->
                           </td>
                           <td class="price-col">
-                            Frw {{item.p_data.product.price}}
+                            Frw {{item.p_data.price}}
                           </td>
                           <td class="quantity-col">
                             <div class="cart-product-quantity">
@@ -127,7 +132,7 @@
                         <tr>
                           <th>
                             {{item.p_data.color}}
-                            {{item.p_data.product.product_name}}:
+                            {{item.p_data.product_name}}:
                           </th>
                           <td>Frw {{item.subtotal}}</td>
                         </tr>
@@ -154,11 +159,25 @@
                     </table>
                     <!-- End .table table-summary -->
 
+                    {% if user.is_authenticated %}
                     <a
                       href="{% url 'shop_checkout' %}"
                       class="btn btn-outline-primary-2 btn-order btn-block"
-                      >PROCEED TO CHECKOUT</a
                     >
+                      PROCEED TO CHECKOUT
+                    </a>
+                    {% else %}
+                    <a
+                      tabindex="0"
+                      class="btn btn-outline-primary-2 btn-order btn-block"
+                      role="button" data-toggle="popover"
+                      data-trigger="focus"
+                      title="PROCEED TO CHECKOUT"
+                      data-content="You have to sign in to client account to proceed to checkout page"
+                    >
+                      PROCEED TO CHECKOUT
+                    </a>
+                    {% endif %}
                   </div>
                   <!-- End .summary -->
 

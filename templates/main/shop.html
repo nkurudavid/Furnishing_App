@@ -67,14 +67,13 @@
                   <div class="row justify-content-center">
                     {% if products %}{% for data in products %}
                     <div class="col-6 col-md-4 col-lg-3">
-                      <div class="product product-7 text-center">
+                      <div class="product product-11 text-center">
                         <figure class="product-media">
-                          <span class="product-label label-new">New</span>
                           <a href="{% url 'product_details' data.id %}">
                             {% if data.picture %}
                             <img
-                              src="{{data.picture.url}}"
-                              alt="Product image"
+                              src="{{data.product_images.first.picture.url}}"
+                              alt="{{data.product_name}} Image"
                               class="product-image"
                             />
                             {% else %}
@@ -85,37 +84,28 @@
                             />
                             {% endif %}
                           </a>
-
-                          <div class="product-action">
-                            <a
-                              href="{% url 'add_to_cart' data.id %}"
-                              class="btn-product btn-cart"
-                              ><span>add to cart</span></a
-                            >
-                          </div>
-                          <!-- End .product-action -->
                         </figure>
                         <!-- End .product-media -->
 
                         <div class="product-body">
-                          <div class="product-cat">
-                            <a href="{% url 'product_details' data.id %}">
-                              {{data.product.category.category_name }}
-                            </a>
-                          </div>
-                          <!-- End .product-cat -->
                           <h3 class="product-title">
                             <a href="{% url 'product_details' data.id %}">
-                              {{data.color }} {{data.product.product_name }}
+                              {{data.color}} {{data.product_name }}
                             </a>
                           </h3>
                           <!-- End .product-title -->
-                          <div class="product-price">
-                            Frw {{data.product.price}}
-                          </div>
+                          <div class="product-price">Frw {{data.price}}</div>
                           <!-- End .product-price -->
                         </div>
                         <!-- End .product-body -->
+                        <div class="product-action">
+                          <a
+                            href="{% url 'add_to_cart' data.id %}"
+                            class="btn-product btn-cart"
+                            ><span>add to cart</span></a
+                          >
+                        </div>
+                        <!-- End .product-action -->
                       </div>
                       <!-- End .product -->
                     </div>
