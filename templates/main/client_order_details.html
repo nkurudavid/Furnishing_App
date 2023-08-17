@@ -83,7 +83,7 @@
                             Product
                           </th>
                           <th class="border-gray-300 border-top py-3">
-                            Quantity(m)
+                            Quantity
                           </th>
                           <th class="border-gray-300 border-top py-3 text-end">
                             Unit price
@@ -95,7 +95,7 @@
                         <tr class="text-sm">
                           <td class="align-middle border-gray-300 py-3">
                             <a href="#">
-                              {% if data.picture %}
+                              {% if data.product.product_images.first.picture %}
                               <img
                                 class="img-fluid flex-shrink-0"
                                 style="min-width: 50px"

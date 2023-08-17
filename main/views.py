@@ -255,7 +255,7 @@ def updateCart(request):
             if product_id.startswith('quantity_'):
                 product_id = product_id.split('_')[1]
                 cart_item = cart.get(str(product_id), {'quantity': 0})
-                cart_item['quantity'] = float(quantity)
+                cart_item['quantity'] = int(quantity)
                 cart[str(product_id)] = cart_item
         request.session['cart'] = cart
     return redirect(shop_cart)

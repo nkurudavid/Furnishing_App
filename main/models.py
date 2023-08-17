@@ -18,7 +18,7 @@ class Product(models.Model):
     description = models.TextField(verbose_name="Description", blank=True, null=True)
     price = models.FloatField(verbose_name="Price", default=0.0, null=False)
     color = models.CharField(verbose_name="Color", max_length=50, blank=False, null=False)
-    quantity = models.FloatField(verbose_name="Quantity", default=0.0, null=False)
+    quantity = models.IntegerField(verbose_name="Quantity", default=0.0, null=False)
     def __str__(self):
         return self.product_name
 
@@ -78,7 +78,7 @@ class Order(models.Model):
 class OrderDetail(models.Model):
     order = models.ForeignKey(Order, verbose_name="Order", related_name="order_details", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, verbose_name="Product", on_delete=models.CASCADE)
-    quantity = models.FloatField(verbose_name="Quantity", default=0.0, null=False)
+    quantity = models.IntegerField(verbose_name="Quantity", default=0.0, null=False)
     def __str__(self):
         return f"{self.order.order_number} - {self.product}"
 
@@ -91,7 +91,7 @@ class StockMovement(models.Model):
 
     product = models.ForeignKey(Product, verbose_name="Product", related_name="stock_movements", on_delete=models.CASCADE)
     movement_type = models.CharField(verbose_name="Movement", choices=MovementType.choices, max_length=10)
-    quantity = models.FloatField(verbose_name="Quantity", default=0.0, null=False)
+    quantity = models.IntegerField(verbose_name="Quantity", default=0, null=False)
     total_price = models.FloatField(verbose_name="Total Price", default=0.0, null=False)
     processed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     date_time = models.DateTimeField(auto_now_add=True)

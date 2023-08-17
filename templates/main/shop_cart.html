@@ -129,27 +129,28 @@
                       <tbody>
                         {% for item in cart_items %}
                         <tr>
-                          <th>
+                          <td>
                             {{item.p_data.product_name}}:
-                          </th>
+                          </td>
+                          <td>{{item.quantity}}</td>
                           <td>Frw {{item.subtotal}}</td>
                         </tr>
                         {% endfor %}
                         </tbody>
                       </tfooter>
                         <tr>
-                          <td>Subtotal:</td>
+                          <td colspan="2">Subtotal:</td>
                           <td>Frw {{total_price}}</td>
                         </tr>
                         <!-- End .summary-subtotal -->
                         <tr>
-                          <td>Shipping:</td>
+                          <td colspan="2">Shipping:</td>
                           <td>Free</td>
                         </tr>
                         <!-- End .summary-subtotal -->
 
                         <tr class="summary-total">
-                          <td>Total:</td>
+                          <td colspan="2">Total:</td>
                           <td>Frw {{total_price}}</td>
                         </tr>
                         <!-- End .summary-total -->
