@@ -1,0 +1,78 @@
+{% load static %}
+<div class="dropdown cart-dropdown">
+  <a
+    href="#"
+    class="dropdown-toggle"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded="false"
+    data-display="static"
+  >
+    <i class="icon-shopping-cart"></i>
+    <span class="cart-count">{{cart_items|length}}</span>
+  </a>
+
+  <div class="dropdown-menu dropdown-menu-right">
+    {% if cart_items %}
+    <div class="dropdown-cart-products">
+      {% for item in cart_items %}
+      <div class="product">
+        <div class="product-cart-details">
+          <h4 class="product-title">
+            <a href="product.html">
+              {{item.p_data.color}} {{item.p_data.product.product_name}}
+            </a>
+          </h4>
+
+          <span class="cart-product-info">
+            Frw {{item.p_data.product.price}} x
+            <span class="cart-product-qty">{{item.quantity}}m</span>
+          </span>
+        </div>
+        <!-- End .product-cart-details -->
+
+        <figure class="product-image-container">
+          <a href="product.html" class="product-image">
+            {% if item.p_data.picture %}
+            <img src="{{item.p_data.picture.url}}" alt="product" />
+            {% else %}
+            <img src="" alt="product" />
+            {% endif %}
+          </a>
+        </figure>
+        <a
+          href="{% url 'remove_from_cart' item.p_data.id %}"
+          class="btn-remove"
+          title="Remove Product"
+        >
+          <i class="icon-close"></i>
+        </a>
+      </div>
+      <!-- End .product -->
+      {% endfor %}
+    </div>
+    <!-- End .cart-product -->
+
+    <div class="dropdown-cart-total">
+      <span>Total</span>
+
+      <span class="cart-total-price">Frw {{total_price}}</span>
+    </div>
+    <!-- End .dropdown-cart-total -->
+
+    <div class="dropdown-cart-action">
+      <a href="{% url 'shop_cart' %}" class="btn btn-primary">View Cart</a>
+      <a href="{% url 'shop_checkout' %}" class="btn btn-outline-primary-2">
+        <span>Checkout</span> <i class="icon-long-arrow-right"></i>
+      </a>
+    </div>
+    <!-- End .dropdown-cart-total -->
+    {% else %}
+    <div class="dropdown-cart-products py-5">
+      <p>Your Cart is Empty</p>
+    </div>
+    {% endif %}
+  </div>
+  <!-- End .dropdown-menu -->
+</div>

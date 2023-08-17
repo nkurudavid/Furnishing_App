@@ -1,0 +1,28 @@
+<aside class="col-md-4 col-lg-3">
+  <ul class="nav nav-dashboard flex-column mb-3 mb-md-0">
+    <li class="nav-item">
+      <a
+        class="nav-link {{dashboard_active}}"
+        href="{% url 'client_account' %}"
+      >
+        Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{profile_active}}" href="{% url 'client_profile' %}">
+        My Profile
+      </a>
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link {{orders_active}}"
+        href="{% url 'client_order_list' %}"
+      >
+        Orders
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'client_logout' %}"> Sign Out </a>
+    </li>
+  </ul>
+</aside>

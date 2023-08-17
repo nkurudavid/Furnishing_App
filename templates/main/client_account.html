@@ -1,0 +1,129 @@
+{% extends "main/index_layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <title>client account</title>
+  </head>
+
+  <body>
+    {% block front_content %}
+
+    <div class="page-wrapper">
+      {% include 'main/includes/navbar.html' %}
+      <!-- End .header -->
+
+      <main class="main">
+        <div
+          class="page-header text-center"
+          style="
+            background-image: url('front/assets/images/page-header-bg.jpg');
+          "
+        >
+          <div class="container">
+            <h1 class="page-title">
+              {{user.first_name}} {{user.last_name}}<span>My Account</span>
+            </h1>
+            <p class="text-muted lead">
+              If you have any questions, please feel free to
+              <a href="{% url 'contact' %}">contact us</a>, our customer service
+              center is working for you 24/7.
+            </p>
+          </div>
+          <!-- End .container -->
+        </div>
+        <!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+          <div class="container">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'shop' %}">Shop</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                My Account
+              </li>
+            </ol>
+          </div>
+          <!-- End .container -->
+        </nav>
+        <!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+          <div class="dashboard">
+            <div class="container">
+              <div class="row">
+                {% include 'main/includes/client_sidebar.html' %}
+                <!-- End .col-lg-3 -->
+
+                <div class="col-md-8 col-lg-9">
+                  <p>Dashboard</p>
+                  <hr class="my-4" />
+                  <div class="row justify-content-between">
+                    <div class="col-lg-6 col-md-6">
+                      <div class="card card-dashboard">
+                        <div class="card-body">
+                          <p>My Profile</p>
+                          <a
+                            href="{% url 'client_profile' %}"
+                            class="small-box-footer"
+                          >
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-6 col-md-6">
+                      <div class="card card-dashboard">
+                        <div class="card-body">
+                          <p>Orders new({{new_orders}})</p>
+                          <a
+                            href="{% url 'client_order_list' %}"
+                            class="small-box-footer"
+                          >
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- ./col -->
+                  </div>
+                  <!-- /.row -->
+                </div>
+                <!-- End .col-lg-9 -->
+              </div>
+              <!-- End .row -->
+            </div>
+            <!-- End .container -->
+          </div>
+          <!-- End .dashboard -->
+        </div>
+        <!-- End .page-content -->
+      </main>
+      <!-- End .main -->
+
+      {% include 'main/includes/footer.html' %}
+      <!-- End .footer -->
+    </div>
+    <!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top">
+      <i class="icon-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div>
+    <!-- End .mobil-menu-overlay -->
+
+    {% include 'main/includes/mobile_menu.html' %}
+    <!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    {% include 'main/includes/login_register.html' %}
+    <!-- End .modal -->
+
+    {% endblock %}
+  </body>
+</html>
