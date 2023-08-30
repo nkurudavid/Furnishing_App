@@ -1,3 +1,6 @@
+from django.contrib.admin import AdminSite
+from django.urls import reverse
+from django.utils.html import format_html
 from django.contrib import admin
 from main.models import *
 
@@ -113,6 +116,15 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [
         OrderDetailInline,
     ]
+    
+    def changelist_view(self, request, extra_context=None):
+        pending_waiting_orders = Order.get_pending_waiting_orders()
+        new_order_count = pending_waiting_orders.count()
+
+        # Add this data to the admin context to be used in the template
+        extra_context = {'new_order_count': new_order_count}
+        return super().changelist_view(request, extra_context=extra_context)
+    
 
     def get_readonly_fields(self, request, obj=None):
         # make 'status' field read-only

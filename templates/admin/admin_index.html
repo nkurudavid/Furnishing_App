@@ -1,0 +1,19 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+{% load custom_admin_tags %}
+
+{% block content %}
+{% if user.is_manager %}
+<div class="dashboard-container"style="margin: 40px 0">
+  <div class="new-order-link">
+    {% new_order_notification_link user %}
+  </div>
+  <br/><br/>
+  <div class="new-order-table container">
+    {% new_order_table  user %}
+  </div>
+</div>
+<hr/>
+{% endif %}
+{{ block.super }}
+{% endblock %}

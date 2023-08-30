@@ -56,23 +56,9 @@ class Order(models.Model):
     def __str__(self):
         return f"{self.order_number} - {self.client.first_name} {self.client.last_name}"
 
-    # def save(self, *args, **kwargs):
-    #     if self.status == Order.OrderStatus.SUCCESS and not self.pk:
-    #         # Get the user who is currently logged in and changing the order status to "Success"
-    #         User = get_user_model()
-    #         user = User.objects.get(username=self._user_username)
-
-    #         # Create StockMovement instances for each OrderDetail when the order status is set to "Success"
-    #         for order_detail in self.order_details.all():
-    #             StockMovement.objects.create(
-    #                 product_detail=order_detail.product,
-    #                 movement_type=StockMovement.MovementType.STOCK_OUT,
-    #                 quantity=order_detail.quantity,
-    #                 total_price=order_detail.product_detail.product.price * order_detail.quantity,
-    #                 processed_by=user
-    #             )
-
-    #     super().save(*args, **kwargs)
+    @classmethod
+    def get_pending_waiting_orders(cls):
+        return cls.objects.filter(status__in=['Pending', 'Processing'])
 
 
 class OrderDetail(models.Model):

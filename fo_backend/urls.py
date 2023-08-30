@@ -23,3 +23,4 @@ handler404 = "main.views.handle_not_found"
 admin.site.site_header = "Furnishing Order System"
 admin.site.index_title = "Management"
 admin.site.site_title = "Control Panel"
+admin.site.index_template = 'admin/admin_index.html'
