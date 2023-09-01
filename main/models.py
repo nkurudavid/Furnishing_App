@@ -50,7 +50,7 @@ class Order(models.Model):
     status = models.CharField(verbose_name="Status", choices=OrderStatus.choices, default=OrderStatus.PENDING, max_length=10)
     shipping_address = models.CharField(verbose_name="Shipping Address", max_length=100, blank=True, null=True)
     total_amount = models.FloatField(verbose_name="Total Amount", default=0.0, null=False)
-    payment_method = models.CharField(verbose_name="Payment Method", max_length=10, blank=False, null=False)
+    payment_method = models.CharField(verbose_name="Payment Method", max_length=50, blank=False, null=False)
     payment_id = models.CharField(verbose_name="Payment ID", max_length=10, blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     def __str__(self):

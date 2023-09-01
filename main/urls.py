@@ -26,4 +26,11 @@ urlpatterns = [
     path('shop/client/profile/', views.client_profile, name='client_profile'),
     path('shop/client/order_list/', views.client_order_list, name='client_order_list'),
     path('shop/client/order_list/<int:pk>/', views.client_order_details, name='client_order_details'),
+    
+    # manager
+    path('staff/login/', views.managerLogin, name='manager_login'),
+    path('staff/logout/', views.managerLogout, name='manager_logout'),
+    path('staff/dashboard/', views.manager_dashboard, name='manager_dashboard'),
+    path('staff/profile/', views.manager_profile, name='manager_profile'),
+    
 ]

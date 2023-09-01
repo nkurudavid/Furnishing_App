@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Title  -->
+    {% if title %}
+    <title>Furnishing Order System - {{ title }}</title>
+    {% else %}
+    <title>Furnishing Order System</title>
+    {% endif%}
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
+    <!-- Custom CSS -->
+    <link href="{% static 'dashboard/assets/libs/fullcalendar/dist/fullcalendar.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/assets/extra-libs/calendar/calendar.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/dist/css/style.min.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- / Preloader -->
+    
+    <div id="main-wrapper">
+        <!-- Navbar-->
+        {% include 'main/dashboard/includes/navbar.html' %}
+
+        <!-- Sidebar -->
+        {% include 'main/dashboard/includes/sidebar.html' %}
+        
+        <!-- Page wrapper  -->
+        <div class="page-wrapper">
+
+            {% block main_content%}{% endblock %}
+
+            <!-- footer -->
+            {% include 'main/dashboard/includes/footer.html' %}
+        </div>
+        <!-- End Page wrapper  -->
+    </div>
+
+    <!-- Mesages  -->
+    {% if messages %} {% for message in messages %}
+    <script>
+      //<!--contents message displayed-->
+      alert("{{ message }}");
+      //<!-- / .contents message displayed-->
+    </script>
+    {% endfor %} {% endif %}
+
+
+    <!-- ============================================================== -->
+    <script src="{% static 'dashboard/assets/libs/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'dashboard/dist/js/jquery.ui.touch-punch-improved.js' %}"></script>
+    <script src="{% static 'dashboard/dist/js/jquery-ui.min.js' %}"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="{% static 'dashboard/assets/libs/popper.js/dist/umd/popper.min.js' %}"></script>
+    <script src="{% static 'dashboard/assets/libs/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="{% static 'dashboard/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js' %}"></script>
+    <script src="{% static 'dashboard/assets/extra-libs/sparkline/sparkline.js' %}"></script>
+    <!--Wave Effects -->
+    <script src="{% static 'dashboard/dist/js/waves.js' %}"></script>
+    <!--Menu sidebar -->
+    <script src="{% static 'dashboard/dist/js/sidebarmenu.js' %}"></script>
+    <!--Custom JavaScript -->
+    <script src="{% static 'dashboard/dist/js/custom.min.js' %}"></script>
+    <!-- this page js -->
+    <script src="{% static 'dashboard/assets/libs/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'dashboard/assets/libs/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+    <script src="{% static 'dashboard/dist/js/pages/calendar/cal-init.js' %}"></script>
+
+</body>
+
+</html>
