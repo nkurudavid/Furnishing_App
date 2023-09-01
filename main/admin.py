@@ -157,6 +157,18 @@ class OrderDetailAdmin(admin.ModelAdmin):
 
 
 
+admin.site.register(CustomOrder)
+admin.site.register(Feedback)
+admin.site.register(Comment)
+
+
+
+
+
+
+
+
+
 # sorting models
 def get_app_list(self, request, app_label=None):
         """

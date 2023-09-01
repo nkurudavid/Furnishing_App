@@ -98,3 +98,60 @@ class StockMovement(models.Model):
         # Save the StockMovement instance and update the related ProductDetail
         super().save(*args, **kwargs)
         self.product.save()
+
+
+
+class CustomOrder(models.Model):
+    class OrderStatus(models.TextChoices):
+        PENDING = "Pending", "Pending"
+        PROCESSING = "Processing", "Processing"
+        SUCCESS = "Success", "Success"
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Client", related_name="custom_orders", on_delete=models.CASCADE)
+    order_number = models.CharField(verbose_name="Order Number", max_length=100, unique=True, blank=False, null=False)
+    description = models.TextField(verbose_name="Description", blank=True, null=True)
+    color = models.CharField(verbose_name="Color", max_length=50, blank=True, null=True)
+    quantity = models.IntegerField(verbose_name="Quantity", default=0, null=False)
+    status = models.CharField(verbose_name="Status", choices=OrderStatus.choices, default=OrderStatus.PENDING, max_length=20)
+    picture = models.ImageField(
+        verbose_name="Image",
+        upload_to="client/command/images/",
+        validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])],
+        blank=True, null=True
+    )
+    created_date = models.DateTimeField(auto_now_add=True)
+    
+    def image(self):
+        return mark_safe('<img src="/../../media/%s" width="80" />' % (self.picture))
+
+    image.allow_tags = True
+    
+    def __str__(self):
+        return f"{self.order_number} - {self.client.first_name} {self.client.last_name}"
+
+
+
+class Feedback(models.Model):
+    custom_order = models.ForeignKey(CustomOrder, verbose_name="Custom Order", related_name="feedbacks", on_delete=models.CASCADE)
+    subject = models.CharField(verbose_name="Subject", max_length=100, blank=False, null=False)
+    description = models.TextField(verbose_name="Description", blank=True, null=True)
+    picture = models.ImageField(
+        verbose_name="Image",
+        upload_to="client/command/feedback/images/",
+        validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])],
+        blank=True, null=True
+    )
+    processed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.custom_order.order_number} - {self.subjecte}"
+
+
+class Comment(models.Model):
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Client", on_delete=models.CASCADE)
+    feedback = models.ForeignKey(Feedback, verbose_name="Feedback", related_name="comments", on_delete=models.CASCADE)
+    description = models.TextField(verbose_name="Description", blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.feedback.subject} - {self.client.first_name} {self.client.last_name}"
