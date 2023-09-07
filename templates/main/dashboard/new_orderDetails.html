@@ -1,0 +1,141 @@
+{% extends "main/dashboard/main.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+  </head>
+
+  <body>
+    {% block main_content%}
+
+    <!-- Bread crumb -->
+    <div class="page-breadcrumb">
+      <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+          <h4 class="page-title">
+            <i class="fa fa-home m-b-5"></i>
+            Dashboard
+          </h4>
+          <div class="ml-auto text-right">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Home</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Container fluid  -->
+    <div class="container-fluid">
+      <!-- Start Page Content -->
+      <div class="row">
+        <!-- Column -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card card-hover">
+            <div class="box bg-warning text-center">
+              <h1 class="font-light text-white">
+                <i class="fas fa-shopping-basket m-b-5"></i>
+              </h1>
+              <h5 class="m-b-0 m-t-5 font-bold">656</h5>
+              <h6 class="text-white">New Orders</h6>
+            </div>
+          </div>
+        </div>
+        <!-- Column -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card card-hover">
+            <div class="box bg-cyan text-center">
+              <h1 class="font-light text-white">
+                <i class="fa fa-tag m-b-5"></i>
+              </h1>
+              <h5 class="m-b-0 m-t-5 font-bold">656</h5>
+              <h6 class="text-white">New Commands</h6>
+            </div>
+          </div>
+        </div>
+        <!-- Column -->
+        <div class="col-md-6 col-lg-4">
+          <div class="card card-hover">
+            <div class="box bg-success text-center">
+              <h1 class="font-light text-white">
+                <i class="fa fa-users m-b-5"></i>
+              </h1>
+              <h5 class="m-b-0 m-t-5 font-bold">656</h5>
+              <h6 class="text-white">Clients</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header"><h5>New Orders</h5></div>
+            <div class="card-body">
+              <table id="data_table" class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th class="nosort">Avatar</th>
+                    <th>Name</th>
+                    <th>Request</th>
+                    <th>Status</th>
+                    <th><i class="ik ik-clock text-secondary"></i> Created</th>
+                    <th class="nosort">&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for application in request_data %}
+                  <tr>
+                    <td>{{ forcounter }}.</td>
+                    <td>
+                      <img
+                        src="{{ application.picture.url }}"
+                        class="table-user-thumb"
+                        alt="{{ application.citizen.first_name }}"
+                      />
+                    </td>
+                    <td>{{ application.citizen }}</td>
+                    <td>Requesting for {{ application.request }}</td>
+                    <td>
+                      {% if application.status == "Waiting" %}
+                      <span class="badge bg-yellow">Waiting</span>
+                      {% elif application.status == "Rejected" %}
+                      <span class="badge bg-danger">Rejected</span>
+                      {% else %}
+                      <span class="badge bg-green">Approved</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <i class="ik ik-clock text-warning"></i>
+                      {{ application.createdDate }}
+                    </td>
+                    <td>
+                      <div class="table-actions">
+                        <a
+                          href="{% url 'new_application_details' application.id %}"
+                        >
+                          <i class="ik ik-edit text-primary"></i> Action
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Container fluid  -->
+
+    {% endblock %}
+  </body>
+</html>
