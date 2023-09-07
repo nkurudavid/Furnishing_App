@@ -1,0 +1,236 @@
+{% extends "main/dashboard/main.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+  </head>
+
+  <body>
+    {% block main_content%}
+
+    <!-- Bread crumb -->
+    <div class="page-breadcrumb">
+      <div class="row">
+        <div class="col-12 d-flex no-block py-4 align-items-center">
+          <h4 class="page-title">
+            <i class="fa fa-home m-b-5"></i>
+            Product Details
+          </h4>
+          <div class="ml-auto text-right">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                  <a href="{% url 'manager_dashboard' %}"> Dashboard </a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a href="{% url 'manager_product' %}"> Products List </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Product Details
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Container fluid  -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Product Details</h5>
+            </div>
+            <div class="card-body">
+              <div class="card-body pb-20">
+                <button
+                  type="button"
+                  class="btn btn-light btn-rounded float-right"
+                  data-toggle="modal"
+                  data-target="#delete_confirmation"
+                >
+                  <i class="fa fa-trash text-danger"></i> Delete
+                </button>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div id="carouselControls" class="carousel slide" data-ride="carousel">
+                      <div class="carousel-inner">
+                        {% for p_image in product.product_images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                          <!-- Single Slide -->
+                          {% if p_image.picture %}
+                          <img class="d-block w-100"
+                            src="{{p_image.picture.url}}"
+                            alt="{{product.product_name}} Image"
+                          />
+                          {% else %}
+                          <img class="d-block w-100"
+                            src=""
+                            alt="{{product.product_name}} Image"
+                          />
+                          {% endif %}
+                        </div>
+                        {% endfor %}
+                        <a class="carousel-control-prev" href="#carouselControls" role="button" data-slide="prev">
+                          <span class="carousel-control-prev-icon bg-secondary" aria-hidden="true"><span>
+                          <span class="sr-only">Previous<span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselControls" role="button" data-slide="next">
+                          <span class="carousel-control-next-icon bg-secondary" aria-hidden="true"><span>
+                          <span class="sr-only">Next<span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End .col-md-6 -->
+          
+                  <div class="col-md-6">
+                    <div class="product-details">
+                      <div class="mb-3">
+                        <span class="font-bold">Product Name:</span><br/>
+                        <h4>{{product.product_name}}</h4>
+                      </div>
+                      <div class="mb-3">
+                        <span class="font-bold">Category:</span><br/>
+                        <h6>{{product.category.category_name}}</h6>
+                      </div>
+                      <div class="mb-3">
+                        <span class="font-bold">Description:</span><br/>
+                        <p class="my-2">{{product.description}}</p>
+                      </div>
+                      <div class="mb-3">
+                        <span class="font-bold">Price:</span><br/>
+                        <p class="my-2">Frw {{product.price}}</p>
+                      </div>
+                      <div class="mb-3">
+                        <span class="font-bold">Stock Quantity:</span><br/>
+                        <p class="my-2">{{product.quantity}}</p>
+                      </div>
+                    </div>
+                    <!-- End .product-details -->
+                  </div>
+                  <!-- End .col-md-6 -->
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Container fluid  -->
+    
+    <div
+      class="modal fade"
+      id="serviceModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="serviceModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="serviceModalTitle">
+              REGISTER NEW PROVINCE
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="form-group mb-0">
+                <label class="col-form-label">Province Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="province_name"
+                  placeholder="Province ..."
+                  required
+                />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="new_province" class="btn btn-success">
+                <i class="fa fa-save"></i>
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    
+    <div
+      class="modal fade"
+      id="delete_confirmation"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="deleteModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalTitle">
+              <i class="fa fa-trash text-danger"></i> DELETE PRODUCT
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <h6 align="center">
+                Are you sure you want to delete <br />
+                Product "{{product.product_name}}" ?
+              </h6>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="delete_product"
+                class="btn btn-danger"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

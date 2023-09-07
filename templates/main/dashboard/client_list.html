@@ -1,0 +1,97 @@
+{% extends "main/dashboard/main.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our Clients</title>
+  </head>
+
+  <body>
+    {% block main_content%}
+
+    <!-- Bread crumb -->
+    <div class="page-breadcrumb">
+      <div class="row">
+        <div class="col-12 d-flex no-block py-4 align-items-center">
+          <h4 class="page-title">
+            <i class="fas fa-users m-b-5"></i>
+            Our Clients
+          </h4>
+          <div class="ml-auto text-right">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                  <a href="{% url 'manager_dashboard' %}"> Dashboard </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Our Clients
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Container fluid  -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Clients List</h5>
+              <div class="table-responsive">
+                <table
+                  id="zero_config"
+                  class="table table-stripeds table-borderedd"
+                >
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Client Names</th>
+                      <th>email</th>
+                      <th>Address</th>
+                      <th>Contact</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for profile in clients %}
+                    <tr>
+                      <td>{{ forloop.counter }}.</td>
+                      <td>
+                        <i class="fas fa-user"></i>
+                        <span
+                          >{{profile.client.first_name}}
+                          {{profile.client.last_name}}</span
+                        >
+                      </td>
+                      <td>{{profile.client.email}}</td>
+                      <td>{{profile.client.location}}</td>
+                      <td>{{profile.client.phone_number}}</td>
+                      <td>
+                        <a
+                          class="text-info"
+                          href="{% url 'manager_clientDetails' profile.id %}"
+                        >
+                          <i class="fas fa-folder-open"></i> View
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Container fluid  -->
+
+    {% endblock %}
+  </body>
+</html>

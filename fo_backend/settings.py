@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'fo_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        # # DEFAULT SQLITE DATABASE
+        # # # DEFAULT SQLITE DATABASE
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
 

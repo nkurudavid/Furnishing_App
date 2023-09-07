@@ -32,5 +32,15 @@ urlpatterns = [
     path('staff/logout/', views.managerLogout, name='manager_logout'),
     path('staff/dashboard/', views.manager_dashboard, name='manager_dashboard'),
     path('staff/profile/', views.manager_profile, name='manager_profile'),
+    path('staff/stock/product_caterories/', views.manager_productCategory, name='manager_productCategory'),
+    path('staff/stock/product_caterories/<int:pk>/category_details/', views.manager_categoryDetails, name='manager_categoryDetails'),
+    path('staff/stock/products/', views.manager_product, name='manager_product'),
+    path('staff/stock/products/<int:pk>/product_details/', views.manager_productDetails, name='manager_productDetails'),
+    path('staff/clients/our_clients/', views.manager_clientList, name='manager_clientList'),
+    path('staff/clients/our_clients/<int:pk>/client_profile/', views.manager_clientDetails, name='manager_clientDetails'),
+    path('staff/clients/new_orders/', views.manager_newOrder, name='manager_newOrder'),
+    path('staff/clients/new_orders/<int:pk>/order_details/', views.manager_newOrderDetails, name='manager_newOrderDetails'),
+    path('staff/clients/archieved_orders/', views.manager_archieviedOrder, name='manager_archieviedOrder'),
+    path('staff/clients/archieved_orders/<int:pk>/order_details/', views.manager_archievedOrderDetails, name='manager_archievedOrderDetails'),
     
 ]

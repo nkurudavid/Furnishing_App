@@ -15,7 +15,7 @@
     <!-- Bread crumb -->
     <div class="page-breadcrumb">
       <div class="row">
-        <div class="col-12 d-flex no-block py-4 align-items-center">
+        <div class="col-12 d-flex no-block align-items-center">
           <h4 class="page-title">
             <i class="fa fa-home m-b-5"></i>
             Dashboard
@@ -42,7 +42,7 @@
               <h1 class="font-light text-white">
                 <i class="fas fa-shopping-basket m-b-5"></i>
               </h1>
-              <h5 class="m-b-0 m-t-5 font-bold">{{orders_data.count}}</h5>
+              <h5 class="m-b-0 m-t-5 font-bold">656</h5>
               <h6 class="text-white">New Orders</h6>
             </div>
           </div>
@@ -66,7 +66,7 @@
               <h1 class="font-light text-white">
                 <i class="fa fa-users m-b-5"></i>
               </h1>
-              <h5 class="m-b-0 m-t-5 font-bold">{{clients_count}}</h5>
+              <h5 class="m-b-0 m-t-5 font-bold">656</h5>
               <h6 class="text-white">Clients</h6>
             </div>
           </div>
@@ -77,54 +77,58 @@
         <div class="col-md-12">
           <div class="card">
             <div class="card-header"><h5>New Orders</h5></div>
-            <div class="card-body table-responsive">
-              <table id="zero_config" class="table">
+            <div class="card-body">
+              <table id="data_table" class="table">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Order Number</th>
-                    <th>Client</th>
-                    <th>Total Amount</th>
-                    <th>Payment Method</th>
+                    <th class="nosort">Avatar</th>
+                    <th>Name</th>
+                    <th>Request</th>
                     <th>Status</th>
-                    <th>Date</th>
+                    <th><i class="ik ik-clock text-secondary"></i> Created</th>
+                    <th class="nosort">&nbsp;</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for order in orders_data %}
+                  {% for application in request_data %}
                   <tr>
-                    <td>{{ forloop.counter }}.</td>
+                    <td>{{ forcounter }}.</td>
                     <td>
-                      <a
-                        class="text-info"
-                        href="{% url 'manager_clientDetails' order.id %}"
-                      >
-                        #{{order.order_number}}
-                      </a>
+                      <img
+                        src="{{ application.picture.url }}"
+                        class="table-user-thumb"
+                        alt="{{ application.citizen.first_name }}"
+                      />
+                    </td>
+                    <td>{{ application.citizen }}</td>
+                    <td>Requesting for {{ application.request }}</td>
+                    <td>
+                      {% if application.status == "Waiting" %}
+                      <span class="badge bg-yellow">Waiting</span>
+                      {% elif application.status == "Rejected" %}
+                      <span class="badge bg-danger">Rejected</span>
+                      {% else %}
+                      <span class="badge bg-green">Approved</span>
+                      {% endif %}
                     </td>
                     <td>
-                      <i class="fas fa-user"></i>
-                      <span>
-                        {{order.client.first_name}} {{order.client.last_name}}
-                      </span>
-                      <br />
-                      Email: {{order.client.email}}
+                      <i class="ik ik-clock text-warning"></i>
+                      {{ application.createdDate }}
                     </td>
-                    <td>Frw {{order.total_amount}}</td>
-                    <td>{{order.payment_method}}</td>
                     <td>
-                      <span class="badge font-bold {% if order.status == "Pending" %}bg-warning{% else %} bg-info {% endif %}">
-                      {{order.status}}
-                      </span>
+                      <div class="table-actions">
+                        <a
+                          href="{% url 'new_application_details' application.id %}"
+                        >
+                          <i class="ik ik-edit text-primary"></i> Action
+                        </a>
+                      </div>
                     </td>
-                    <td>{{order.created_date}}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
               </table>
-              <a class="btn btn-outline-info" href="">
-                <i class="fas fa-shopping-basket"></i> Show More
-              </a>
             </div>
           </div>
         </div>

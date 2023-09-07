@@ -1,0 +1,157 @@
+{% extends "main/dashboard/main.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Categories Details</title>
+  </head>
+
+  <body>
+    {% block main_content%}
+
+    <!-- Bread crumb -->
+    <div class="page-breadcrumb">
+      <div class="row">
+        <div class="col-12 d-flex no-block py-4 align-items-center">
+          <h4 class="page-title">
+            <i class="fa fa-home m-b-5"></i>
+            Product Categories
+          </h4>
+          <div class="ml-auto text-right">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                  <a href="{% url 'manager_dashboard' %}"> Dashboard </a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a href="{% url 'manager_productCategory' %}">
+                    Categories List
+                  </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Product Categories
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Container fluid  -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Categories Details</h5>
+            </div>
+            <div class="card-body">
+              <div class="card-body pb-20">
+                <button
+                  type="button"
+                  class="btn btn-light btn-rounded float-right"
+                  data-toggle="modal"
+                  data-target="#delete_confirmation"
+                >
+                  <i class="fa fa-trash text-danger"></i> Delete
+                </button>
+                <div class="row">
+                  <div class="col-lg-12 mb-3">
+                    <span class="font-weight-bold mb-2">Category Name:</span>
+                    <h3 class="title">{{ category.category_name }}</h3>
+                  </div>
+                  <hr />
+  
+                  <form action="" method="post" class="col-lg-12 mb-3">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                      <div class="form-group mb-0">
+                        <label class="col-form-label">Category Name</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="category_name"
+                          placeholder="Category ..."
+                          value="{{ category.category_name }}"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="submit"
+                        name="update_category"
+                        class="btn btn-success"
+                      >
+                        <i class="fa fa-save"></i>
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Container fluid  -->
+
+    <div
+      class="modal fade"
+      id="delete_confirmation"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="deleteModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalTitle">
+              <i class="fa fa-trash text-danger"></i> DELETE PRODUCT CATEGORY
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <h6 align="center">
+                Are you sure you want to delete <br />
+                Category "{{category.category_name}}" ?
+              </h6>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="delete_category"
+                class="btn btn-danger"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

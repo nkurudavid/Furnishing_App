@@ -630,14 +630,14 @@ def manager_dashboard(request):
     if request.user.is_authenticated and request.user.is_manager == True:
         # getting data
         clients = ClientProfile.objects.filter()
-        orders_data = Order.objects.filter(status="Pending")
+        orders_data = Order.objects.filter().exclude(status="Success").order_by('status','created_date')[:10]
 
         context = {
             'title': 'Management - Dashboard',
             'dash_active': 'active',
             'clients': clients,
             'orders_data': orders_data,
-            'total_orders': orders_data.count()
+            'clients_count': clients.count(),
         }
         return render(request, 'main/dashboard/dashboard.html', context)
     else:
@@ -699,10 +699,278 @@ def manager_profile(request):
 
 
 @login_required(login_url='manager_login')
+def manager_productCategory(request):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        if 'new_pCategory' in request.POST:
+            category_name = request.POST.get("category_name")
+
+            if category_name:
+                found_data = ProductCategory.objects.filter(category_name=category_name)
+                if found_data:
+                    messages.warning(request, "The product category "+category_name+", Already exist.")
+                    return redirect(manager_productCategory)
+                else:
+                    # add new product category
+                    addCategory = ProductCategory(
+                        category_name=category_name,
+                    )
+                    addCategory.save()
+
+                    messages.success(request, "New Product category created successfully.")
+                    return redirect(manager_productCategory)
+            else:
+                messages.error(request, "Error , Category name is required!")
+                return redirect(manager_productCategory)
+        else:
+            # request_data = Application.objects.filter(status="Waiting")
+            # getting provinces
+            categoryData = ProductCategory.objects.filter().order_by('category_name')
+            context = {
+                'title': 'Management - Product category List',
+                'category_active': 'active',
+                'categories': categoryData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'main/dashboard/product_category.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
+
+
+@login_required(login_url='manager_login')
+def manager_categoryDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        category_id = pk
+        # getting 
+        if ProductCategory.objects.filter(id=category_id).exists():
+            # if exists
+            foundData = ProductCategory.objects.get(id=category_id)
+
+            if 'update_category' in request.POST:
+                # Retrieve the form data from the request
+                category_name = request.POST.get('category_name')
+
+                if category_name:
+                    if ProductCategory.objects.filter(category_name=category_name).exclude(id=category_id):
+                        messages.warning(
+                            request, "Category name already exist.")
+                        return redirect(manager_categoryDetails, pk)
+                    else:
+                        # Update product category
+                        category_updated = ProductCategory.objects.filter(id=category_id).update(
+                            category_name=category_name,
+                        )
+                        if category_updated:
+                            messages.success(request, "Category "+category_name+", Updated successfully.")
+                            return redirect(manager_categoryDetails, pk)
+                        else:
+                            messages.error(request, ('Process Failed.'))
+                            return redirect(manager_categoryDetails, pk)
+                else:
+                    messages.error(request, ('Category name is required.'))
+                    return redirect(manager_categoryDetails, pk)
+
+            elif 'delete_category' in request.POST:
+                # Delete product category
+                foundData.delete()
+                messages.success(request, "Product category info deleted successfully.")
+                return redirect(manager_productCategory)
+
+            else:
+                # request_data = Application.objects.filter(status="Waiting")
+                context = {
+                    'title': 'Management - ProductCategory Info',
+                    'category_active': 'active',
+                    'category': foundData,
+                    # 'request_data': request_data,
+                }
+                return render(request, 'main/dashboard/product_categoryDetails.html', context)
+        else:
+            messages.error(request, ('Product category not found'))
+            return redirect(manager_productCategory)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
+
+
+
+@login_required(login_url='manager_login')
+def manager_product(request):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        if 'new_commune' in request.POST:
+            category_id = request.Post.get("category")
+            product_name = request.Post.get("product_name")
+            description = request.Post.get("description")
+            price = request.Post.get("price")
+            color = request.Post.get("color")
+            quantity = request.Post.get("quantity")
+            picture = request.Post.get("picture")
+
+            if category_id and product_name and description and price and color and quantity and picture:
+                # check if existing product
+                if Product.objects.filter(ProductCategory=category_id,product_name=product_name).exists():
+                    messages.warning(request, "The product name " +product_name+", Already exist.")
+                    return redirect(manager_product)
+                else:
+                    # add new product
+                    addProduct = Product(
+                        province=ProductCategory.objects.get(id=category_id),
+                        product_name=product_name,
+                        description=description,
+                        price=price,
+                        color=color,
+                        quantity=quantity,
+                        picture=picture,
+                    )
+                    addProduct.save()
+
+                    messages.success(
+                        request, "New product created successfully.")
+                    return redirect(manager_product)
+            else:
+                messages.error(request, "Error , All fields are required!")
+                return redirect(manager_product)
+        else:
+            # request_data = Application.objects.filter(status="Waiting")
+            # getting province
+            categoriesData = ProductCategory.objects.filter().order_by('category_name')
+            # getting communes
+            productsData = Product.objects.filter().order_by('category','product_name')
+            context = {
+                'title': 'Management - Products List',
+                'product_active': 'active',
+                'categories': categoriesData,
+                'products': productsData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'main/dashboard/product_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
+
+
+@login_required(login_url='manager_login')
+def manager_productDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        product_id = pk
+        # getting product
+        if Product.objects.filter(id=product_id).exists():
+            # if exists
+            foundData = Product.objects.get(id=product_id)
+
+            if 'update_product' in request.POST:
+                # Retrieve the form data from the request
+                category_id = request.Post.get("category")
+                product_name = request.Post.get("product_name")
+                description = request.Post.get("description")
+                price = request.Post.get("price")
+                color = request.Post.get("color")
+                quantity = request.Post.get("quantity")
+
+                if category_id and product_name and description and price and color and quantity:
+                    if Product.objects.filter(ProductCategory=category_id,product_name=product_name).exclude(id=product_id).exists():
+                        messages.warning(request, "Product name already exist.")
+                        return redirect(manager_productDetails, pk)
+                    else:
+                        # Update product
+                        productUpdated = Product.objects.filter(id=product_id).update(
+                            province=ProductCategory.objects.get(id=category_id),
+                            product_name=product_name,
+                            description=description,
+                            price=price,
+                            color=color,
+                            quantity=quantity,
+                        )
+                        if productUpdated:
+                            messages.success(request, "Product "+product_name+", Updated successfully.")
+                            return redirect(manager_productDetails, pk)
+                        else:
+                            messages.error(request, ('Process Failed.'))
+                            return redirect(manager_productDetails, pk)
+                else:
+                    messages.error(request, ('Error!, All fields are required.'))
+                    return redirect(manager_productDetails, pk)
+
+            elif 'delete_product' in request.POST:
+                # Delete product
+                foundData.delete()
+                messages.success(request, "Product info deleted successfully.")
+                return redirect(manager_product)
+
+            else:
+                # request_data = Application.objects.filter(status="Waiting")
+                
+                # getting Product categories
+                categoriesData = ProductCategory.objects.filter().order_by('category_name')
+                context = {
+                    'title': 'Management - Product Info',
+                    'product_active': 'active',
+                    'categories': categoriesData,
+                    'product': foundData,
+                    # 'request_data': request_data,
+                }
+                return render(request, 'main/dashboard/product_details.html', context)
+        else:
+            messages.error(request, ('Product not found'))
+            return redirect(manager_product)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
+
+
+
+@login_required(login_url='manager_login')
+def manager_clientList(request):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        clientsData = ClientProfile.objects.filter().order_by('client__first_name')
+        context = {
+            'title': 'Management - Clients List',
+            'client_active': 'active',
+            'clients': clientsData,
+            # 'request_data': request_data,
+        }
+        return render(request, 'main/dashboard/client_list.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
+
+
+@login_required(login_url='manager_login')
+def manager_clientDetails(request, pk):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        client_id = pk
+        # getting client profile
+        if ClientProfile.objects.filter(id=client_id).exists():
+            # if exists
+            foundData = ClientProfile.objects.get(id=client_id)
+
+            # request_data = Application.objects.filter(status="Waiting")
+            context = {
+                'title': 'Management - Client Info',
+                'client_active': 'active',
+                'client': foundData,
+                # 'request_data': request_data,
+            }
+            return render(request, 'main/dashboard/client_details.html', context)
+        else:
+            messages.error(request, ('Client info not found'))
+            return redirect(manager_clientList)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
+
+
+@login_required(login_url='manager_login')
 def manager_newOrder(request,):
     if request.user.is_authenticated and request.user.is_manager == True:
         # getting new request
-        orders_data = Order.objects.filter(status="Pending")
+        orders_data = Order.objects.filter().exclude(status="Success").order_by('status','created_date')
         context = {
             'title': 'Management - New Orders',
             'order_active': 'open active',
@@ -716,173 +984,104 @@ def manager_newOrder(request,):
 
 
 
-# @login_required(login_url='manager_login')
-# def manager_newOrderDetails(request, pk):
-#     newOrder_id = pk
-#     if request.user.is_authenticated and request.user.is_manager == True:
-#         if Order.objects.filter(id=newOrder_id, status="Pending").exists():
-#             request_details = Order.objects.get(id=newOrder_id, status="Pending")
+@login_required(login_url='manager_login')
+def manager_newOrderDetails(request, pk):
+    newOrder_id = pk
+    if request.user.is_authenticated and request.user.is_manager == True:
+        if Order.objects.filter(id=newOrder_id).exclude(status="Success").exists():
+            clientOrder = Order.objects.get(id=newOrder_id)
 
-#             if 'reject_application' in request.POST:
-#                 # set citizen request status to true
-#                 Application.objects.filter(id=newApplication_id, status="Waiting").update(
-#                     status="Rejected",
-#                 )
-                
-#                 #  sending email notification
-#                 subject = "Important Update Regarding Your Document Application"
-#                 message = f"Dear [Applicant's Name],\n\nWe regret to inform you that your recent application for {request_details.service} cannot be processed due to missing requirement. Please review the guidelines and resubmit your application with complete documents at your earliest convenience.\n\nFor inquiries, reach out to us at {settings.EMAIL_HOST_USER}.\n\nBest regards,"
-                
+            if 'take_action' in request.POST:
+                # Retrieve the form data from the request
+                action = request.Post.get("action")
 
-#                 from_email = settings.EMAIL_HOST_USER
-#                 recipient_list = [request_details.email]
-#                 email = EmailMessage(subject, message, from_email, recipient_list)
-                
-#                 # sending data
-#                 email.send()
+                if action:
+                    # update the status
+                    Order.objects.filter(id=newOrder_id).exclude(status="Success").update(
+                        status=action,
+                    )
+                    messages.success(request, "Order status updated successfully")
+                    return redirect(manager_newOrderDetails, pk)
+                else:
+                    messages.error(request, "Make sure to select action on this order.")
+                    return redirect(manager_newOrderDetails, pk)
+            else:
+                # getting new request
+                newOrders = Order.objects.filter().exclude(status="Success")
+                context = {
+                    'title': 'Management - New order details',
+                    'order_active': 'open active',
+                    'newOrder_active': 'active',
+                    'clientOrder': clientOrder,
+                    'new_orders': newOrders,
+                }
+                return render(request, 'main/dashboard/new_orderDetails.html', context)
+        else:
+            messages.warning(request, ('Client order not found'))
+            return redirect(manager_newOrder)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
 
-#                 messages.success(request, "Response Success")
-#                 return redirect(newApplication)
 
-#             elif 'send_passport' in request.POST:
-#                 passport_image = request.FILES["passport_image"]
-#                 passport_number = request.POST.get("passport_number")
 
-#                 if passport_image and passport_number:
-#                     citizen_document = CitizenDocument(
-#                         citizen=request_details.citizen,
-#                         document='Passport',
-#                         document_number=passport_number,
-#                         file=passport_image,
-#                     )
-#                     citizen_document.save()
-#                     # save
-#                     if citizen_document:
-#                         # getting the document
-#                         last_data = CitizenDocument.objects.filter(
-#                             citizen=request_details.citizen).last()
-#                         citizen_passport_file = last_data.file
+@login_required(login_url='manager_login')
+def manager_archieviedOrder(request,):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        # getting new request
+        orders_data = Order.objects.filter(status="Success").order_by('created_date')
+        context = {
+            'title': 'Management - Archieved Orders',
+            'order_active': 'open active',
+            'archievedOrder_active': 'active',
+            'orders_data': orders_data,
+        }
+        return render(request, 'main/dashboard/archieved_orderList.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
 
-#                         #  sending email notification
-#                         subject = 'Passport Document Ready for Pickup'
-#                         message = f"Dear {request_details.citizen},\n\n" \
-#                             f"We are pleased to inform you that the processing of your passport document application has been successfully completed. Your passport document is now ready for pickup at our office.\n\n" \
-#                             f"Document Details:\n" \
-#                             f"- Document Type: Passport\n" \
-#                             f"- Document Number: {passport_number}\n" \
-#                             f"Please visit our office during our business hours to collect your passport document. Our staff will be available to assist you with the pickup process. Kindly bring a valid government-issued identification for verification purposes.\n\n" \
-#                             f"We appreciate your patience throughout the document processing period. If you have any questions or require further assistance, please feel free to reply to this email.\n\n" \
-#                             f"We look forward to serving you and ensuring a smooth document pickup process.\n\n" \
-#                             f"Best regards,\n"
 
-#                         from_email = settings.EMAIL_HOST_USER
-#                         recipient_list = [request_details.email]
 
-#                         email = EmailMessage(
-#                             subject, message, from_email, recipient_list)
+@login_required(login_url='manager_login')
+def manager_archievedOrderDetails(request, pk):
+    newOrder_id = pk
+    if request.user.is_authenticated and request.user.is_manager == True:
+        if Order.objects.filter(id=newOrder_id, status="Success").exists():
+            clientOrder = Order.objects.get(id=newOrder_id, status="Success")
 
-#                         # Attach the file to the email
-#                         if citizen_passport_file:
-#                             file_path = citizen_passport_file.path
-#                             email.attach_file(file_path)
+            if 'take_action' in request.POST:
+                # Retrieve the form data from the request
+                action = request.Post.get("action")
 
-#                         # sending data
-#                         email.send()
+                if action:
+                    # update the status
+                    Order.objects.filter(id=newOrder_id, status="Success").update(
+                        status=action,
+                    )
+                    messages.success(request, "Order status updated successfully")
+                    return redirect(manager_archievedOrderDetails, pk)
+                else:
+                    messages.error(request, "Make sure to select action on this order.")
+                    return redirect(manager_archievedOrderDetails, pk)
+            else:
+                # getting new request
+                newOrders = Order.objects.filter().exclude(status="Success")
+                context = {
+                    'title': 'Management - Archieved order details',
+                    'order_active': 'open active',
+                    'archievedOrder_active': 'active',
+                    'clientOrder': clientOrder,
+                    'new_orders': newOrders,
+                }
+                return render(request, 'main/dashboard/archieved_orderDetails.html', context)
+        else:
+            messages.warning(request, ('Client order not found'))
+            return redirect(manager_archieviedOrder)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
 
-#                         # set citizen request status to true
-#                         Application.objects.filter(id=newApplication_id, status="Waiting").update(
-#                             status="Processed",
-#                             document_number=passport_number,
-#                         )
-
-#                     messages.success(request, "Response Success")
-#                     return redirect(newApplication)
-
-#                 else:
-#                     messages.error(
-#                         request, "Error , All fields are required !")
-#                     return redirect(newApplication_details, pk)
-#             elif 'send_idd_file' in request.POST:
-#                 idd_file = request.FILES["idd_file"]
-
-#                 if idd_file:
-#                     citizen_document = CitizenDocument(
-#                         citizen=request_details.citizen,
-#                         document='Individual Descriptive Document',
-#                         document_number=random_number,
-#                         file=idd_file,
-#                     )
-#                     citizen_document.save()
-#                     # save
-#                     if citizen_document:
-#                         # getting the document
-#                         last_data = CitizenDocument.objects.filter(
-#                             citizen=request_details.citizen).last()
-#                         citizen_idd_file = last_data.file
-
-#                         #  sending email notification
-#                         subject = 'Document Application Submission Confirmation'
-#                         message = f"Dear {request_details.citizen},\n\n" \
-#                             f"We hope this email finds you well. We would like to inform you that we have received your recent application for the {request_details.service} as part of our document issuance process.\n\n" \
-#                             f"We have successfully processed your application and attached the completed Individual Descriptive Document to this email. Please find the attached document for your records. If you have any questions or concerns regarding the document or its contents, please do not hesitate to reach out to us.\n\n" \
-#                             f"Thank you for choosing us for your document needs. We appreciate your prompt attention to this matter. If you require any further assistance, feel free to contact us."
-
-#                         from_email = settings.EMAIL_HOST_USER
-#                         recipient_list = [request_details.email]
-
-#                         email = EmailMessage(
-#                             subject, message, from_email, recipient_list)
-
-#                         # Attach the file to the email
-#                         if citizen_idd_file:
-#                             file_path = citizen_idd_file.path
-#                             email.attach_file(file_path)
-
-#                         # sending data
-#                         email.send()
-
-#                         # set citizen request status to true
-#                         Application.objects.filter(id=newApplication_id, status="Waiting").update(
-#                             status="Processed",
-#                             document_number=random_number,
-#                         )
-
-#                     messages.success(request, "Response Success")
-#                     return redirect(newApplication)
-
-#                 else:
-#                     messages.error(
-#                         request, "Error , All fields are required !")
-#                     return redirect(newApplication_details, pk)
-#             else:
-#                 # get document is exist
-#                 if CitizenDocument.objects.filter(document="Individual Descriptive Document", citizen=request_details.citizen).exists():
-#                     idd_doc = CitizenDocument.objects.filter(
-#                         document="Individual Descriptive Document", citizen=request_details.citizen).last()
-#                 else:
-#                     idd_doc = None
-
-#                 # getting new request
-#                 request_data = Application.objects.filter(status="Waiting")
-#                 today = datetime.now().date()
-#                 context = {
-#                     'title': 'Registrar - New Document Requests',
-#                     'request_active': 'open active',
-#                     'newRequest_active': 'active',
-#                     'request_data': request_data,
-#                     'request_details': request_details,
-#                     'citizen_parents': request_details.citizen.parents.all,
-#                     'document_number': random_number,
-#                     'today': today,
-#                     'idd_doc': idd_doc,
-#                 }
-#                 return render(request, 'main/dashboard/application_details.html', context)
-#         else:
-#             messages.warning(request, ('request not found'))
-#             return redirect(newApplication)
-#     else:
-#         messages.warning(request, ('You have to login to view the page!'))
-#         return redirect(managerLogin)
 
 
 # @login_required(login_url='manager_login')
