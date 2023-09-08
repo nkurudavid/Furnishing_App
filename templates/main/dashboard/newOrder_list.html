@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col-12 d-flex no-block py-4 align-items-center">
           <h4 class="page-title">
-            <i class="fas fa-users m-b-5"></i>
+            <i class="fas fa-shopping-basket m-b-5"></i>
             New Orders
           </h4>
           <div class="ml-auto text-right">
@@ -66,7 +66,7 @@
                       <td>
                         <a
                           class="text-info"
-                          href="{% url 'manager_clientDetails' order.id %}"
+                          href="{% url 'manager_newOrderDetails' order.id %}"
                         >
                           #{{order.order_number}}
                         </a>
@@ -82,7 +82,7 @@
                       <td>Frw {{order.total_amount}}</td>
                       <td>{{order.payment_method}}</td>
                       <td>
-                        <span class="badge font-bold {% if order.status == "Pending" %}bg-warning{% else %} bg-info {% endif %}">
+                        <span class="badge font-bold {% if order.status == "Pending" %}bg-warning{% else %} bg-cyan {% endif %}">
                         {{order.status}}
                         </span>
                       </td>

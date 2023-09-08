@@ -799,32 +799,35 @@ def manager_categoryDetails(request, pk):
 @login_required(login_url='manager_login')
 def manager_product(request):
     if request.user.is_authenticated and request.user.is_manager == True:
-        if 'new_commune' in request.POST:
-            category_id = request.Post.get("category")
-            product_name = request.Post.get("product_name")
-            description = request.Post.get("description")
-            price = request.Post.get("price")
-            color = request.Post.get("color")
-            quantity = request.Post.get("quantity")
-            picture = request.Post.get("picture")
+        if 'new_product' in request.POST:
+            category_id = request.POST.get("category")
+            product_name = request.POST.get("product_name")
+            description = request.POST.get("description")
+            color = request.POST.get("color")
+            price = request.POST.get("price")
+            quantity = request.POST.get("quantity")
+            product_image1 = request.FILES["product_image1"]
+            product_image2 = request.FILES["product_image2"]
 
-            if category_id and product_name and description and price and color and quantity and picture:
+            if category_id and product_name and price and color and quantity and product_image1 and product_image2:
                 # check if existing product
-                if Product.objects.filter(ProductCategory=category_id,product_name=product_name).exists():
+                if Product.objects.filter(category=category_id,product_name=product_name).exists():
                     messages.warning(request, "The product name " +product_name+", Already exist.")
                     return redirect(manager_product)
                 else:
                     # add new product
                     addProduct = Product(
-                        province=ProductCategory.objects.get(id=category_id),
+                        category=ProductCategory.objects.get(pk=category_id),
                         product_name=product_name,
                         description=description,
-                        price=price,
                         color=color,
+                        price=price,
                         quantity=quantity,
-                        picture=picture,
                     )
                     addProduct.save()
+                    # Create ProductImage instances and associate them with the product
+                    ProductImage.objects.create(product=addProduct, picture=product_image1)
+                    ProductImage.objects.create(product=addProduct, picture=product_image2)
 
                     messages.success(
                         request, "New product created successfully.")
@@ -861,23 +864,23 @@ def manager_productDetails(request, pk):
             # if exists
             foundData = Product.objects.get(id=product_id)
 
-            if 'update_product' in request.POST:
+            if 'update_productInfo' in request.POST:
                 # Retrieve the form data from the request
-                category_id = request.Post.get("category")
-                product_name = request.Post.get("product_name")
-                description = request.Post.get("description")
-                price = request.Post.get("price")
-                color = request.Post.get("color")
-                quantity = request.Post.get("quantity")
+                category_id = request.POST.get("category")
+                product_name = request.POST.get("product_name")
+                description = request.POST.get("description")
+                color = request.POST.get("color")
+                price = request.POST.get("price")
+                quantity = request.POST.get("quantity")
 
                 if category_id and product_name and description and price and color and quantity:
-                    if Product.objects.filter(ProductCategory=category_id,product_name=product_name).exclude(id=product_id).exists():
+                    if Product.objects.filter(category=category_id,product_name=product_name).exclude(id=product_id).exists():
                         messages.warning(request, "Product name already exist.")
                         return redirect(manager_productDetails, pk)
                     else:
                         # Update product
                         productUpdated = Product.objects.filter(id=product_id).update(
-                            province=ProductCategory.objects.get(id=category_id),
+                            category=ProductCategory.objects.get(id=category_id),
                             product_name=product_name,
                             description=description,
                             price=price,
@@ -953,7 +956,7 @@ def manager_clientDetails(request, pk):
             context = {
                 'title': 'Management - Client Info',
                 'client_active': 'active',
-                'client': foundData,
+                'data': foundData,
                 # 'request_data': request_data,
             }
             return render(request, 'main/dashboard/client_details.html', context)
@@ -993,14 +996,14 @@ def manager_newOrderDetails(request, pk):
 
             if 'take_action' in request.POST:
                 # Retrieve the form data from the request
-                action = request.Post.get("action")
+                action_status = request.POST.get("action_status")
 
-                if action:
+                if action_status:
                     # update the status
                     Order.objects.filter(id=newOrder_id).exclude(status="Success").update(
-                        status=action,
+                        status=action_status,
                     )
-                    messages.success(request, "Order status updated successfully")
+                    messages.success(request, "Action on Client Order applied successfully")
                     return redirect(manager_newOrderDetails, pk)
                 else:
                     messages.error(request, "Make sure to select action on this order.")
