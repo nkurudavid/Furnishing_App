@@ -92,6 +92,22 @@ class StockMovement(models.Model):
 
 
 
+class Material(models.Model):
+    name = models.CharField(verbose_name="Material Name", max_length=100, unique=True, blank=False, null=False)
+    description = models.TextField(verbose_name="Description", blank=True, null=True)
+    def __str__(self):
+        return self.name
+
+
+class CustomItem(models.Model):
+    material = models.ForeignKey(Material, verbose_name="Material", related_name="custom_items", on_delete=models.CASCADE)
+    title = models.CharField(verbose_name="Title", max_length=100, blank=False, null=False)
+    price = models.FloatField(verbose_name="Price", default=0.0, null=False)
+    def __str__(self):
+        return self.title
+
+
+
 class CustomOrder(models.Model):
     class OrderStatus(models.TextChoices):
         PENDING = "Pending", "Pending"

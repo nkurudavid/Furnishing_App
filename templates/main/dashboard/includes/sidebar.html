@@ -108,13 +108,16 @@
           </a>
           <ul aria-expanded="false" class="collapse first-level">
             <li class="sidebar-item">
-              <a href="" class="sidebar-link">
+              <a href="{% url 'manager_newCommands' %}" class="sidebar-link">
                 <i class="fas fa-shopping-basket"></i>
                 <span class="hide-menu"> New Commands </span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a href="" class="sidebar-link">
+              <a
+                href="{% url 'manager_completedCommands' %}"
+                class="sidebar-link"
+              >
                 <i class="fas fa-cubes"></i>
                 <span class="hide-menu"> Completed Commands </span>
               </a>

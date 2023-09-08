@@ -43,5 +43,8 @@ urlpatterns = [
     path('staff/clients/new_orders/<int:pk>/order_details/', views.manager_newOrderDetails, name='manager_newOrderDetails'),
     path('staff/clients/archieved_orders/', views.manager_archieviedOrder, name='manager_archieviedOrder'),
     path('staff/clients/archieved_orders/<int:pk>/order_details/', views.manager_archievedOrderDetails, name='manager_archievedOrderDetails'),
-    
+    path('staff/clients/new_commands/', views.manager_newCommands, name='manager_newCommands'),
+    path('staff/clients/new_commands/<int:pk>/command_details/', views.manager_newCommandDetails, name='manager_newCommandDetails'), 
+    path('staff/clients/completed_commands/', views.manager_completedCommands, name='manager_completedCommands'),
+    path('staff/clients/completed_commands/<int:pk>/command_details/', views.manager_completedCommandDetails, name='manager_completedCommandDetails'), 
 ]

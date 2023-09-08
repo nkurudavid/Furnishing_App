@@ -1055,31 +1055,16 @@ def manager_archievedOrderDetails(request, pk):
         if Order.objects.filter(id=newOrder_id, status="Success").exists():
             clientOrder = Order.objects.get(id=newOrder_id, status="Success")
 
-            if 'take_action' in request.POST:
-                # Retrieve the form data from the request
-                action = request.Post.get("action")
-
-                if action:
-                    # update the status
-                    Order.objects.filter(id=newOrder_id, status="Success").update(
-                        status=action,
-                    )
-                    messages.success(request, "Order status updated successfully")
-                    return redirect(manager_archievedOrderDetails, pk)
-                else:
-                    messages.error(request, "Make sure to select action on this order.")
-                    return redirect(manager_archievedOrderDetails, pk)
-            else:
-                # getting new request
-                newOrders = Order.objects.filter().exclude(status="Success")
-                context = {
-                    'title': 'Management - Archieved order details',
-                    'order_active': 'open active',
-                    'archievedOrder_active': 'active',
-                    'clientOrder': clientOrder,
-                    'new_orders': newOrders,
-                }
-                return render(request, 'main/dashboard/archieved_orderDetails.html', context)
+            # getting new request
+            newOrders = Order.objects.filter().exclude(status="Success")
+            context = {
+                'title': 'Management - Archieved order details',
+                'order_active': 'open active',
+                'archievedOrder_active': 'active',
+                'clientOrder': clientOrder,
+                'new_orders': newOrders,
+            }
+            return render(request, 'main/dashboard/archieved_orderDetails.html', context)
         else:
             messages.warning(request, ('Client order not found'))
             return redirect(manager_archieviedOrder)
@@ -1105,3 +1090,110 @@ def manager_inventory(request,):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
+    
+    
+    
+@login_required(login_url='manager_login')
+def manager_newCommands(request,):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        # getting new request
+        orders_data = Order.objects.filter().exclude(status="Success").order_by('status','created_date')
+        context = {
+            'title': 'Management - New Commands',
+            'command_active': 'open active',
+            'newCommand_active': 'active',
+            'commands': orders_data,
+        }
+        return render(request, 'main/dashboard/new_commands.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
+
+
+@login_required(login_url='manager_login')
+def manager_newCommandDetails(request, pk):
+    newOrder_id = pk
+    if request.user.is_authenticated and request.user.is_manager == True:
+        if Order.objects.filter(id=newOrder_id).exclude(status="Success").exists():
+            clientOrder = Order.objects.get(id=newOrder_id)
+
+            if 'take_action' in request.POST:
+                # Retrieve the form data from the request
+                action_status = request.POST.get("action_status")
+
+                if action_status:
+                    # update the status
+                    clientOrder.status=action_status
+                    current_user = get_user(request)  # Get the current user from the request
+                    clientOrder.clean(current_user=current_user)
+                    clientOrder.save(current_user=current_user)
+                    
+                    messages.success(request, "Action on Client Order applied successfully")
+                    return redirect(manager_newCommandDetails, pk)
+                else:
+                    messages.error(request, "Make sure to select action on this order.")
+                    return redirect(manager_newCommandDetails, pk)
+            else:
+                # getting new request
+                newOrders = Order.objects.filter().exclude(status="Success")
+                context = {
+                    'title': 'Management - New command details',
+                    'command_active': 'open active',
+                    'newCommand_active': 'active',
+                    'command': clientOrder,
+                    'new_commands': newOrders,
+                }
+                return render(request, 'main/dashboard/new_commandDetails.html', context)
+        else:
+            messages.warning(request, ('Client order not found'))
+            return redirect(manager_newCommands)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
+
+
+
+@login_required(login_url='manager_login')
+def manager_completedCommands(request,):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        # getting new request
+        orders_data = Order.objects.filter(status="Success").order_by('created_date')
+        context = {
+            'title': 'Management - Completed commands',
+            'command_active': 'open active',
+            'completedCommand_active': 'active',
+            'commands': orders_data,
+        }
+        return render(request, 'main/dashboard/completed_commands.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
+
+
+@login_required(login_url='manager_login')
+def manager_completedCommandDetails(request, pk):
+    newOrder_id = pk
+    if request.user.is_authenticated and request.user.is_manager == True:
+        if Order.objects.filter(id=newOrder_id, status="Success").exists():
+            clientOrder = Order.objects.get(id=newOrder_id, status="Success")
+
+            # getting new request
+            newOrders = Order.objects.filter().exclude(status="Success")
+            context = {
+                'title': 'Management - Completed command details',
+                'command_active': 'open active',
+                'completedCommand_active': 'active',
+                'command': clientOrder,
+                'new_orders': newOrders,
+            }
+            return render(request, 'main/dashboard/completed_commandDetails.html', context)
+        else:
+            messages.warning(request, ('Command not found'))
+            return redirect(manager_completedCommands)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)
+
