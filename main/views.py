@@ -1087,3 +1087,21 @@ def manager_archievedOrderDetails(request, pk):
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
 
+
+
+@login_required(login_url='manager_login')
+def manager_inventory(request,):
+    if request.user.is_authenticated and request.user.is_manager == True:
+        # getting new request
+        # orders_data = Order.objects.filter(status="Success").order_by('created_date')
+        foundData = StockMovement.objects.filter().order_by('date_time')
+        context = {
+            'title': 'Management - Stock Inventory',
+            'inventory_active': 'active',
+            # 'orders_data': orders_data,
+            'inventories': foundData,
+        }
+        return render(request, 'main/dashboard/inventory.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(managerLogin)

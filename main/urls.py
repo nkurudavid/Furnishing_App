@@ -36,6 +36,7 @@ urlpatterns = [
     path('staff/stock/product_caterories/<int:pk>/category_details/', views.manager_categoryDetails, name='manager_categoryDetails'),
     path('staff/stock/products/', views.manager_product, name='manager_product'),
     path('staff/stock/products/<int:pk>/product_details/', views.manager_productDetails, name='manager_productDetails'),
+    path('staff/stock/inventory/', views.manager_inventory, name='manager_inventory'),
     path('staff/clients/our_clients/', views.manager_clientList, name='manager_clientList'),
     path('staff/clients/our_clients/<int:pk>/client_profile/', views.manager_clientDetails, name='manager_clientDetails'),
     path('staff/clients/new_orders/', views.manager_newOrder, name='manager_newOrder'),
