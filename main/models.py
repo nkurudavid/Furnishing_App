@@ -1,7 +1,11 @@
+from django.contrib.auth import get_user
+from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 
@@ -60,6 +64,7 @@ class Order(models.Model):
     def get_pending_waiting_orders(cls):
         return cls.objects.filter(status__in=['Pending', 'Processing'])
 
+        
 
 class OrderDetail(models.Model):
     order = models.ForeignKey(Order, verbose_name="Order", related_name="order_details", on_delete=models.CASCADE)
@@ -84,20 +89,6 @@ class StockMovement(models.Model):
 
     def __str__(self):
         return f"{self.product} - {self.movement_type} - {self.quantity}"
-
-    def save(self, *args, **kwargs):
-        # Update the product quantity based on the stock movement
-        if self.movement_type == 'Stock In':
-            self.product.quantity += self.quantity
-        elif self.movement_type == 'Stock Out':
-            self.product.quantity -= self.quantity
-
-        # Calculate and update the total price based on the quantity and any other relevant data
-        self.total_price = self.product.price * self.quantity
-
-        # Save the StockMovement instance and update the related ProductDetail
-        super().save(*args, **kwargs)
-        self.product.save()
 
 
 

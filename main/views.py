@@ -1000,9 +1000,11 @@ def manager_newOrderDetails(request, pk):
 
                 if action_status:
                     # update the status
-                    Order.objects.filter(id=newOrder_id).exclude(status="Success").update(
-                        status=action_status,
-                    )
+                    clientOrder.status=action_status
+                    current_user = get_user(request)  # Get the current user from the request
+                    clientOrder.clean(current_user=current_user)
+                    clientOrder.save(current_user=current_user)
+                    
                     messages.success(request, "Action on Client Order applied successfully")
                     return redirect(manager_newOrderDetails, pk)
                 else:
