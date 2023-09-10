@@ -3,24 +3,26 @@ from main.models import *
 
 # Register your models here.
 
+
 class ProductImageInline(admin.StackedInline):
     model = ProductImage
     extra = 0
+
 
 class ProductInline(admin.StackedInline):
     model = Product
     inlines = [ProductImageInline]
     extra = 0
 
+
 class OrderDetailInline(admin.StackedInline):
     model = OrderDetail
     extra = 0
 
 
-
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ('category_name','all_products',)
+    list_display = ('category_name', 'all_products',)
     fieldsets = (
         ('Product Category', {'fields': ('category_name',)}),
     )
@@ -33,21 +35,23 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     inlines = [
         ProductInline,
     ]
+
     def all_products(self, obj):
         return obj.products.count()
 
 
-
-
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('product_name','category','description','price','all_images',)
+    list_display = ('product_name', 'category',
+                    'description', 'price', 'all_images',)
     list_filter = ('category',)
     fieldsets = (
-        ('Product Info', {'fields': ('category','product_name','description','price', 'color', 'quantity',)}),
+        ('Product Info', {'fields': ('category', 'product_name',
+         'description', 'price', 'color', 'quantity',)}),
     )
     add_fieldsets = (
-        ('New Product', {'fields': ('category','product_name','description','price', 'color', 'quantity',)}),
+        ('New Product', {'fields': ('category', 'product_name',
+         'description', 'price', 'color', 'quantity',)}),
     )
     search_fields = ('product_name',)
     ordering = ('product_name',)
@@ -55,9 +59,9 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [
         ProductImageInline,
     ]
+
     def all_images(self, obj):
         return obj.product_images.count()
-
 
 
 @admin.register(ProductImage)
@@ -65,7 +69,7 @@ class ProductImageAdmin(admin.ModelAdmin):
     list_display = ('product', 'image',)
     list_filter = ('product',)
     fieldsets = (
-        ('Product Image', {'fields': ('product','picture',)}),
+        ('Product Image', {'fields': ('product', 'picture',)}),
     )
     add_fieldsets = (
         ('Register New Product Image', {'fields': ('product', 'picture',)}),
@@ -75,18 +79,20 @@ class ProductImageAdmin(admin.ModelAdmin):
     list_per_page = 20
 
 
-
 @admin.register(StockMovement)
 class StockMovementAdmin(admin.ModelAdmin):
-    list_display = ('product','movement_type','quantity','total_price','processed_by','date_time',)
+    list_display = ('product', 'movement_type', 'quantity',
+                    'total_price', 'processed_by', 'date_time',)
     list_filter = ('movement_type',)
     fieldsets = (
-        ('Stock Movement Info', {'fields': ('product','movement_type','quantity','total_price','processed_by','date_time',)}),
+        ('Stock Movement Info', {'fields': (
+            'product', 'movement_type', 'quantity', 'total_price', 'processed_by', 'date_time',)}),
     )
     add_fieldsets = (
-        ('New Stock Movement', {'fields': ('product','movement_type','quantity','total_price','processed_by','date_time',)}),
+        ('New Stock Movement', {'fields': ('product', 'movement_type',
+         'quantity', 'total_price', 'processed_by', 'date_time',)}),
     )
-    search_fields = ('product','date_time',)
+    search_fields = ('product', 'date_time',)
     ordering = ('date_time',)
     list_per_page = 20
 
@@ -99,21 +105,24 @@ class StockMovementAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('order_number','client','status','total_amount','payment_method','created_date',)
-    list_filter = ('status','created_date',)
+    list_display = ('order_number', 'client', 'status',
+                    'total_amount', 'payment_method', 'created_date',)
+    list_filter = ('status', 'created_date',)
     fieldsets = (
-        ('Client Order', {'fields': ('order_number','client','status','total_amount','payment_method','created_date',)}),
+        ('Client Order', {'fields': ('order_number', 'client',
+         'status', 'total_amount', 'payment_method', 'created_date',)}),
     )
     add_fieldsets = (
-        ('New Client Order', {'fields': ('order_number','client','status','total_amount','payment_method','created_date',)}),
+        ('New Client Order', {'fields': ('order_number', 'client',
+         'status', 'total_amount', 'payment_method', 'created_date',)}),
     )
-    search_fields = ('client','order_number','created_date',)
+    search_fields = ('client', 'order_number', 'created_date',)
     ordering = ('created_date',)
     list_per_page = 20
     inlines = [
         OrderDetailInline,
     ]
-    
+
     def changelist_view(self, request, extra_context=None):
         pending_waiting_orders = Order.get_pending_waiting_orders()
         new_order_count = pending_waiting_orders.count()
@@ -121,26 +130,25 @@ class OrderAdmin(admin.ModelAdmin):
         # Add this data to the admin context to be used in the template
         extra_context = {'new_order_count': new_order_count}
         return super().changelist_view(request, extra_context=extra_context)
-    
 
     def get_readonly_fields(self, request, obj=None):
         # make 'status' field read-only
         if request.user.is_superuser == True:
             return ['created_date',]
         elif not request.user.is_superuser == True:
-            return ['order_number','client','total_amount','payment_method','created_date',]
+            return ['order_number', 'client', 'total_amount', 'payment_method', 'created_date',]
         return []
 
 
 @admin.register(OrderDetail)
 class OrderDetailAdmin(admin.ModelAdmin):
-    list_display = ('order','product','quantity',)
+    list_display = ('order', 'product', 'quantity',)
     list_filter = ('order',)
     fieldsets = (
-        ('Order Details', {'fields': ('order','product','quantity',)}),
+        ('Order Details', {'fields': ('order', 'product', 'quantity',)}),
     )
     add_fieldsets = (
-        ('New Order Details', {'fields': ('order','product','quantity',)}),
+        ('New Order Details', {'fields': ('order', 'product', 'quantity',)}),
     )
     search_fields = ('order',)
     ordering = ('order',)
@@ -149,47 +157,39 @@ class OrderDetailAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         # make 'status' field read-only
         if not request.user.is_superuser == True:
-            return ['order','product','quantity',]
+            return ['order', 'product', 'quantity',]
         return []
 
 
-
+admin.site.register(Material)
 admin.site.register(CustomOrder)
-admin.site.register(Feedback)
-admin.site.register(Comment)
-
-
-
-
-
-
-
+admin.site.register(Pro_forma)
 
 
 # sorting models
 def get_app_list(self, request, app_label=None):
-        """
-        Return a sorted list of all the installed apps that have been
-        registered in this site.
-        """
-        # Retrieve the original list
-        app_dict = self._build_app_dict(request, app_label)
-        app_list = sorted(app_dict.values(), key=lambda x: x['name'].lower())
+    """
+    Return a sorted list of all the installed apps that have been
+    registered in this site.
+    """
+    # Retrieve the original list
+    app_dict = self._build_app_dict(request, app_label)
+    app_list = sorted(app_dict.values(), key=lambda x: x['name'].lower())
 
-        # Sort the models customizable within each app.
-        for app in app_list:
-            if app['app_label'] == 'MAIN':
-                ordering = {
-                    'ProductCategory': 1,
-                    'Product': 2,
-                    'ProductImage': 3,
-                    'Order': 4,
-                    'OrderDetail':5,
-                    'StockMovement': 6,
-                }
-                app['models'].sort(key=lambda x: ordering[x['name']])
+    # Sort the models customizable within each app.
+    for app in app_list:
+        if app['app_label'] == 'MAIN':
+            ordering = {
+                'ProductCategory': 1,
+                'Product': 2,
+                'ProductImage': 3,
+                'Order': 4,
+                'OrderDetail': 5,
+                'StockMovement': 6,
+            }
+            app['models'].sort(key=lambda x: ordering[x['name']])
 
-        return app_list
+    return app_list
 
 
 admin.AdminSite.get_app_list = get_app_list

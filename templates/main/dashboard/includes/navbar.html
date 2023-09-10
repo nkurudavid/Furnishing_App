@@ -53,7 +53,7 @@
         <!-- create new -->
         <li class="nav-item">
           <a class="nav-link" href="#">
-            <span class="h4">Furnishing Order System | Management</span>
+            <span class="h4">Furnishing Order System</span>
           </a>
         </li>
       </ul>
@@ -61,16 +61,16 @@
       <ul class="navbar-nav float-right">
         <!-- User profile -->
         <li class="nav-item dropdown">
-            <a
-                class="nav-link dropdown-toggle waves-effect waves-dark pro-pic"
-                href=""
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-            >
-                <i class="ti-user mx-1"></i>
-                <span class="">{{user.first_name}} {{user.last_name}}</span>
-            </a>
+          <a
+            class="nav-link dropdown-toggle waves-effect waves-dark pro-pic"
+            href=""
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="ti-user mx-1"></i>
+            <span class="">{{user.first_name}} {{user.last_name}}</span>
+          </a>
           <div class="dropdown-menu dropdown-menu-right user-dd animated">
             <a class="dropdown-item" href="{% url 'manager_profile' %}">
               <i class="ti-user mx-2"></i> My Profile

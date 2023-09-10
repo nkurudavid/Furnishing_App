@@ -14,9 +14,8 @@ def product_created(sender, instance, created, **kwargs):
             movement_type=StockMovement.MovementType.STOCK_IN,
             quantity=instance.quantity,
             total_price=instance.price * instance.quantity,
-            processed_by=_get_request_user()  # Set this to None for new product creation
+            processed_by=None  # Set this to None for new product creation
         )
-
 
 
 # Signal handler for order status change to "Success" (stock out)
@@ -51,7 +50,6 @@ def order_status_change(sender, instance, **kwargs):
                     pass  # You may raise an exception or log the issue here
 
 
-
 # Signal handler for product quantity change (stock in or stock out)
 @receiver(pre_save, sender=Product)
 def product_quantity_change(sender, instance, **kwargs):
@@ -70,7 +68,8 @@ def product_quantity_change(sender, instance, **kwargs):
                 if quantity_change > 0
                 else StockMovement.MovementType.STOCK_OUT
             )
-            quantity_change = abs(quantity_change)  # Ensure quantity change is positive
+            # Ensure quantity change is positive
+            quantity_change = abs(quantity_change)
 
             # Stock movement
             StockMovement.objects.create(
@@ -80,7 +79,6 @@ def product_quantity_change(sender, instance, **kwargs):
                 total_price=Decimal(instance.price) * quantity_change,
                 processed_by=None  # Set this to the user who made the change if applicable
             )
-
 
 
 # Helper function to get the user from the request

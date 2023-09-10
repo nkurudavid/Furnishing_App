@@ -16,9 +16,9 @@ from account.models import ClientProfile
 def search_products_filter(search_data=None):
     if search_data:
         # get data where category name contains search_data or product name contains search_data
-        matched_products = Product.objects.filter(Q(category__category_name__icontains=search_data) | Q(product_name__icontains=search_data))
+        matched_products = Product.objects.filter(
+            Q(category__category_name__icontains=search_data) | Q(product_name__icontains=search_data))
     return matched_products
-
 
 
 # Create your views here.
@@ -36,7 +36,6 @@ def handle_not_found(request, exception):
             'title': 'Page Not found',
         }
         return render(request, 'main/404.html', context)
-
 
 
 def home(request):
@@ -66,7 +65,6 @@ def home(request):
         return render(request, 'main/home.html', context)
 
 
-
 def about(request):
     if 'search' in request.POST:
         search_data = request.POST.get("search_data")
@@ -83,7 +81,6 @@ def about(request):
         return render(request, 'main/about.html', context)
 
 
-
 def contact(request):
     if 'search' in request.POST:
         search_data = request.POST.get("search_data")
@@ -98,7 +95,6 @@ def contact(request):
             'title': 'Contact us',
         }
         return render(request, 'main/contact.html', context)
-
 
 
 def shop(request):
@@ -121,7 +117,6 @@ def shop(request):
         return render(request, 'main/shop.html', context)
 
 
-
 def search_result(request, search_data=None):
     if search_data:
         # Call the search_products_filter function to get the filtered products
@@ -138,13 +133,13 @@ def search_result(request, search_data=None):
         return redirect(shop)
 
 
-
 def shopCategory(request, name):
     category_name = name
     # check if category exist
     if ProductCategory.objects.filter(category_name=category_name).exists():
         # if exists
-        selectedCategory = ProductCategory.objects.get(category_name=category_name)
+        selectedCategory = ProductCategory.objects.get(
+            category_name=category_name)
         products = Product.objects.filter(category=selectedCategory)
 
         if 'search' in request.POST:
@@ -167,8 +162,6 @@ def shopCategory(request, name):
     else:
         messages.error(request, ('Product Category not found'))
         return redirect(shop)
-
-
 
 
 def product_details(request, pk):
@@ -199,7 +192,6 @@ def product_details(request, pk):
         return redirect(shop)
 
 
-
 def shop_cart(request):
     if 'search' in request.POST:
         search_data = request.POST.get("search_data")
@@ -223,13 +215,12 @@ def shop_cart(request):
 
         else:
             # return the value to template
-            context ={
+            context = {
                 'title': 'Shop - Cart',
                 'cart_items': cart_items,
                 'total_price': total_price,
             }
             return render(request, 'main/shop_cart.html', context)
-
 
 
 def addToCart(request, product_id):
@@ -261,7 +252,6 @@ def updateCart(request):
     return redirect(shop_cart)
 
 
-
 def removeFromCart(request, product_id):
     cart = request.session.get('cart', {})
     if str(product_id) in cart:
@@ -270,11 +260,9 @@ def removeFromCart(request, product_id):
     return redirect(shop_cart)
 
 
-
-
 @login_required(login_url='shop')
 def shop_checkout(request):
-    if request.user.is_authenticated and request.user.is_client==True:
+    if request.user.is_authenticated and request.user.is_client == True:
         if 'search' in request.POST:
             search_data = request.POST.get("search_data")
             if search_data:
@@ -289,10 +277,9 @@ def shop_checkout(request):
         return redirect(shop)
 
 
-
 @login_required(login_url='shop')
 def order_confirmation(request):
-    if request.user.is_authenticated and request.user.is_client==True:
+    if request.user.is_authenticated and request.user.is_client == True:
         if 'place_order' in request.POST:
             shipping_location = request.POST.get("shipping_location")
             shipping_street = request.POST.get("shipping_street")
@@ -311,21 +298,21 @@ def order_confirmation(request):
 
             # add new order
             client_order = Order(
-                client = get_user_model().objects.get(email=request.user.email),
-                order_number =order_no,
-                status = 'Pending',
-                shipping_address = shipping_location+"/ "+shipping_street,
-                total_amount = total_price,
-                payment_method = pay_method,
-                payment_id = payment_id,
+                client=get_user_model().objects.get(email=request.user.email),
+                order_number=order_no,
+                status='Pending',
+                shipping_address=shipping_location+"/ "+shipping_street,
+                total_amount=total_price,
+                payment_method=pay_method,
+                payment_id=payment_id,
             )
             client_order.save()
             if client_order:
                 for product_id, item in cart.items():
                     details = OrderDetail(
-                        order = client_order,
-                        product = Product.objects.get(id=int(product_id)),
-                        quantity = item['quantity'],
+                        order=client_order,
+                        product=Product.objects.get(id=int(product_id)),
+                        quantity=item['quantity'],
                     )
                     details.save()
 
@@ -341,31 +328,29 @@ def order_confirmation(request):
         return redirect(shop_checkout)
 
 
-
-
 def client_login(request):
-    if not request.user.is_authenticated or request.user.is_client!=True:
+    if not request.user.is_authenticated or request.user.is_client != True:
         if 'login' in request.POST:
             email = request.POST.get('email')
             password = request.POST.get('password')
 
             user = authenticate(request, email=email, password=password)
 
-            if user is not None and user.is_client==True:
+            if user is not None and user.is_client == True:
                 login(request, user)
-                messages.success(request, ('Hi '+user.first_name+', you are logged in'))
+                messages.success(
+                    request, ('Hi '+user.first_name+', you are logged in'))
                 return redirect(client_dashboard)
             else:
-                messages.error(request, ('User Email or Password is not correct! Try agin...'))
+                messages.error(
+                    request, ('User Email or Password is not correct! Try agin...'))
                 return redirect(shop)
     else:
         return redirect(client_dashboard)
 
 
-
-
 def client_register(request):
-    if not request.user.is_authenticated or request.user.is_client!=True:
+    if not request.user.is_authenticated or request.user.is_client != True:
         if 'sign_up' in request.POST:
             first_name = request.POST.get('first_name')
             last_name = request.POST.get('last_name')
@@ -397,25 +382,26 @@ def client_register(request):
                         # get client account
                         client = get_user_model().objects.get(email=email)
                         # get client profile
-                        client_profile, created = ClientProfile.objects.get_or_create(client=client)
+                        client_profile, created = ClientProfile.objects.get_or_create(
+                            client=client)
 
                         # update client profile and save
-                        client_profile.phone_number=phone_number
-                        client_profile.location=location
+                        client_profile.phone_number = phone_number
+                        client_profile.location = location
                         client_profile.save()
 
-                    user = authenticate(request, email=email, password=password1)
-                    if user is not None and user.is_client==True:
+                    user = authenticate(
+                        request, email=email, password=password1)
+                    if user is not None and user.is_client == True:
                         login(request, user)
-                        messages.success(request, ('Hi '+user.first_name+', you are logged in'))
+                        messages.success(
+                            request, ('Hi '+user.first_name+', you are logged in'))
                         return redirect(client_dashboard)
             else:
                 messages.error(request, ('All field are required'))
                 return redirect(shop)
     else:
         return redirect(client_dashboard)
-
-
 
 
 @login_required(login_url='shop')
@@ -425,14 +411,13 @@ def client_logout(request):
     return redirect(shop)
 
 
-
-
 @login_required(login_url='shop')
 def client_dashboard(request):
-    if request.user.is_authenticated and request.user.is_client==True:
+    if request.user.is_authenticated and request.user.is_client == True:
         # client orders
         orders = Order.objects.filter(client=request.user)
-        new_orders = Order.objects.filter(client=request.user).exclude(status='Success').count()
+        new_orders = Order.objects.filter(
+            client=request.user).exclude(status='Success').count()
         context = {
             'title': 'Client Account',
             'orders': orders,
@@ -445,13 +430,14 @@ def client_dashboard(request):
         return redirect(shop)
 
 
-
 @login_required(login_url='shop')
 def client_order_list(request):
-    if request.user.is_authenticated and request.user.is_client==True:
+    if request.user.is_authenticated and request.user.is_client == True:
         # client orders
-        orders = Order.objects.filter(client=request.user).order_by('-created_date','status')
-        new_orders = Order.objects.filter(client=request.user).exclude(status='Success').count()
+        orders = Order.objects.filter(
+            client=request.user).order_by('-created_date', 'status')
+        new_orders = Order.objects.filter(
+            client=request.user).exclude(status='Success').count()
         context = {
             'title': 'Client Account',
             'orders': orders,
@@ -464,16 +450,15 @@ def client_order_list(request):
         return redirect(shop)
 
 
-
-
 @login_required(login_url='shop')
 def client_order_details(request, pk):
-    if request.user.is_authenticated and request.user.is_client==True:
+    if request.user.is_authenticated and request.user.is_client == True:
         order_id = pk
         if Order.objects.filter(client=request.user, pk=order_id).exists():
             # client orders
             order = Order.objects.get(client=request.user, pk=order_id)
-            new_orders = Order.objects.filter(client=request.user).exclude(status='Success').count()
+            new_orders = Order.objects.filter(
+                client=request.user).exclude(status='Success').count()
             context = {
                 'title': 'Client Account',
                 'order': order,
@@ -489,11 +474,9 @@ def client_order_details(request, pk):
         return redirect(shop)
 
 
-
-
 @login_required(login_url='shop')
 def client_profile(request):
-    if request.user.is_authenticated and request.user.is_client==True:
+    if request.user.is_authenticated and request.user.is_client == True:
         if 'update_profile' in request.POST:
             first_name = request.POST.get('first_name')
             last_name = request.POST.get('last_name')
@@ -510,11 +493,12 @@ def client_profile(request):
                 )
 
                 # get client profile
-                c_profile, created = ClientProfile.objects.get_or_create(client=get_user_model().objects.get(email=request.user.email))
+                c_profile, created = ClientProfile.objects.get_or_create(
+                    client=get_user_model().objects.get(email=request.user.email))
 
                 # update client profile and save
-                c_profile.phone_number=phone_number
-                c_profile.location=location
+                c_profile.phone_number = phone_number
+                c_profile.location = location
                 c_profile.save()
 
                 messages.success(request, ('Profile updated successfully'))
@@ -529,14 +513,16 @@ def client_profile(request):
 
             if shipping_location and shipping_street:
                 # get client profile
-                c_profile, created = ClientProfile.objects.get_or_create(client=get_user_model().objects.get(email=request.user.email))
+                c_profile, created = ClientProfile.objects.get_or_create(
+                    client=get_user_model().objects.get(email=request.user.email))
 
                 # update client shipping address and save
-                c_profile.shipping_location=shipping_location
-                c_profile.shipping_street=shipping_street
+                c_profile.shipping_location = shipping_location
+                c_profile.shipping_street = shipping_street
                 c_profile.save()
 
-                messages.success(request, ('Shipping address updated successfully'))
+                messages.success(
+                    request, ('Shipping address updated successfully'))
                 return redirect(client_profile)
             else:
                 messages.error(request, ('All field are required'))
@@ -550,27 +536,31 @@ def client_profile(request):
             if old_password and new_password and confirmed_new_password:
                 user = get_user_model().objects.get(email=request.user.email)
                 if not user.check_password(old_password):
-                    messages.error(request, "Your old password is not correct!")
+                    messages.error(
+                        request, "Your old password is not correct!")
                     return redirect(client_profile)
                 else:
                     if len(new_password) < 5:
                         messages.warning(request, "Your password is too weak!")
                         return redirect(client_profile)
                     elif new_password != confirmed_new_password:
-                        messages.error(request, "Your new password not match the confirm password !")
+                        messages.error(
+                            request, "Your new password not match the confirm password !")
                         return redirect(client_profile)
                     else:
                         user.set_password(new_password)
                         user.save()
                         update_session_auth_hash(request, user)
 
-                        messages.success(request, "Your password has been changed successfully.!")
+                        messages.success(
+                            request, "Your password has been changed successfully.!")
                         return redirect(client_profile)
             else:
                 messages.error(request, "Error , All fields are required !")
                 return redirect(client_profile)
         else:
-            new_orders = Order.objects.filter(client=request.user).exclude(status='Success').count()
+            new_orders = Order.objects.filter(
+                client=request.user).exclude(status='Success').count()
             context = {
                 'title': 'Client Profile',
                 'new_orders': new_orders,
@@ -580,17 +570,9 @@ def client_profile(request):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(shop)
-    
-    
-    
-    
-    
-    
-    
+
     # staff
-    
-    
-    
+
 
 def managerLogin(request,):
     if not request.user.is_authenticated or request.user.is_manager != True:
@@ -616,7 +598,6 @@ def managerLogin(request,):
         return redirect(manager_dashboard)
 
 
-
 @login_required(login_url='manager_login')
 def managerLogout(request):
     logout(request)
@@ -624,13 +605,13 @@ def managerLogout(request):
     return redirect(managerLogin)
 
 
-
 @login_required(login_url='manager_login')
 def manager_dashboard(request):
     if request.user.is_authenticated and request.user.is_manager == True:
         # getting data
         clients = ClientProfile.objects.filter()
-        orders_data = Order.objects.filter().exclude(status="Success").order_by('status','created_date')[:10]
+        orders_data = Order.objects.filter().exclude(
+            status="Success").order_by('status', 'created_date')[:10]
 
         context = {
             'title': 'Management - Dashboard',
@@ -643,7 +624,6 @@ def manager_dashboard(request):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
-
 
 
 @login_required(login_url='manager_login')
@@ -697,7 +677,6 @@ def manager_profile(request):
         return redirect(managerLogin)
 
 
-
 @login_required(login_url='manager_login')
 def manager_productCategory(request):
     if request.user.is_authenticated and request.user.is_manager == True:
@@ -705,9 +684,11 @@ def manager_productCategory(request):
             category_name = request.POST.get("category_name")
 
             if category_name:
-                found_data = ProductCategory.objects.filter(category_name=category_name)
+                found_data = ProductCategory.objects.filter(
+                    category_name=category_name)
                 if found_data:
-                    messages.warning(request, "The product category "+category_name+", Already exist.")
+                    messages.warning(
+                        request, "The product category "+category_name+", Already exist.")
                     return redirect(manager_productCategory)
                 else:
                     # add new product category
@@ -716,7 +697,8 @@ def manager_productCategory(request):
                     )
                     addCategory.save()
 
-                    messages.success(request, "New Product category created successfully.")
+                    messages.success(
+                        request, "New Product category created successfully.")
                     return redirect(manager_productCategory)
             else:
                 messages.error(request, "Error , Category name is required!")
@@ -737,12 +719,11 @@ def manager_productCategory(request):
         return redirect(managerLogin)
 
 
-
 @login_required(login_url='manager_login')
 def manager_categoryDetails(request, pk):
     if request.user.is_authenticated and request.user.is_manager == True:
         category_id = pk
-        # getting 
+        # getting
         if ProductCategory.objects.filter(id=category_id).exists():
             # if exists
             foundData = ProductCategory.objects.get(id=category_id)
@@ -762,7 +743,8 @@ def manager_categoryDetails(request, pk):
                             category_name=category_name,
                         )
                         if category_updated:
-                            messages.success(request, "Category "+category_name+", Updated successfully.")
+                            messages.success(
+                                request, "Category "+category_name+", Updated successfully.")
                             return redirect(manager_categoryDetails, pk)
                         else:
                             messages.error(request, ('Process Failed.'))
@@ -774,7 +756,8 @@ def manager_categoryDetails(request, pk):
             elif 'delete_category' in request.POST:
                 # Delete product category
                 foundData.delete()
-                messages.success(request, "Product category info deleted successfully.")
+                messages.success(
+                    request, "Product category info deleted successfully.")
                 return redirect(manager_productCategory)
 
             else:
@@ -794,8 +777,6 @@ def manager_categoryDetails(request, pk):
         return redirect(managerLogin)
 
 
-
-
 @login_required(login_url='manager_login')
 def manager_product(request):
     if request.user.is_authenticated and request.user.is_manager == True:
@@ -811,8 +792,9 @@ def manager_product(request):
 
             if category_id and product_name and price and color and quantity and product_image1 and product_image2:
                 # check if existing product
-                if Product.objects.filter(category=category_id,product_name=product_name).exists():
-                    messages.warning(request, "The product name " +product_name+", Already exist.")
+                if Product.objects.filter(category=category_id, product_name=product_name).exists():
+                    messages.warning(request, "The product name " +
+                                     product_name+", Already exist.")
                     return redirect(manager_product)
                 else:
                     # add new product
@@ -826,8 +808,10 @@ def manager_product(request):
                     )
                     addProduct.save()
                     # Create ProductImage instances and associate them with the product
-                    ProductImage.objects.create(product=addProduct, picture=product_image1)
-                    ProductImage.objects.create(product=addProduct, picture=product_image2)
+                    ProductImage.objects.create(
+                        product=addProduct, picture=product_image1)
+                    ProductImage.objects.create(
+                        product=addProduct, picture=product_image2)
 
                     messages.success(
                         request, "New product created successfully.")
@@ -840,7 +824,7 @@ def manager_product(request):
             # getting province
             categoriesData = ProductCategory.objects.filter().order_by('category_name')
             # getting communes
-            productsData = Product.objects.filter().order_by('category','product_name')
+            productsData = Product.objects.filter().order_by('category', 'product_name')
             context = {
                 'title': 'Management - Products List',
                 'product_active': 'active',
@@ -852,7 +836,6 @@ def manager_product(request):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
-
 
 
 @login_required(login_url='manager_login')
@@ -874,13 +857,15 @@ def manager_productDetails(request, pk):
                 quantity = request.POST.get("quantity")
 
                 if category_id and product_name and description and price and color and quantity:
-                    if Product.objects.filter(category=category_id,product_name=product_name).exclude(id=product_id).exists():
-                        messages.warning(request, "Product name already exist.")
+                    if Product.objects.filter(category=category_id, product_name=product_name).exclude(id=product_id).exists():
+                        messages.warning(
+                            request, "Product name already exist.")
                         return redirect(manager_productDetails, pk)
                     else:
                         # Update product
                         productUpdated = Product.objects.filter(id=product_id).update(
-                            category=ProductCategory.objects.get(id=category_id),
+                            category=ProductCategory.objects.get(
+                                id=category_id),
                             product_name=product_name,
                             description=description,
                             price=price,
@@ -888,13 +873,15 @@ def manager_productDetails(request, pk):
                             quantity=quantity,
                         )
                         if productUpdated:
-                            messages.success(request, "Product "+product_name+", Updated successfully.")
+                            messages.success(
+                                request, "Product "+product_name+", Updated successfully.")
                             return redirect(manager_productDetails, pk)
                         else:
                             messages.error(request, ('Process Failed.'))
                             return redirect(manager_productDetails, pk)
                 else:
-                    messages.error(request, ('Error!, All fields are required.'))
+                    messages.error(
+                        request, ('Error!, All fields are required.'))
                     return redirect(manager_productDetails, pk)
 
             elif 'delete_product' in request.POST:
@@ -905,7 +892,7 @@ def manager_productDetails(request, pk):
 
             else:
                 # request_data = Application.objects.filter(status="Waiting")
-                
+
                 # getting Product categories
                 categoriesData = ProductCategory.objects.filter().order_by('category_name')
                 context = {
@@ -924,8 +911,6 @@ def manager_productDetails(request, pk):
         return redirect(managerLogin)
 
 
-
-
 @login_required(login_url='manager_login')
 def manager_clientList(request):
     if request.user.is_authenticated and request.user.is_manager == True:
@@ -940,7 +925,6 @@ def manager_clientList(request):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
-
 
 
 @login_required(login_url='manager_login')
@@ -968,12 +952,12 @@ def manager_clientDetails(request, pk):
         return redirect(managerLogin)
 
 
-
 @login_required(login_url='manager_login')
 def manager_newOrder(request,):
     if request.user.is_authenticated and request.user.is_manager == True:
         # getting new request
-        orders_data = Order.objects.filter().exclude(status="Success").order_by('status','created_date')
+        orders_data = Order.objects.filter().exclude(
+            status="Success").order_by('status', 'created_date')
         context = {
             'title': 'Management - New Orders',
             'order_active': 'open active',
@@ -984,7 +968,6 @@ def manager_newOrder(request,):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
-
 
 
 @login_required(login_url='manager_login')
@@ -1000,15 +983,18 @@ def manager_newOrderDetails(request, pk):
 
                 if action_status:
                     # update the status
-                    clientOrder.status=action_status
-                    current_user = get_user(request)  # Get the current user from the request
+                    clientOrder.status = action_status
+                    # Get the current user from the request
+                    current_user = get_user(request)
                     clientOrder.clean(current_user=current_user)
                     clientOrder.save(current_user=current_user)
-                    
-                    messages.success(request, "Action on Client Order applied successfully")
+
+                    messages.success(
+                        request, "Action on Client Order applied successfully")
                     return redirect(manager_newOrderDetails, pk)
                 else:
-                    messages.error(request, "Make sure to select action on this order.")
+                    messages.error(
+                        request, "Make sure to select action on this order.")
                     return redirect(manager_newOrderDetails, pk)
             else:
                 # getting new request
@@ -1029,12 +1015,12 @@ def manager_newOrderDetails(request, pk):
         return redirect(managerLogin)
 
 
-
 @login_required(login_url='manager_login')
 def manager_archieviedOrder(request,):
     if request.user.is_authenticated and request.user.is_manager == True:
         # getting new request
-        orders_data = Order.objects.filter(status="Success").order_by('created_date')
+        orders_data = Order.objects.filter(
+            status="Success").order_by('created_date')
         context = {
             'title': 'Management - Archieved Orders',
             'order_active': 'open active',
@@ -1045,7 +1031,6 @@ def manager_archieviedOrder(request,):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
-
 
 
 @login_required(login_url='manager_login')
@@ -1073,7 +1058,6 @@ def manager_archievedOrderDetails(request, pk):
         return redirect(managerLogin)
 
 
-
 @login_required(login_url='manager_login')
 def manager_inventory(request,):
     if request.user.is_authenticated and request.user.is_manager == True:
@@ -1090,14 +1074,14 @@ def manager_inventory(request,):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
-    
-    
-    
+
+
 @login_required(login_url='manager_login')
 def manager_newCommands(request,):
     if request.user.is_authenticated and request.user.is_manager == True:
         # getting new request
-        orders_data = Order.objects.filter().exclude(status="Success").order_by('status','created_date')
+        orders_data = Order.objects.filter().exclude(
+            status="Success").order_by('status', 'created_date')
         context = {
             'title': 'Management - New Commands',
             'command_active': 'open active',
@@ -1108,7 +1092,6 @@ def manager_newCommands(request,):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
-
 
 
 @login_required(login_url='manager_login')
@@ -1124,15 +1107,18 @@ def manager_newCommandDetails(request, pk):
 
                 if action_status:
                     # update the status
-                    clientOrder.status=action_status
-                    current_user = get_user(request)  # Get the current user from the request
+                    clientOrder.status = action_status
+                    # Get the current user from the request
+                    current_user = get_user(request)
                     clientOrder.clean(current_user=current_user)
                     clientOrder.save(current_user=current_user)
-                    
-                    messages.success(request, "Action on Client Order applied successfully")
+
+                    messages.success(
+                        request, "Action on Client Order applied successfully")
                     return redirect(manager_newCommandDetails, pk)
                 else:
-                    messages.error(request, "Make sure to select action on this order.")
+                    messages.error(
+                        request, "Make sure to select action on this order.")
                     return redirect(manager_newCommandDetails, pk)
             else:
                 # getting new request
@@ -1153,13 +1139,12 @@ def manager_newCommandDetails(request, pk):
         return redirect(managerLogin)
 
 
-
-
 @login_required(login_url='manager_login')
 def manager_completedCommands(request,):
     if request.user.is_authenticated and request.user.is_manager == True:
         # getting new request
-        orders_data = Order.objects.filter(status="Success").order_by('created_date')
+        orders_data = Order.objects.filter(
+            status="Success").order_by('created_date')
         context = {
             'title': 'Management - Completed commands',
             'command_active': 'open active',
@@ -1170,7 +1155,6 @@ def manager_completedCommands(request,):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
-
 
 
 @login_required(login_url='manager_login')
@@ -1196,4 +1180,3 @@ def manager_completedCommandDetails(request, pk):
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(managerLogin)
-
