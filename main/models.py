@@ -161,7 +161,7 @@ class CustomOrder(models.Model):
     )
     created_date = models.DateTimeField(auto_now_add=True)
     processed_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
 
     def image(self):
         return mark_safe('<img src="/../../media/%s" width="80" />' % (self.picture))
@@ -174,19 +174,18 @@ class CustomOrder(models.Model):
 
 class Pro_forma(models.Model):
     class StatusOption(models.TextChoices):
-        PENDING = "Pending", "Pending"
         DOABLE = "Doable", "Doable"
         UNDOABLE = "Undoable", "Undoable"
 
     class Reaction(models.TextChoices):
-        SELECT = "", "Select Client Reaction"
+        PENDING = "Pending", "Pending"
         ACCEPTED = "Accepted", "Accepted"
         DECLINED = "Declined", "Declined"
 
-    custom_order = models.ForeignKey(
+    custom_order = models.OneToOneField(
         CustomOrder, verbose_name="Custom Order", related_name="feedbacks", on_delete=models.CASCADE)
-    status = models.CharField(verbose_name="Status", choices=StatusOption.choices,
-                              default=StatusOption.PENDING, max_length=20)
+    status = models.CharField(verbose_name="Status",
+                              choices=StatusOption.choices, max_length=20)
     payment_amount = models.FloatField(
         verbose_name="Payment Amount", default=0.0, null=False)
     processing_period = models.IntegerField(
@@ -194,7 +193,7 @@ class Pro_forma(models.Model):
     processed_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     client_reaction = models.CharField(
-        verbose_name="Status", choices=Reaction.choices, default=Reaction.SELECT, max_length=20)
+        verbose_name="Status", choices=Reaction.choices, default=Reaction.PENDING, max_length=20)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

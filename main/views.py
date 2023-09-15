@@ -1388,14 +1388,19 @@ def manager_archievedOrderDetails(request, pk):
 @login_required(login_url='staff_login')
 def manager_inventory(request,):
     if request.user.is_authenticated and request.user.is_manager == True:
-        # getting new request
-        # orders_data = Order.objects.filter(status="Success").order_by('created_date')
+        # getting data
+        orders_data = Order.objects.filter().exclude(
+            status="Success").order_by('status', 'created_date')
+        customOrders_data = CustomOrder.objects.filter().exclude(
+            Q(status="Completed") | Q(status="Cancelled")).order_by('status', 'created_date')
+
         foundData = StockMovement.objects.filter().order_by('date_time')
         context = {
             'title': 'Management - Stock Inventory',
             'inventory_active': 'active',
-            # 'orders_data': orders_data,
             'inventories': foundData,
+            'orders_data': orders_data,
+            'customOrders_data': customOrders_data,
         }
         return render(request, 'staff/manager/inventory.html', context)
     else:
@@ -1409,13 +1414,17 @@ def manager_newCustomOrders(request,):
         # getting new request
         orders_data = Order.objects.filter().exclude(
             status="Success").order_by('status', 'created_date')
+        customOrders_data = CustomOrder.objects.filter().exclude(
+            Q(status="Completed") | Q(status="Cancelled")).order_by('status', 'created_date')
+
         context = {
-            'title': 'Management - New Commands',
-            'command_active': 'open active',
-            'newCommand_active': 'active',
-            'commands': orders_data,
+            'title': 'New Custom Orders',
+            'customOrder_active': 'open active',
+            'newCustomOrder': 'active',
+            'orders_data': orders_data,
+            'customOrders_data': customOrders_data,
         }
-        return render(request, 'staff/manager/new_commands.html', context)
+        return render(request, 'staff/manager/customOrderList.html', context)
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(staffLogin)
@@ -1425,20 +1434,34 @@ def manager_newCustomOrders(request,):
 def manager_newCustomOrderDetails(request, pk):
     newOrder_id = pk
     if request.user.is_authenticated and request.user.is_manager == True:
-        if Order.objects.filter(id=newOrder_id).exclude(status="Success").exists():
-            clientOrder = Order.objects.get(id=newOrder_id)
+        if CustomOrder.objects.filter(id=newOrder_id).exclude(Q(status="Completed") | Q(status="Cancelled")).exists():
+            clientOrder = CustomOrder.objects.get(id=newOrder_id)
 
-            if 'take_action' in request.POST:
+            if 'assignCraftsman' in request.POST:
+                # Retrieve the form data from the request
+                craftsman_id = request.POST.get("craftsman")
+
+                if craftsman_id:
+                    # update the processed_by
+                    clientOrder.processed_by = get_user_model().objects.get(id=craftsman_id)
+                    clientOrder.save()
+
+                    messages.success(
+                        request, "Craftsman assigned successfully")
+                    return redirect(manager_newCustomOrderDetails, pk)
+                else:
+                    messages.error(
+                        request, "Make sure to select craftsman.")
+                    return redirect(manager_newCustomOrderDetails, pk)
+
+            elif 'take_action' in request.POST:
                 # Retrieve the form data from the request
                 action_status = request.POST.get("action_status")
 
                 if action_status:
                     # update the status
                     clientOrder.status = action_status
-                    # Get the current user from the request
-                    current_user = get_user(request)
-                    clientOrder.clean(current_user=current_user)
-                    clientOrder.save(current_user=current_user)
+                    clientOrder.save()
 
                     messages.success(
                         request, "Action on Client Order applied successfully")
@@ -1449,15 +1472,23 @@ def manager_newCustomOrderDetails(request, pk):
                     return redirect(manager_newCustomOrderDetails, pk)
             else:
                 # getting new request
-                newOrders = Order.objects.filter().exclude(status="Success")
+                orders_data = Order.objects.filter().exclude(
+                    status="Success").order_by('status', 'created_date')
+                customOrders_data = CustomOrder.objects.filter().exclude(
+                    Q(status="Completed") | Q(status="Cancelled")).order_by('status', 'created_date')
+
+                craftsmen = get_user_model().objects.filter(is_craftsman=True)
+
                 context = {
-                    'title': 'Management - New command details',
-                    'command_active': 'open active',
-                    'newCommand_active': 'active',
-                    'command': clientOrder,
-                    'new_commands': newOrders,
+                    'title': 'New Custom Order details',
+                    'customOrder_active': 'open active',
+                    'newCustomOrder': 'active',
+                    'clientOrder': clientOrder,
+                    'orders_data': orders_data,
+                    'customOrders_data': customOrders_data,
+                    'craftsmen': craftsmen,
                 }
-                return render(request, 'staff/manager/new_commandDetails.html', context)
+                return render(request, 'staff/manager/customOrderDetails.html', context)
         else:
             messages.warning(request, ('Client order not found'))
             return redirect(manager_newCustomOrders)
@@ -1514,7 +1545,7 @@ def manager_completedCustomOrderDetails(request, pk):
 
 @login_required(login_url='staff_login')
 def craftsman_dashboard(request):
-    if request.user.is_authenticated and request.user.is_manager == True:
+    if request.user.is_authenticated and request.user.is_craftsman == True:
         # getting data
         clients = ClientProfile.objects.filter()
         orders_data = Order.objects.filter().exclude(
@@ -1535,7 +1566,7 @@ def craftsman_dashboard(request):
 
 @login_required(login_url='staff_login')
 def craftsman_profile(request):
-    if request.user.is_authenticated and request.user.is_manager == True:
+    if request.user.is_authenticated and request.user.is_craftsman == True:
         if 'update_password' in request.POST:
             old_password = request.POST.get("old_pass")
             new_password = request.POST.get("pass1")

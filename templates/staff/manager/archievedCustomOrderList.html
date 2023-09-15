@@ -86,7 +86,7 @@
                   {% endif %}
                 </td>
                 <td>
-                  <span class="badge font-bold bg-success">
+                  <span class="badge font-bold {% if order.status == "Completed" %}bg-success{% else %}bg-danger{% endif %}">
                     {{order.status}}
                   </span>
                 </td>

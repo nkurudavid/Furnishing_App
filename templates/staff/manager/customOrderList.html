@@ -50,13 +50,13 @@
               </tr>
             </thead>
             <tbody>
-              {% for order in orders_data %}
+              {% for order in customOrders_data %}
               <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>
                   <a
                     class="text-info"
-                    href="{% url 'manager_newOrderDetails' order.id %}"
+                    href="{% url 'manager_newCustomOrderDetails' order.id %}"
                   >
                     #{{order.order_number}}
                   </a>
@@ -70,7 +70,7 @@
                   Email: {{order.client.email}}
                 </td>
                 <td>{{order.material.name}}</td>
-                <td>{{order.payment_method}}
+                <td>
                   {% if order.picture %}
                   <img
                     src="{{order.picture.url}}"
@@ -82,7 +82,7 @@
                   {% endif %}
                 </td>
                 <td>
-                  <span class="badge font-bold {% if order.status == "Pending" %}bg-warning{% if order.status == "Processing" %}bg-cyan{% else %}bg-danger{% endif %}">
+                  <span class="badge font-bold {% if order.status == "Pending" %}bg-warning{% else %}bg-cyan{% endif %}">
                   {{order.status}}
                   </span>
                 </td>

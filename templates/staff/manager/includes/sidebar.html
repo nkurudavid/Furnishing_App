@@ -88,7 +88,7 @@
           </li>
         </ul>
       </li>
-      <li class="{{order_active}}">
+      <li class="{{customOrder_active}}">
         <a href="javascript:;">
           <i class="sidebar-item-icon fa fa-shopping-basket"></i>
           <span class="nav-label"> Custom Orders </span>
@@ -96,7 +96,12 @@
         </a>
         <ul class="nav-2-level collapse">
           <li>
-            <a href="{% url 'manager_newCustomOrders' %}"> New Orders </a>
+            <a
+              class="{{newCustomOrder}}"
+              href="{% url 'manager_newCustomOrders' %}"
+            >
+              New Orders
+            </a>
           </li>
           <li>
             <a href="{% url 'manager_completedCustomOrders' %}">

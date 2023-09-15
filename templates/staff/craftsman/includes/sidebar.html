@@ -11,19 +11,21 @@
       </div>
     </div>
     <ul class="side-menu metismenu">
-      <li class="active">
-        <a href=""
-          ><i class="sidebar-item-icon fa fa-th-large"></i>
+      <li class="{{dash_active}}">
+        <a href="{% url 'craftsman_dashboard' %}">
+          <i class="sidebar-item-icon fa fa-th-large"></i>
           <span class="nav-label">Dashboard</span>
         </a>
       </li>
-      <li>
-        <a href="">
+      <li class="heading">STOCK</li>
+      <li class="{{materialActive}}">
+        <a href="{% url 'craftsman_dashboard' %}">
           <i class="sidebar-item-icon fa fa-list"></i>
           <span class="nav-label">Materials</span>
         </a>
       </li>
-      <li>
+      <li class="heading">ORDER</li>
+      <li class="{{order_active}}">
         <a href="javascript:;">
           <i class="sidebar-item-icon fa fa-shopping-basket"></i>
           <span class="nav-label">Custom Orders</span>
@@ -31,10 +33,18 @@
         </a>
         <ul class="nav-2-level collapse">
           <li>
-            <a href="">New Orders</a>
+            <a
+              class="{{newOrder_active}}"
+              href="{% url 'craftsman_dashboard' %}"
+              >New Orders</a
+            >
           </li>
           <li>
-            <a href="">Completed Orders</a>
+            <a
+              class="{{completedOrder_active}}"
+              href="{% url 'craftsman_dashboard' %}"
+              >Completed Orders</a
+            >
           </li>
         </ul>
       </li>
