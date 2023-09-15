@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   {% load static %}
+  {% load mathfilters %}
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -12,50 +13,322 @@
   <body>
     {% block page_content%}
     <div class="page-heading">
-      <h1 class="page-title">DataTables</h1>
+      <h1 class="page-title">Custom Order Details</h1>
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="index.html"><i class="la la-home font-20"></i></a>
+          <a href="{% url 'craftsman_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
         </li>
-        <li class="breadcrumb-item">DataTables</li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'craftsman_customOrders' %}">
+            <i class="fa fa-shopping-basket font-20"></i>
+            Custom Orders List
+          </a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <i class="fa fa-file font-20"></i>
+          Order Details
+        </li>
       </ol>
     </div>
     <div class="page-content fade-in-up">
       <div class="ibox">
         <div class="ibox-head">
-          <div class="ibox-title">Data Table</div>
+          <div class="ibox-title">Custom Order Details</div>
         </div>
         <div class="ibox-body">
-          <table
-            class="table table-striped table-bordered table-hover"
-            id="example-table"
-            cellspacing="0"
-            width="100%"
+          <!-- Container fluid  -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card card-body printableArea pb-5">
+                  <h5>
+                    <b>Client Order</b>
+                    <span class="">No. #{{clientOrder.order_number}}</span>
+                    
+                    {% if not clientOrder.feedbacks %}
+                    <button
+                      data-toggle="modal"
+                      data-target="#proFormaModal"
+                      class="btn btn-outline-primary pull-right"
+                    >
+                      <i class="fa fa-plus"></i>
+                      Pro-forma
+                    </button>
+                    {% endif %}
+                  </h5>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="pull-left">
+                        <address>
+                          <h4>
+                            <b class="text-info">
+                              <i class="fa fa-user"></i>
+                              {{clientOrder.client.first_name}}
+                              {{clientOrder.client.last_name}}
+                            </b>
+                          </h4>
+                          <p class="m-l-5">
+                            <div class="mb-1">
+                              Email: {{clientOrder.client.email}},
+                            </div>
+                            <div class="mb-1">
+                              <b>Created Date: </b>
+                              <i class="fa fa-calendar"></i>
+                              {{clientOrder.created_date}}
+                            </div>
+                            {% if clientOrder.status == "Processing" %}
+                            <div class="mb-1">
+                              Shipping Address:
+                              {{clientOrder.shipping_address}},
+                            </div>
+                            <div class="mb-1">
+                              Payment Method: {{clientOrder.payment_method}},
+                            </div>
+                            <div class="mb-1">
+                              Total Amount: Frw {{clientOrder.total_amount}},
+                            </div>
+                            {% endif %}
+                            <br />
+                            <div class="mb-1">
+                              Order status:
+                              <span class="p-1 {% if clientOrder.status == "Pending" %}bg-warning{% else %} bg-cyan {% endif %} font-bold">
+                                {{clientOrder.status}}
+                              </span>
+                            </div>
+                          </p>
+                        </address>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="table-responsive m-t-40" style="clear: both">
+                        <table class="table table-hover">
+                          <thead class="bg-light font-bold">
+                            <tr>
+                              <th width="35%">TITLE</th>
+                              <th class="text-left">INFO</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th>MATERIAL</th>
+                              <td>{{clientOrder.material.name}}</td>
+                            </tr>
+                            <tr>
+                              <th>DESIGN</th>
+                              <td>
+                                {% if clientOrder.picture %}
+                                <a href="{{clientOrder.picture.url}}" target="_blank">
+                                  <img
+                                    src="{{clientOrder.picture.url}}"
+                                    alt="{{clientOrder.order_number}} Image"
+                                    width="200px"
+                                  />
+                                </a>
+                                {% else %}
+                                <img src="" alt="#{{clientOrder.order_number}} Design" />
+                                {% endif %}
+
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>DESCRIPTION</th>
+                              <td>
+                                <p>{{clientOrder.description}}</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>QUANTITY</th>
+                              <td>{{clientOrder.quantity}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Container fluid  -->
+        </div>
+      </div>
+
+      {% if clientOrder.feedbacks %}
+      <div class="ibox my-3">
+        <div class="ibox-head">
+          <div class="ibox-title">Pro-forma</div>
+        </div>
+        <div class="ibox-body">
+          <!-- Container fluid  -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card card-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="table-responsive m-t-40" style="clear: both">
+                        <table class="table table-hover">
+                          <thead class="bg-light font-bold">
+                            <tr>
+                              <th width="35%">TITLE</th>
+                              <th class="text-left">INFO</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th>Status</th>
+                              <td>
+                                <p>{{clientOrder.feedbacks.status}}</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>Processing Period</th>
+                              <td>
+                                <p>{{clientOrder.feedbacks.processing_period}}</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>Payment Amount</th>
+                              <td>
+                                <p>Frw {{clientOrder.feedbacks.payment_amount}}</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>
+                                Client Reaction
+                              </th>
+                              <td>
+                                {% if clientOrder.feedbacks.client_reaction == "Pending" %}
+                                <span class="badge bg-warning">
+                                  {{clientOrder.feedbacks.client_reaction}}
+                                </span>
+                                {% elif clientOrder.feedbacks.client_reaction == "Accepted" %}
+                                <span class="badge bg-success">
+                                  {{clientOrder.feedbacks.client_reaction}}
+                                </span>
+                                {% else %}
+                                <span class="badge bg-danger">
+                                  {{clientOrder.feedbacks.client_reaction}}
+                                </span>
+                                {% endif %}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Container fluid  -->
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if not clientOrder.feedbacks %}
+    <div
+      class="modal fade"
+      id="proFormaModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="proFormaModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="proFormaModalTitle">
+              <i class="fa fa-file"></i> Pro-Forma
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form
+            action=""
+            method="post"
+            role="form"
           >
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Yuri Berry</td>
-                <td>Chief Marketing Officer (CMO)</td>
-                <td>New York</td>
-                <td>40</td>
-                <td>2009/06/25</td>
-                <td>$675,000</td>
-              </tr>
-            </tbody>
-          </table>
+            {% csrf_token %}
+            <div class="modal-body py-5">
+              <div class="form-group">
+                <label class="col-form-label">Is Custom Order doable or not?</label>
+                <select
+                  id="proforma_status"
+                  name="proforma_status"
+                  class="form-control custom-select"
+                  required
+                >
+                  <option disabled selected>Select</option>
+                  <option value="Doable">Doable</option>
+                  <option value="Undoable">Undoable</option>
+                </select>
+              </div>
+              <!-- Add an ID to the div containing the additional inputs -->
+              <div class="form-group" id="additionalInputs" style="display: none;">
+                <label for="payment_amount">Payment Amount</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="payment_amount"
+                  id="payment_amount"
+                  placeholder="Frw ..."
+                  min="0"
+                  required
+                />
+                <label for="processing_period">Processing Period (Days)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="processing_period"
+                  id="processing_period"
+                  placeholder="Days ..."
+                  min="1"
+                />
+              </div>
+            </div>
+            
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="pro_forma" class="btn btn-primary">
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
+
+    <script>
+      // JavaScript to show/hide additional inputs based on the selected option
+      document.getElementById("proforma_status").addEventListener("change", function () {
+        var additionalInputs = document.getElementById("additionalInputs");
+        if (this.value === "Doable") {
+          additionalInputs.style.display = "block"; // Show the inputs
+        } else {
+          additionalInputs.style.display = "none"; // Hide the inputs
+        }
+      });
+    </script>
+    {% endif %}
+
     {% endblock %}
   </body>
 </html>

@@ -26,45 +26,30 @@
       <div class="row">
         <div class="col-lg-6 col-md-6">
           <div class="ibox bg-warning color-white widget-stat">
-            <div class="ibox-body">
-              <h2 class="m-b-5 font-strong">10</h2>
+            <div class="ibox-body py-4">
+              <h2 class="m-b-5 font-strong">{{customOrders_count}}</h2>
               <div class="m-b-5">NEW CUSTOM ORDERS</div>
               <i class="ti-shopping-cart widget-stat-icon"></i>
-              <div>
-                <i class="fa fa-list m-r-5"></i>
-                <a href="" class="text-light"> View More</a>
-              </div>
             </div>
           </div>
         </div>
         <div class="col-lg-6 col-md-6">
           <div class="ibox bg-primary color-white widget-stat">
-            <div class="ibox-body">
-              <h2 class="m-b-5 font-strong">108</h2>
+            <div class="ibox-body py-4">
+              <h2 class="m-b-5 font-strong">{{tasks_count}}</h2>
               <div class="m-b-5">ALL TASKS</div>
               <i class="fa fa-tasks widget-stat-icon"></i>
-              <div>
-                <i class="fa fa-list m-r-5"></i>
-                <a href="" class="text-light"> View More</a>
-              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
           <div class="ibox">
             <div class="ibox-head">
-              <div class="ibox-title">Latest Orders</div>
+              <div class="ibox-title">Latest Custom Orders</div>
               <div class="ibox-tools">
                 <a class="ibox-collapse"><i class="fa fa-minus"></i></a>
-                <a class="dropdown-toggle" data-toggle="dropdown"
-                  ><i class="fa fa-ellipsis-v"></i
-                ></a>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item">option 1</a>
-                  <a class="dropdown-item">option 2</a>
-                </div>
               </div>
             </div>
             <div class="ibox-body">
@@ -79,136 +64,61 @@
                   </tr>
                 </thead>
                 <tbody>
+                  {% if newCustomOrder %}
+                  <!-- orders -->
+                  {% for order in newCustomOrder %}
                   <tr>
+                    <td>{{ forloop.counter }}.</td>
                     <td>
-                      <a href="invoice.html">AT2584</a>
+                      <a
+                        class="text-info"
+                        href="{% url 'manager_newCustomOrderDetails' order.id %}"
+                      >
+                        #{{order.order_number}}
+                      </a>
                     </td>
-                    <td>@Jack</td>
-                    <td>$564.00</td>
                     <td>
-                      <span class="badge badge-success">Shipped</span>
+                      <i class="fa fa-user"></i>
+                      <span>
+                        {{order.client.first_name}} {{order.client.last_name}}
+                      </span>
+                      <br />
+                      Email: {{order.client.email}}
                     </td>
-                    <td>10/07/2017</td>
+                    <td>{{order.material.name}}</td>
+                    <td>
+                      {% if order.picture %}
+                      <img
+                        src="{{order.picture.url}}"
+                        alt="{{order.order_number}} Image"
+                        width="140px"
+                      />
+                      {% else %}
+                      <img src="" alt="#{{order.order_number}} Design" class="product-image" />
+                      {% endif %}
+                    </td>
+                    <td>
+                      <span class="badge font-bold {% if order.status == "Pending" %}bg-warning{% else %}bg-cyan{% endif %}">
+                      {{order.status}}
+                      </span>
+                    </td>
+                    <td> {{order.created_date|date:'d/m/Y'}} </td>
                   </tr>
+                  {% endfor %}
+                  <!--/ orders -->
+                  {% else %}
                   <tr>
-                    <td>
-                      <a href="invoice.html">AT2575</a>
+                    <td colspan="5">
+                      <p class="text-center m-0">No data found.</p>
                     </td>
-                    <td>@Amalia</td>
-                    <td>$220.60</td>
-                    <td>
-                      <span class="badge badge-success">Shipped</span>
-                    </td>
-                    <td>10/07/2017</td>
                   </tr>
-                  <tr>
-                    <td>
-                      <a href="invoice.html">AT1204</a>
-                    </td>
-                    <td>@Emma</td>
-                    <td>$760.00</td>
-                    <td>
-                      <span class="badge badge-default">Pending</span>
-                    </td>
-                    <td>10/07/2017</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="invoice.html">AT7578</a>
-                    </td>
-                    <td>@James</td>
-                    <td>$87.60</td>
-                    <td>
-                      <span class="badge badge-warning">Expired</span>
-                    </td>
-                    <td>10/07/2017</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="invoice.html">AT0158</a>
-                    </td>
-                    <td>@Ava</td>
-                    <td>$430.50</td>
-                    <td>
-                      <span class="badge badge-default">Pending</span>
-                    </td>
-                    <td>10/07/2017</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <a href="invoice.html">AT0127</a>
-                    </td>
-                    <td>@Noah</td>
-                    <td>$64.00</td>
-                    <td>
-                      <span class="badge badge-success">Shipped</span>
-                    </td>
-                    <td>10/07/2017</td>
-                  </tr>
+                  {% endif %}
                 </tbody>
               </table>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="ibox">
-            <div class="ibox-head">
-              <div class="ibox-title">Best Sellers</div>
-            </div>
-            <div class="ibox-body">
-              <ul class="media-list media-list-divider m-0">
-                <li class="media">
-                  <a class="media-img" href="javascript:;">
-                    <img src="./assets/img/image.jpg" width="50px;" />
-                  </a>
-                  <div class="media-body">
-                    <div class="media-heading">
-                      <a href="javascript:;">Samsung</a>
-                      <span class="font-16 float-right">1200</span>
-                    </div>
-                    <div class="font-13">Lorem Ipsum is simply dummy text.</div>
-                  </div>
-                </li>
-                <li class="media">
-                  <a class="media-img" href="javascript:;">
-                    <img src="./assets/img/image.jpg" width="50px;" />
-                  </a>
-                  <div class="media-body">
-                    <div class="media-heading">
-                      <a href="javascript:;">iPhone</a>
-                      <span class="font-16 float-right">1150</span>
-                    </div>
-                    <div class="font-13">Lorem Ipsum is simply dummy text.</div>
-                  </div>
-                </li>
-                <li class="media">
-                  <a class="media-img" href="javascript:;">
-                    <img src="./assets/img/image.jpg" width="50px;" />
-                  </a>
-                  <div class="media-body">
-                    <div class="media-heading">
-                      <a href="javascript:;">iMac</a>
-                      <span class="font-16 float-right">800</span>
-                    </div>
-                    <div class="font-13">Lorem Ipsum is simply dummy text.</div>
-                  </div>
-                </li>
-                <li class="media">
-                  <a class="media-img" href="javascript:;">
-                    <img src="./assets/img/image.jpg" width="50px;" />
-                  </a>
-                  <div class="media-body">
-                    <div class="media-heading">
-                      <a href="javascript:;">apple Watch</a>
-                      <span class="font-16 float-right">705</span>
-                    </div>
-                    <div class="font-13">Lorem Ipsum is simply dummy text.</div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="ibox-footer text-center">
-              <a href="javascript:;">View All Products</a>
+              <hr />
+              <a class="btn btn-primary" href="">
+                <i class="fa fa-list"></i> More Orders
+              </a>
             </div>
           </div>
         </div>

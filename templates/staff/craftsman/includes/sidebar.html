@@ -19,13 +19,13 @@
       </li>
       <li class="heading">STOCK</li>
       <li class="{{materialActive}}">
-        <a href="{% url 'craftsman_dashboard' %}">
+        <a href="{% url 'craftsman_materials' %}">
           <i class="sidebar-item-icon fa fa-list"></i>
           <span class="nav-label">Materials</span>
         </a>
       </li>
       <li class="heading">ORDER</li>
-      <li class="{{order_active}}">
+      <li class="{{customOrder_active}}">
         <a href="javascript:;">
           <i class="sidebar-item-icon fa fa-shopping-basket"></i>
           <span class="nav-label">Custom Orders</span>
@@ -34,17 +34,19 @@
         <ul class="nav-2-level collapse">
           <li>
             <a
-              class="{{newOrder_active}}"
-              href="{% url 'craftsman_dashboard' %}"
-              >New Orders</a
+              class="{{newCustomOrder}}"
+              href="{% url 'craftsman_customOrders' %}"
             >
+              New Orders
+            </a>
           </li>
           <li>
             <a
               class="{{completedOrder_active}}"
               href="{% url 'craftsman_dashboard' %}"
-              >Completed Orders</a
             >
+              Completed Orders
+            </a>
           </li>
         </ul>
       </li>

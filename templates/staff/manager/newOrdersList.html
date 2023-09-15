@@ -76,7 +76,7 @@
                   {{order.status}}
                   </span>
                 </td>
-                <td>{{order.created_date}}</td>
+                <td>{{order.created_date|date:'d/m/Y'}}</td>
               </tr>
               {% endfor %}
             </tbody>

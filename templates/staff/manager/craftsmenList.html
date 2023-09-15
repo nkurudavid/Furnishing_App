@@ -73,7 +73,7 @@
                 <td>{{craftsman.first_name}} {{craftsman.last_name}}</td>
                 <td>{{craftsman.email}}</td>
                 <td>{{craftsman.gender}}</td>
-                <td>{{craftsman.date_joined}}</td>
+                <td>{{craftsman.date_joined|date:'d/m/Y'}}</td>
                 <td>
                   <a href="{% url 'manager_craftsmanDetails' craftsman.id %}">
                     <i class="fa fa-folder-open"></i> View

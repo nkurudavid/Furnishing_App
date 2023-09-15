@@ -84,4 +84,10 @@ urlpatterns = [
          views.craftsman_dashboard, name='craftsman_dashboard'),
     path('staff/craftsman/profile/',
          views.craftsman_profile, name='craftsman_profile'),
+    path('staff/craftsman/stock/materials/', views.craftsman_materials,
+         name='craftsman_materials'),
+    path('staff/craftsman/new_custom_orders/',
+         views.craftsman_customOrders, name='craftsman_customOrders'),
+    path('staff/craftsman/new_custom_orders/<int:pk>/costom_order_details/',
+         views.craftsman_customOrderDetails, name='craftsman_customOrderDetails'),
 ]

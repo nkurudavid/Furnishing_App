@@ -1547,16 +1547,18 @@ def manager_completedCustomOrderDetails(request, pk):
 def craftsman_dashboard(request):
     if request.user.is_authenticated and request.user.is_craftsman == True:
         # getting data
-        clients = ClientProfile.objects.filter()
-        orders_data = Order.objects.filter().exclude(
-            status="Success").order_by('status', 'created_date')[:10]
+        newCustomOrder = CustomOrder.objects.filter(
+            status="Pending", processed_by=request.user).order_by('created_date')
+        tasks_data = CustomOrder.objects.filter(
+            status="Processing", processed_by=request.user).order_by('created_date')
 
         context = {
-            'title': 'Management - Dashboard',
+            'title': 'Craftsman - Dashboard',
             'dash_active': 'active',
-            'clients': clients,
-            'orders_data': orders_data,
-            'clients_count': clients.count(),
+            'customOrders_count': newCustomOrder.count(),
+            'tasks_count': tasks_data.count(),
+            'newCustomOrder': newCustomOrder[:5],
+            'tasks_data': tasks_data[:5],
         }
         return render(request, 'staff/craftsman/dashboard.html', context)
     else:
@@ -1604,12 +1606,183 @@ def craftsman_profile(request):
                 return redirect(craftsman_profile)
 
         else:
-            orders_data = Order.objects.filter(status="Pending")
+            # getting data
+            newCustomOrder = CustomOrder.objects.filter(
+                status="Pending", processed_by=request.user).order_by('created_date')
             context = {
-                'title': 'Management - Profile',
-                'orders_data': orders_data,
+                'title': 'My Profile',
+                'newCustomOrder': newCustomOrder,
             }
             return render(request, 'staff/craftsman/profile.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+@login_required(login_url='staff_login')
+def craftsman_materials(request):
+    if request.user.is_authenticated and request.user.is_craftsman == True:
+        # getting data
+        newCustomOrder = CustomOrder.objects.filter(
+            status="Pending", processed_by=request.user).order_by('created_date')
+        materialsData = Material.objects.filter().order_by('name')
+        context = {
+            'title': 'Materials List',
+            'materialActive': 'active',
+            'materialsData': materialsData,
+            'newCustomOrder': newCustomOrder,
+        }
+        return render(request, 'staff/craftsman/materialsList.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+@login_required(login_url='staff_login')
+def craftsman_customOrders(request,):
+    if request.user.is_authenticated and request.user.is_craftsman == True:
+        # getting new request
+        orders_data = Order.objects.filter().exclude(
+            status="Success").order_by('status', 'created_date')
+        customOrders_data = CustomOrder.objects.filter().exclude(
+            Q(status="Completed") | Q(status="Cancelled")).order_by('status', 'created_date')
+
+        context = {
+            'title': 'New Custom Orders',
+            'customOrder_active': 'open active',
+            'newCustomOrder': 'active',
+            'orders_data': orders_data,
+            'customOrders_data': customOrders_data,
+        }
+        return render(request, 'staff/craftsman/customOrderList.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+@login_required(login_url='staff_login')
+def craftsman_customOrderDetails(request, pk):
+    newOrder_id = pk
+    if request.user.is_authenticated and request.user.is_craftsman == True:
+        if CustomOrder.objects.filter(id=newOrder_id, processed_by=request.user).exclude(Q(status="Completed") | Q(status="Cancelled")).exists():
+            clientOrder = CustomOrder.objects.get(id=newOrder_id)
+
+            if 'pro_forma' in request.POST:
+                # Retrieve the form data from the request
+                proforma_status = request.POST.get("proforma_status")
+                payment_amount = request.POST.get("payment_amount")
+                processing_period = request.POST.get("processing_period")
+
+                if proforma_status:
+                    if proforma_status and payment_amount and processing_period:
+                        proForma = Pro_forma.objects.create(
+                            custom_order=clientOrder,
+                            status=proforma_status,
+                            payment_amount=payment_amount,
+                            processing_period=processing_period,
+                            processed_by=request.user,
+                        )
+                    else:
+                        proForma = Pro_forma.objects.create(
+                            custom_order=clientOrder,
+                            status=proforma_status,
+                            processed_by=request.user,
+                        )
+
+                    if proForma:
+                        subject = "Pro-forma Information for Your Custom Order"
+                        if proForma.status == "Doable":
+                            message = f"Dear {clientOrder.client.get_full_name()},\n\n" \
+                                f"We are pleased to provide you with the proforma information for your custom order:\n\n" \
+                                f"Order Number: #{clientOrder.order_number}\n" \
+                                f"Status: {proForma.status}\n" \
+                                f"Payment Amount: {proForma.payment_amount}\n" \
+                                f"Processing Period (Days): {proForma.processing_period}\n\n" \
+                                "Thank you for choosing us for your custom order.\n\n" \
+                                "Furnishing Order System (Doable Order)"
+                        else:
+                            message = f"Dear {clientOrder.client.get_full_name()},\n\n" \
+                                f"We regret to inform you that your custom order is undoable at this time.\n\n" \
+                                f"Order Number: #{clientOrder.order_number}\n" \
+                                f"Status: {proForma.status}\n\n" \
+                                "Please feel free to contact us for further assistance.\n\n" \
+                                "Furnishing Order System (Undoable Order)"
+
+                        # Send the email
+                        email = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [
+                                             clientOrder.client.email])
+                        email.send()
+
+                        messages.success(
+                            request, "Pro-Forma sent successfully")
+                        return redirect(craftsman_customOrderDetails, pk)
+                    else:
+                        messages.error(
+                            request, "Proccess failed!.")
+                        return redirect(craftsman_customOrderDetails, pk)
+                else:
+                    messages.error(
+                        request, "Make sure to respond to this order.")
+                    return redirect(craftsman_customOrderDetails, pk)
+            else:
+                # getting new request
+                customOrders_data = CustomOrder.objects.filter().exclude(
+                    Q(status="Completed") | Q(status="Cancelled")).order_by('status', 'created_date')
+
+                context = {
+                    'title': 'New Custom Order details',
+                    'customOrder_active': 'open active',
+                    'newCustomOrder': 'active',
+                    'clientOrder': clientOrder,
+                    'customOrders_data': customOrders_data,
+                }
+                return render(request, 'staff/craftsman/customOrderDetails.html', context)
+        else:
+            messages.warning(request, ('Client order not found'))
+            return redirect(craftsman_customOrders)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+@login_required(login_url='staff_login')
+def craftsman_completedCustomOrders(request,):
+    if request.user.is_authenticated and request.user.is_craftsman == True:
+        # getting new request
+        orders_data = Order.objects.filter(
+            status="Success").order_by('created_date')
+        context = {
+            'title': 'Management - Completed commands',
+            'command_active': 'open active',
+            'completedCommand_active': 'active',
+            'commands': orders_data,
+        }
+        return render(request, 'staff/craftsman/completed_commands.html', context)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(staffLogin)
+
+
+@login_required(login_url='staff_login')
+def craftsman_completedCustomOrderDetails(request, pk):
+    newOrder_id = pk
+    if request.user.is_authenticated and request.user.is_craftsman == True:
+        if Order.objects.filter(id=newOrder_id, status="Success").exists():
+            clientOrder = Order.objects.get(id=newOrder_id, status="Success")
+
+            # getting new request
+            newOrders = Order.objects.filter().exclude(status="Success")
+            context = {
+                'title': 'Management - Completed command details',
+                'command_active': 'open active',
+                'completedCommand_active': 'active',
+                'command': clientOrder,
+                'new_orders': newOrders,
+            }
+            return render(request, 'staff/craftsman/completed_commandDetails.html', context)
+        else:
+            messages.warning(request, ('Command not found'))
+            return redirect(craftsman_completedCustomOrders)
     else:
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(staffLogin)
