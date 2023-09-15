@@ -1,0 +1,110 @@
+{% load static %}
+<nav class="page-sidebar" id="sidebar">
+  <div id="sidebar-collapse">
+    <div class="admin-block d-flex">
+      <div>
+        <img src="{% static 'dashboard/img/avatar.png' %}" width="45px" />
+      </div>
+      <div class="admin-info">
+        <div class="font-strong">{{user.first_name}} {{user.last_name}}</div>
+        <small>Manager</small>
+      </div>
+    </div>
+    <ul class="side-menu metismenu">
+      <li class="{{dash_active}}">
+        <a href="{% url 'manager_dashboard' %}"
+          ><i class="sidebar-item-icon fa fa-th-large"></i>
+          <span class="nav-label"> Dashboard </span>
+        </a>
+      </li>
+      <li class="heading">STAFF MEMBER</li>
+      <li class="{{craftsman_active}}">
+        <a href="{% url 'manager_craftsmanList' %}">
+          <i class="sidebar-item-icon fa fa-users"></i>
+          <span class="nav-label"> Craftsman List </span>
+        </a>
+      </li>
+      <li class="heading">STOCK</li>
+      <li class="{{product_active}}">
+        <a href="javascript:;">
+          <i class="sidebar-item-icon fa fa-database"></i>
+          <span class="nav-label"> Products </span>
+          <i class="fa fa-angle-left arrow"></i>
+        </a>
+        <ul class="nav-2-level collapse">
+          <li>
+            <a
+              class="{{categoryActive}}"
+              href="{% url 'manager_productCategory' %}"
+            >
+              Product Category
+            </a>
+          </li>
+          <li>
+            <a class="{{productActive}}" href="{% url 'manager_product' %}">
+              Product
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="{{materialActive}}">
+        <a href="{% url 'manager_materials' %}">
+          <i class="sidebar-item-icon fa fa-list"></i>
+          <span class="nav-label"> Materials </span>
+        </a>
+      </li>
+      <li class="{{inventory_active}}">
+        <a href="{% url 'manager_inventory' %}">
+          <i class="sidebar-item-icon fa fa-sliders"></i>
+          <span class="nav-label"> Stock Inventory </span>
+        </a>
+      </li>
+      <li class="heading">CLIENT</li>
+      <li class="{{client_active}}">
+        <a href="{% url 'manager_clientList' %}">
+          <i class="sidebar-item-icon fa fa-users"></i>
+          <span class="nav-label"> Clients List </span>
+        </a>
+      </li>
+      <li class="{{order_active}}">
+        <a href="javascript:;">
+          <i class="sidebar-item-icon fa fa-shopping-basket"></i>
+          <span class="nav-label"> Orders List </span>
+          <i class="fa fa-angle-left arrow"></i>
+        </a>
+        <ul class="nav-2-level collapse">
+          <li>
+            <a class="{{newOrder_active}}" href="{% url 'manager_newOrder' %}">
+              New Orders
+            </a>
+          </li>
+          <li>
+            <a
+              class="{{archievedOrder_active}}"
+              href="{% url 'manager_archieviedOrder' %}"
+            >
+              Completed Orders
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="{{order_active}}">
+        <a href="javascript:;">
+          <i class="sidebar-item-icon fa fa-shopping-basket"></i>
+          <span class="nav-label"> Custom Orders </span>
+          <i class="fa fa-angle-left arrow"></i>
+        </a>
+        <ul class="nav-2-level collapse">
+          <li>
+            <a href="{% url 'manager_newCustomOrders' %}"> New Orders </a>
+          </li>
+          <li>
+            <a href="{% url 'manager_completedCustomOrders' %}">
+              Completed Orders
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>

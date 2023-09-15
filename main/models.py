@@ -120,7 +120,6 @@ class Material(models.Model):
                             max_length=100, unique=True, blank=False, null=False)
     description = models.TextField(
         verbose_name="Description", blank=True, null=True)
-    price = models.FloatField(verbose_name="Price", default=0.0, null=False)
     picture = models.ImageField(
         verbose_name="Image",
         upload_to="material/images/",

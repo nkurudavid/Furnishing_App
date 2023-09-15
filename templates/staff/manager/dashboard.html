@@ -1,0 +1,249 @@
+{% extends "staff/manager/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+  </head>
+
+  <body>
+    {% block page_content%}
+    <div class="page-heading">
+      <h1 class="page-title">Dashboard</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
+        </li>
+      </ol>
+    </div>
+    <div class="page-content fade-in-up">
+      <div class="row">
+        <div class="col-lg-3 col-md-6">
+          <div class="ibox bg-warning color-white widget-stat">
+            <div class="ibox-body">
+              <h2 class="m-b-5 font-strong">{{orders_count}}</h2>
+              <div class="m-b-5">NEW ORDERS</div>
+              <i class="ti-shopping-cart widget-stat-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="ibox bg-warning color-white widget-stat">
+            <div class="ibox-body">
+              <h2 class="m-b-5 font-strong">{{customOrders_count}}</h2>
+              <div class="m-b-5">NEW CUSTOM ORDERS</div>
+              <i class="ti-shopping-cart widget-stat-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="ibox bg-primary color-white widget-stat">
+            <div class="ibox-body">
+              <h2 class="m-b-5 font-strong">{{craftsmen_count}}</h2>
+              <div class="m-b-5">STAFF MEMBER</div>
+              <i class="fa fa-users widget-stat-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="ibox bg-primary color-white widget-stat">
+            <div class="ibox-body">
+              <h2 class="m-b-5 font-strong">{{clients_count}}</h2>
+              <div class="m-b-5">OUR CLIENTS</div>
+              <i class="fa fa-users widget-stat-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="ibox">
+            <div class="ibox-head">
+              <div class="ibox-title">Latest Orders</div>
+              <div class="ibox-tools">
+                <a class="ibox-collapse"><i class="fa fa-minus"></i></a>
+              </div>
+            </div>
+            <div class="ibox-body">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th width="91px">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if orders_data %}
+                  <!-- orders -->
+                  {% for order in orders_data %}
+                  <tr>
+                    <td>
+                      <a href=""> #{{order.order_number}} </a>
+                    </td>
+                    <td> {{order.client.first_name}} {{order.client.last_name}} </td>
+                    <td> Frw {{order.total_amount}} </td>
+                    <td>
+                      <span class="badge badge-{%if order.status == "Pending" %}warning{%else%}info{%endif%}"> 
+                        {{order.status}} 
+                      </span>
+                    </td>
+                    <td> {{order.created_date|date:'d/m/Y'}} </td>
+                  </tr>
+                  {% endfor %}
+                  <!--/ orders -->
+                  {% else %}
+                  <tr>
+                    <td colspan="5">
+                      <p class="text-center m-0">No data found.</p>
+                    </td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+              <hr />
+              <a class="btn btn-primary" href="">
+                <i class="fa fa-list"></i> More Orders
+              </a>
+            </div>
+          </div>
+          <div class="ibox">
+            <div class="ibox-head">
+              <div class="ibox-title">Latest Custom Orders</div>
+              <div class="ibox-tools">
+                <a class="ibox-collapse"><i class="fa fa-minus"></i></a>
+              </div>
+            </div>
+            <div class="ibox-body">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th width="91px">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if customOrders_data %}
+                  <!-- orders -->
+                  {% for order in customOrders_data %}
+                  <tr>
+                    <td>
+                      <a href=""> #{{order.order_number}} </a>
+                    </td>
+                    <td> {{order.client.first_name}} {{order.client.last_name}} </td>
+                    <td> 
+                      {% if order.picture %}
+                      <img src="" width="60px;" />
+                      {% else %}
+                      <img src="{{order.picture.url}}" width="60px;" />
+                      {% endif %}
+                    </td>
+                    <td>
+                      <span class="badge badge-{%if order.status == "Pending" %}warning{%else%}info{%endif%}"> 
+                        {{order.status}} 
+                      </span>
+                    </td>
+                    <td> {{order.created_date|date:'d/m/Y'}} </td>
+                  </tr>
+                  {% endfor %}
+                  <!--/ orders -->
+                  {% else %}
+                  <tr>
+                    <td colspan="5">
+                      <p class="text-center m-0">No data found.</p>
+                    </td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+              <hr />
+              <a class="btn btn-primary" href="">
+                <i class="fa fa-list"></i> More Orders
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="ibox">
+            <div class="ibox-head">
+              <div class="ibox-title">Our Clients</div>
+            </div>
+            <div class="ibox-body">
+              {% if clients %}
+              <!-- clients -->
+              <ul class="media-list media-list-divider m-0">
+                {% for data in clients %}
+                <li class="media">
+                  <a class="media-img" href="">
+                    <img src="{% static 'dashboard/img/avatar.png' %}" width="45px" />
+                  </a>
+                  <div class="media-body">
+                    <div class="media-heading">
+                      <a href="">
+                        {{data.client.first_name}} {{data.client.last_name}}
+                      </a>
+                    </div>
+                    <div class="font-13">{{data.client.email}}</div>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+              <!--/ clients -->
+              {% else %}
+              <p class="text-center m-0">No data found.</p>
+              {% endif %}
+            </div>
+            <div class="ibox-footer text-center">
+              <a href="">View All Clients</a>
+            </div>
+          </div>
+          <div class="ibox">
+            <div class="ibox-head">
+              <div class="ibox-title">Staff Members</div>
+            </div>
+            <div class="ibox-body">
+              {% if craftsmen %}
+              <!-- staff member -->
+              <ul class="media-list media-list-divider m-0">
+                {% for data in craftsmen %}
+                <li class="media">
+                  <a class="media-img" href="">
+                    <img src="{% static 'dashboard/img/avatar.png' %}" width="45px" />
+                  </a>
+                  <div class="media-body">
+                    <div class="media-heading">
+                      <a href="">
+                        {{data.first_name}} {{data.last_name}}
+                      </a>
+                    </div>
+                    <div class="font-13">{{data.email}}</div>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+              <!--/ staff member -->
+              {% else %}
+              <p class="text-center m-0">No data found.</p>
+              {% endif %}
+            </div>
+            <div class="ibox-footer text-center">
+              <a href="">View All Staff Members</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

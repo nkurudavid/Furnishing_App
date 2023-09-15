@@ -108,6 +108,6 @@ def product_quantity_change(sender, instance, **kwargs):
                 product=instance,
                 movement_type=movement_type,
                 quantity=quantity_change,
-                total_price=instance.product.price * quantity_change,
+                total_price=instance.price * quantity_change,
                 processed_by=None,  # Set this to the user who made the change if applicable
             )

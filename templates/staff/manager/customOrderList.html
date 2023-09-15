@@ -1,0 +1,99 @@
+{% extends "staff/manager/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Orders List</title>
+  </head>
+
+  <body>
+    {% block page_content%}
+    <div class="page-heading">
+      <h1 class="page-title">Custom Orders List</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <i class="fa fa-shopping-basket font-20"></i>
+          Custom Orders List
+        </li>
+      </ol>
+    </div>
+    <div class="page-content fade-in-up">
+      <div class="ibox">
+        <div class="ibox-head">
+          <div class="ibox-title">Custom Orders List</div>
+        </div>
+        <div class="ibox-body py-5">
+          <table
+            class="table table-striped table-hover"
+            id="example-table"
+            cellspacing="0"
+            width="100%"
+          >
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ORDER No.</th>
+                <th>CLIENT</th>
+                <th>MATERIAL</th>
+                <th>DESIGN</th>
+                <th>STATUS</th>
+                <th>DATE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in orders_data %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>
+                  <a
+                    class="text-info"
+                    href="{% url 'manager_newOrderDetails' order.id %}"
+                  >
+                    #{{order.order_number}}
+                  </a>
+                </td>
+                <td>
+                  <i class="fa fa-user"></i>
+                  <span>
+                    {{order.client.first_name}} {{order.client.last_name}}
+                  </span>
+                  <br />
+                  Email: {{order.client.email}}
+                </td>
+                <td>{{order.material.name}}</td>
+                <td>{{order.payment_method}}
+                  {% if order.picture %}
+                  <img
+                    src="{{order.picture.url}}"
+                    alt="{{order.order_number}} Image"
+                    width="140px"
+                  />
+                  {% else %}
+                  <img src="" alt="#{{order.order_number}} Design" class="product-image" />
+                  {% endif %}
+                </td>
+                <td>
+                  <span class="badge font-bold {% if order.status == "Pending" %}bg-warning{% if order.status == "Processing" %}bg-cyan{% else %}bg-danger{% endif %}">
+                  {{order.status}}
+                  </span>
+                </td>
+                <td>{{order.created_date}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Title  -->
+    {% if title %}
+    <title>Furnishing Order System - {{ title }}</title>
+    {% else %}
+    <title>Furnishing Order System</title>
+    {% endif%}
+    <!-- Favicon icon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/images/favicon.png"
+    />
+    <!-- GLOBAL MAINLY STYLES-->
+    <link
+      href="{% static 'dashboard/vendors/bootstrap/dist/css/bootstrap.min.css' %}"
+      rel="stylesheet"
+    />
+    <link
+      href="{% static 'dashboard/vendors/font-awesome/css/font-awesome.min.css' %}"
+      rel="stylesheet"
+    />
+    <link
+      href="{% static 'dashboard/vendors/themify-icons/css/themify-icons.css' %}"
+      rel="stylesheet"
+    />
+    <!-- PLUGINS STYLES-->
+    <link
+      href="{% static 'dashboard/vendors/DataTables/datatables.min.css' %}"
+      rel="stylesheet"
+    />
+    <!-- THEME STYLES-->
+    <link href="{% static 'dashboard/css/main.min.css' %}" rel="stylesheet" />
+    <!-- PAGE LEVEL STYLES-->
+  </head>
+
+  <body class="fixed-navbar">
+    {% block main_content%}{% endblock %}
+
+    <!-- BEGIN PAGA BACKDROPS-->
+    <div class="sidenav-backdrop backdrop"></div>
+    {% include 'staff/preloader.html' %}
+    <!-- END PAGA BACKDROPS-->
+
+    <!-- Mesages  -->
+    {% if messages %} {% for message in messages %}
+    <script>
+      //<!--contents message displayed-->
+      alert("{{ message }}");
+      //<!-- / .contents message displayed-->
+    </script>
+    {% endfor %} {% endif %}
+
+    <!-- CORE PLUGINS-->
+    <script
+      src="{% static 'dashboard/vendors/jquery/dist/jquery.min.js' %}"
+      type="text/javascript"
+    ></script>
+    <script
+      src="{% static 'dashboard/vendors/popper.js/dist/umd/popper.min.js' %}"
+      type="text/javascript"
+    ></script>
+    <script
+      src="{% static 'dashboard/vendors/bootstrap/dist/js/bootstrap.min.js' %}"
+      type="text/javascript"
+    ></script>
+    <script
+      src="{% static 'dashboard/vendors/metisMenu/dist/metisMenu.min.js' %}"
+      type="text/javascript"
+    ></script>
+    <script
+      src="{% static 'dashboard/vendors/jquery-slimscroll/jquery.slimscroll.min.js' %}"
+      type="text/javascript"
+    ></script>
+    <!-- PAGE LEVEL PLUGINS-->
+    <script
+      src="{% static 'dashboard/vendors/DataTables/datatables.min.js' %}"
+      type="text/javascript"
+    ></script>
+    <!-- CORE SCRIPTS-->
+    <script
+      src="{% static 'dashboard/js/app.min.js' %}"
+      type="text/javascript"
+    ></script>
+    <!-- PAGE LEVEL SCRIPTS-->
+    <script type="text/javascript">
+      $(function () {
+        $("#example-table").DataTable({
+          pageLength: 10,
+        });
+      });
+    </script>
+  </body>
+</html>

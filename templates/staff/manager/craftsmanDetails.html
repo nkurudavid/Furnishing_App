@@ -1,0 +1,238 @@
+{% extends "staff/manager/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Craftsman Profile</title>
+  </head>
+
+  <body>
+    {% block page_content%}
+    <div class="page-heading">
+      <h1 class="page-title">Craftsman Profile</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_craftsmanList' %}">
+            <i class="fa fa-users font-20"></i>
+            Craftsmen List
+          </a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <i class="fa fa-file font-20"></i>
+          Craftsman Profile
+        </li>
+      </ol>
+    </div>
+    <div class="page-content fade-in-up">
+      <div class="ibox">
+        <div class="ibox-head">
+          <div class="ibox-title">Craftsman Profile</div>
+        </div>
+        <div class="ibox-body py-5">
+          <button
+            type="button"
+            class="btn btn-light btn-rounded float-right"
+            data-toggle="modal"
+            data-target="#delete_confirmation"
+          >
+            <i class="fa fa-trash text-danger"></i> Delete
+          </button>
+          <button
+            type="button"
+            class="btn btn-light btn-rounded float-right mr-1"
+            data-toggle="modal"
+            data-target="#updateCraftsmanModal"
+          >
+            <i class="fa fa-edit text-primary"></i> Edit
+          </button>
+          <div class="row">
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <img
+                class="profile-user-img img-responsive img-circle"
+                src="{% static 'dashboard/img/avatar.png' %}"
+                width="140px"
+                alt="{{craftsman.first_name}} image"
+              />
+            </div>
+            <div class="col-lg-12 mb-4">
+              <span class="">
+                Full names:
+                <h4 class="title">
+                  {{ craftsman.first_name }} {{ craftsman.last_name }}
+                </h4>
+              </span>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <p>Email: <span class="h5">{{ craftsman.email }}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <p>Gender: <span class="h5">{{ craftsman.gender }}</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div
+      class="modal fade"
+      id="updateCraftsmanModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="updateCraftsmanModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateCraftsmanModalTitle">
+              <i class="fa fa-edit text-primary"></i> EDIT CRAFTSMAN INFORMATION
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                  <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="first_name"
+                      id="first_name"
+                      placeholder="First Name ..."
+                      value="{{craftsman.first_name}}"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="last_name"
+                      id="last_name"
+                      placeholder="Last Name ..."
+                      value="{{craftsman.last_name}}"
+                      required
+                    />
+                  </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  id="email"
+                  placeholder="Email ..."
+                  value="{{craftsman.email}}"
+                  required
+                />
+              </div>
+                  <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select
+                      class="form-control"
+                      name="gender"
+                      id="gender"
+                      required
+                    >
+                      <option value="" class="bg-light">Select Gender</option>
+                      <option {% if craftsman.gender == 'Male' %} selected {% endif %} value="Male">Male</option>
+                      <option {% if craftsman.gender == 'Female' %} selected {% endif %} value="Female">Female</option>
+                    </select>
+                  </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="update_craftsman"
+                class="btn btn-success"
+              >
+                <i class="fa fa-save"></i>
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="delete_confirmation"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="deleteModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalTitle">
+              <i class="fa fa-trash text-danger"></i> DELETE COMMUNE CRAFTSMAN
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <h6 align="center">
+                Are you sure you want to delete <br />
+                craftsman "{{ craftsman.first_name }} {{ craftsman.last_name }}" ?
+              </h6>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="delete_craftsman"
+                class="btn btn-danger"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

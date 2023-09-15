@@ -1,0 +1,301 @@
+{% extends "staff/manager/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Material Details</title>
+  </head>
+
+  <body>
+    {% block page_content%}
+    <div class="page-heading">
+      <h1 class="page-title">Material Details</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_materials' %}">
+            <i class="fa fa-list font-20"></i>
+            Materials List
+          </a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <i class="fa fa-file font-20"></i>
+          Material Details
+        </li>
+      </ol>
+    </div>
+    <div class="page-content fade-in-up">
+      <div class="ibox">
+        <div class="ibox-head">
+          <div class="ibox-title">Material Details</div>
+          <span class="float-right">
+            <button
+              type="button"
+              class="btn btn-light btn-rounded mr-1"
+              data-toggle="modal"
+              data-target="#materialImageModal"
+            >
+              <i class="fa fa-image text-warning"></i> Edit
+            </button>
+            <button
+              type="button"
+              class="btn btn-light btn-rounded mr-1"
+              data-toggle="modal"
+              data-target="#materialInfoModal"
+            >
+              <i class="fa fa-edit text-primary"></i> Edit
+            </button>
+            <button
+              type="button"
+              class="btn btn-light btn-rounded"
+              data-toggle="modal"
+              data-target="#delete_confirmation"
+            >
+              <i class="fa fa-trash text-danger"></i> Delete
+            </button>
+          </span>
+        </div>
+        <div class="ibox-body py-5">
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <div id="carouselControls" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <!-- Single Slide -->
+                    {% if material.picture %}
+                    <img class="d-block w-100"
+                      src="{{material.picture.url}}"
+                      alt="{{material.name}} Image"
+                    />
+                    {% else %}
+                    <img class="d-block w-100"
+                      src=""
+                      alt="{{material.name}} Image"
+                    />
+                    {% endif %}
+                  </div>
+                  <a class="carousel-control-prev" href="#carouselControls" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon bg-secondary" aria-hidden="true"><span>
+                    <span class="sr-only">Previous<span>
+                  </a>
+                  <a class="carousel-control-next" href="#carouselControls" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon bg-secondary" aria-hidden="true"><span>
+                    <span class="sr-only">Next<span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- End .col-md-4 -->
+    
+            <div class="col-md-8">
+              <div class="product-details">
+                <div class="mb-3">
+                  <span class="font-bold">Material Name:</span><br/>
+                  <h4>{{material.name}}</h4>
+                </div>
+                <div class="mb-3">
+                  <span class="font-bold">Description:</span><br/>
+                  <p class="my-2">{{material.description}}</p>
+                </div>
+              </div>
+              <!-- End .material-details -->
+            </div>
+            <!-- End .col-md-8 -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div
+      class="modal fade"
+      id="materialImageModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="materialImageModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="materialImageModalTitle">
+              <i class="fa fa-edit"></i> EDIT MATERIAL IMAGE
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form
+            action=""
+            method="post"
+            role="form"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="form-group">
+                <label class="col-form-label">Material Image</label>
+                <input
+                  id="material_image"
+                  type="file"
+                  class="form-control mb-1"
+                  name="material_image"
+                  accept=".png, .jpg"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="update_materialImage" class="btn btn-success">
+                <i class="fa fa-save"></i>
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <div
+      class="modal fade"
+      id="materialInfoModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="materialInfoModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="materialInfoModalTitle">
+              <i class="fa fa-edit"></i> EDIT MATERIAL DETAILS
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form
+            action=""
+            method="post"
+            role="form"
+          >
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="form-group mb-0">
+                <label class="col-form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="material_name"
+                  placeholder="Material Name ..."
+                  value="{{ material.name }}"
+                  required
+                />
+              </div>
+              <div class="form-group mb-0">
+                <label class="col-form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  rows="5"
+                  placeholder="Description ..."
+                  name="description"
+                >{{ material.description }}</textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" name="update_materialInfo" class="btn btn-success">
+                <i class="fa fa-save"></i>
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="delete_confirmation"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="deleteModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalTitle">
+              <i class="fa fa-trash text-danger"></i> DELETE PRODUCT
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <h6 align="center">
+                Are you sure you want to delete <br />
+                Material "{{material.name}}" ?
+              </h6>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                name="delete_material"
+                class="btn btn-danger"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    {% endblock %}
+  </body>
+</html>

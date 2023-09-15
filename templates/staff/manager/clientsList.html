@@ -1,0 +1,82 @@
+{% extends "staff/manager/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clients List</title>
+  </head>
+
+  <body>
+    {% block page_content%}
+    <div class="page-heading">
+      <h1 class="page-title">Clients List</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <i class="fa fa-users font-20"></i>
+          Clients List
+        </li>
+      </ol>
+    </div>
+    <div class="page-content fade-in-up">
+      <div class="ibox">
+        <div class="ibox-head">
+          <div class="ibox-title">Clients List</div>
+        </div>
+        <div class="ibox-body py-5">
+          <table
+            class="table table-striped table-bordered table-hover"
+            id="example-table"
+            cellspacing="0"
+            width="100%"
+          >
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>CLIENT NAMES</th>
+                <th>EMAIL</th>
+                <th>ADDRESS</th>
+                <th>CONTACT</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for profile in clients %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>
+                  <i class="fa fa-user"></i>
+                  <span
+                    >{{profile.client.first_name}}
+                    {{profile.client.last_name}}</span
+                  >
+                </td>
+                <td>{{profile.client.email}}</td>
+                <td>{{profile.location}}</td>
+                <td>{{profile.phone_number}}</td>
+                <td>
+                  <a
+                    class="text-info"
+                    href="{% url 'manager_clientDetails' profile.id %}"
+                  >
+                    <i class="fa fa-folder-open"></i> View
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

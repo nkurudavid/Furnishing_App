@@ -1,0 +1,81 @@
+{% extends "staff/manager/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Categories List</title>
+  </head>
+
+  <body>
+    {% block page_content%}
+    <div class="page-heading">
+      <h1 class="page-title">Product Categories List</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <i class="fa fa-database font-20"></i>
+          Product Categories List
+        </li>
+      </ol>
+    </div>
+    <div class="page-content fade-in-up">
+      <div class="ibox">
+        <div class="ibox-head">
+          <div class="ibox-title">Categories List</div>
+          <button
+            type="button"
+            class="btn btn-outline-info btn-md ml-3 float-right"
+            data-toggle="modal"
+            data-target="#serviceModal"
+          >
+            <i class="fa fa-plus"></i>
+            New Category
+          </button>
+        </div>
+        <div class="ibox-body py-5">
+          <table
+            class="table table-striped table-hover"
+            id="example-table"
+            cellspacing="0"
+            width="100%"
+          >
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>CATEGORY NAME</th>
+                <th>ALL PRODUCTS</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for category in categories %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>{{category.category_name}}</td>
+                <td>{{category.products.all.count}}</td>
+                <td>
+                  <a
+                    class="text-info"
+                    href="{% url 'manager_categoryDetails' category.id %}"
+                  >
+                    <i class="fa fa-folder-open"></i> View
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

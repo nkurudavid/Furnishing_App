@@ -1,0 +1,71 @@
+{% extends "staff/manager/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client Profile</title>
+  </head>
+
+  <body>
+    {% block page_content%}
+    <div class="page-heading">
+      <h1 class="page-title">Client Profile</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_clientList' %}">
+            <i class="fa fa-users font-20"></i>
+            Clients List
+          </a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <i class="fa fa-file font-20"></i>
+          Client Profile
+        </li>
+      </ol>
+    </div>
+    <div class="page-content fade-in-up">
+      <div class="ibox">
+        <div class="ibox-head">
+          <div class="ibox-title">Client Profile</div>
+        </div>
+        <div class="ibox-body">
+          <div class="row py-4 px-5">
+            <div class="col-lg-12 mb-4">
+              <span class="">
+                Full names:
+                <h4 class="title">
+                  {{ data.client.first_name }} {{ data.client.last_name }}
+                </h4>
+              </span>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <p>Email: <span class="h5">{{ data.client.email }}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <p>Phone: <span class="h5">{{ data.phone_number }}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-1">
+              <p>Gender: <span class="h5">{{ data.client.gender }}</span></p>
+            </div>
+            <div class="col-sm-12 col-xl-12 mb-1">
+              <p>
+                Addresss:
+                <span class="h5">{{ data.location }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

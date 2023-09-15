@@ -1,0 +1,81 @@
+{% extends "staff/manager/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Inventory</title>
+  </head>
+
+  <body>
+    {% block page_content%}
+    <div class="page-heading">
+      <h1 class="page-title">Stock Inventory</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'manager_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <i class="fa fa-sliders font-20"></i>
+          Stock Inventory
+        </li>
+      </ol>
+    </div>
+    <div class="page-content fade-in-up">
+      <div class="ibox">
+        <div class="ibox-head">
+          <div class="ibox-title">Stock Inventory</div>
+        </div>
+        <div class="ibox-body py-5">
+          <table
+            class="table table-striped table-hover"
+            id="example-table"
+            cellspacing="0"
+            width="100%"
+          >
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>PRODUCT</th>
+                <th>QTY</th>
+                <th>UNIT/PRICE</th>
+                <th>TOTAL PRICE</th>
+                <th>STATUS</th>
+                <th>DATE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for inventory in inventories %}
+              <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>
+                  Name: {{inventory.product.product_name}} <br />
+                  Category: {{inventory.product.category.category_name}}
+                  <br />
+                </td>
+                <td>
+                  {{inventory.quantity}}
+                </td>
+                <td>Frw {{inventory.product.price}}</td>
+                <td>Frw {{inventory.total_price}}</td>
+                <td>
+                  <span class="font-bold {% if inventory.movement_type == "Stock In" %} text-success{% else %} text-cyan {% endif %}">
+                    {{inventory.movement_type}}
+                  </span>
+                </td>
+                <td>{{inventory.date_time}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

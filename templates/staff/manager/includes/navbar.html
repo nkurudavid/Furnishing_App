@@ -1,0 +1,46 @@
+{% load static %}
+<header class="header">
+  <div class="page-brand">
+    <a class="link" href="index.html">
+      <span class="brand"> Manager </span>
+      <span class="brand-mini">AC</span>
+    </a>
+  </div>
+  <div class="flexbox flex-1">
+    <!-- START TOP-LEFT TOOLBAR-->
+    <ul class="nav navbar-toolbar">
+      <li>
+        <a class="nav-link sidebar-toggler js-sidebar-toggler"
+          ><i class="ti-menu"></i
+        ></a>
+      </li>
+      <li>
+        <h4 class="font-bold py-2 mt-2">Furnishing Order System</h4>
+      </li>
+    </ul>
+    <!-- END TOP-LEFT TOOLBAR-->
+    <!-- START TOP-RIGHT TOOLBAR-->
+    <ul class="nav navbar-toolbar">
+      <li class="dropdown dropdown-user">
+        <a class="nav-link dropdown-toggle link" data-toggle="dropdown">
+          <img src="{% static 'dashboard/img/avatar.png' %}" />
+          <span>{{user.first_name}} {{user.last_name}}</span>
+          <i class="fa fa-angle-down m-l-5"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="{% url 'manager_profile' %}">
+            <i class="fa fa-user"></i> Profile
+          </a>
+          <a class="dropdown-item" href="">
+            <i class="fa fa-cog"></i> Settings
+          </a>
+          <li class="dropdown-divider"></li>
+          <a class="dropdown-item" href="{% url 'staffLogout' %}">
+            <i class="fa fa-power-off"></i> Logout
+          </a>
+        </ul>
+      </li>
+    </ul>
+    <!-- END TOP-RIGHT TOOLBAR-->
+  </div>
+</header>

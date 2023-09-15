@@ -1,0 +1,30 @@
+{% extends "staff/main.html" %}
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Layout for manager</title>
+  </head>
+
+  <body>
+    {% block main_content%}
+    <div class="page-wrapper">
+      <!-- START HEADER-->
+      {% include 'staff/manager/includes/navbar.html' %}
+      <!-- END HEADER-->
+      <!-- START SIDEBAR-->
+      {% include 'staff/manager/includes/sidebar.html' %}
+      <!-- END SIDEBAR-->
+      <div class="content-wrapper">
+        <!-- START PAGE CONTENT-->
+        {% block page_content%}{% endblock %}
+        <!-- END PAGE CONTENT-->
+        {% include 'staff/footer.html' %}
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>
