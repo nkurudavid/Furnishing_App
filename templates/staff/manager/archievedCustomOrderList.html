@@ -50,13 +50,13 @@
               </tr>
             </thead>
             <tbody>
-              {% for order in orders_data %}
+              {% for order in completedOrders %}
               <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>
                   <a
                     class="text-info"
-                    href="{% url 'manager_newOrderDetails' order.id %}"
+                    href="{% url 'manager_completedCustomOrderDetails' order.id %}"
                   >
                     #{{order.order_number}}
                   </a>
@@ -71,23 +71,19 @@
                 </td>
                 <td>{{order.material.name}}</td>
                 <td>
-                  {{order.payment_method}} {% if order.picture %}
+                  {% if order.picture %}
                   <img
                     src="{{order.picture.url}}"
                     alt="{{order.order_number}} Image"
                     width="140px"
                   />
                   {% else %}
-                  <img
-                    src=""
-                    alt="#{{order.order_number}} Design"
-                    class="product-image"
-                  />
+                  <img src="" alt="#{{order.order_number}} Design" class="product-image" />
                   {% endif %}
                 </td>
                 <td>
                   <span class="badge font-bold {% if order.status == "Completed" %}bg-success{% else %}bg-danger{% endif %}">
-                    {{order.status}}
+                  {{order.status}}
                   </span>
                 </td>
                 <td>{{order.created_date|date:'d/m/Y'}}</td>

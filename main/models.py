@@ -181,6 +181,7 @@ class Pro_forma(models.Model):
         PENDING = "Pending", "Pending"
         ACCEPTED = "Accepted", "Accepted"
         DECLINED = "Declined", "Declined"
+        NONE = "None", "None"
 
     custom_order = models.OneToOneField(
         CustomOrder, verbose_name="Custom Order", related_name="feedbacks", on_delete=models.CASCADE)
@@ -193,7 +194,7 @@ class Pro_forma(models.Model):
     processed_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     client_reaction = models.CharField(
-        verbose_name="Status", choices=Reaction.choices, default=Reaction.PENDING, max_length=20)
+        verbose_name="Client Reaction", choices=Reaction.choices, default=Reaction.PENDING, max_length=20)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

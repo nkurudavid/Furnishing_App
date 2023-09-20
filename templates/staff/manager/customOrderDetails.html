@@ -169,6 +169,16 @@
                           Mark as Completed
                         </button>
                         {% endif %}
+                        {% if clientOrder.feedbacks.status == "Undoable" %}
+                        <button
+                          data-toggle="modal"
+                          data-target="#actionModal"
+                          class="btn btn-success"
+                        >
+                          <i class="fa fa-cogs"></i>
+                          Mark as Completed
+                        </button>
+                        {% endif %}
                       </div>
                     </div>
                   </div>
@@ -190,12 +200,7 @@
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-12">
-                <div class="card card-body printableArea pb-5">
-                  <h4>
-                    <b>Client Order</b>
-                    <span class="">No. #{{clientOrder.order_number}}</span>
-                  </h4>
-                  <hr class="{% if clientOrder.status == "Pending" %}bg-warning{% else %} bg-cyan {% endif %} py-1" />
+                <div class="card card-body">
                   <div class="row">
                     <div class="col-md-12">
                       <div class="table-responsive m-t-40" style="clear: both">
@@ -222,7 +227,7 @@
                             <tr>
                               <th>Payment Amount</th>
                               <td>
-                                <p>{{clientOrder.feedbacks.payment_amount}}</p>
+                                <p>Frw {{clientOrder.feedbacks.payment_amount}}</p>
                               </td>
                             </tr>
                             <tr>
@@ -230,7 +235,19 @@
                                 Client Reaction
                               </th>
                               <td>
-                                <p>{{clientOrder.feedbacks.client_reaction}}</p>
+                                {% if clientOrder.feedbacks.client_reaction == "Pending" %}
+                                <span class="badge bg-warning">
+                                  {{clientOrder.feedbacks.client_reaction}}
+                                </span>
+                                {% elif clientOrder.feedbacks.client_reaction == "Accepted" %}
+                                <span class="badge bg-success">
+                                  {{clientOrder.feedbacks.client_reaction}}
+                                </span>
+                                {% else %}
+                                <span class="badge bg-danger">
+                                  {{clientOrder.feedbacks.client_reaction}}
+                                </span>
+                                {% endif %}
                               </td>
                             </tr>
                           </tbody>

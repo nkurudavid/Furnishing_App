@@ -104,7 +104,10 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'manager_completedCustomOrders' %}">
+            <a
+              class="{{completedOrder}}"
+              href="{% url 'manager_completedCustomOrders' %}"
+            >
               Completed Orders
             </a>
           </li>

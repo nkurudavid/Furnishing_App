@@ -160,6 +160,16 @@
       <div class="ibox my-3">
         <div class="ibox-head">
           <div class="ibox-title">Pro-forma</div>
+          {% if clientOrder.feedbacks.client_reaction == "Pending" %}
+          <button
+            data-toggle="modal"
+            data-target="#proFormaModal"
+            class="btn btn-outline-primary pull-right"
+          >
+            <i class="fa fa-edit"></i>
+            Pro-forma
+          </button>
+          {% endif %}
         </div>
         <div class="ibox-body">
           <!-- Container fluid  -->
@@ -231,7 +241,6 @@
       {% endif %}
     </div>
 
-    {% if not clientOrder.feedbacks %}
     <div
       class="modal fade"
       id="proFormaModal"
@@ -244,7 +253,11 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="proFormaModalTitle">
+              {% if clientOrder.feedbacks %}
+              <i class="fa fa-edit"></i> Update Pro-Forma
+              {% else %}
               <i class="fa fa-file"></i> Pro-Forma
+              {% endif %} 
             </h5>
             <button
               type="button"
@@ -270,7 +283,7 @@
                   class="form-control custom-select"
                   required
                 >
-                  <option disabled selected>Select</option>
+                  <option value="" selected>Select</option>
                   <option value="Doable">Doable</option>
                   <option value="Undoable">Undoable</option>
                 </select>
@@ -285,7 +298,6 @@
                   id="payment_amount"
                   placeholder="Frw ..."
                   min="0"
-                  required
                 />
                 <label for="processing_period">Processing Period (Days)</label>
                 <input
@@ -327,7 +339,6 @@
         }
       });
     </script>
-    {% endif %}
 
     {% endblock %}
   </body>
