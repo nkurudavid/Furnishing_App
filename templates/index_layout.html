@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Title  -->
+    {% if title %}
+    <title>Furnishing Order System - {{ title }}</title>
+    {% else %}
+    <title>Furnishing Order System</title>
+    {% endif%}
+
+    <!-- Favicon  -->
+    <link
+      rel="shortcut icon"
+      href="{% static 'front/assets/images/icons/favicon.ico' %}"
+    />
+  
+    <!-- Plugins CSS File -->
+    <link
+      rel="stylesheet"
+      href="{% static 'front/assets/css/bootstrap.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'front/assets/css/plugins/owl-carousel/owl.carousel.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'front/assets/css/plugins/magnific-popup/magnific-popup.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'front/assets/css/plugins/jquery.countdown.css' %}"
+    />
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="{% static 'front/assets/css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'front/assets/css/plugins/nouislider/nouislider.css' %}"
+    />
+  </head>
+
+  <body>
+    <!--contents  -->
+    {% block front_content %}{% endblock %}
+    <!-- /contents -->
+
+    {% if messages %} {% for message in messages %}
+    <script>
+      //<!--contents message displayed-->
+      alert("{{ message }}");
+      //<!-- / .contents message displayed-->
+    </script>
+    {% endfor %} {% endif %}
+
+    <!-- Plugins JS File -->
+    <script src="{% static 'front/assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/bootstrap.bundle.min.js' %}">
+      </scri>
+          <script src="{% static 'front/assets/js/jquery.hoverIntent.min.js' %}">
+    </script>
+    <script src="{% static 'front/assets/js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/superfish.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/bootstrap-input-spinner.js' %}"></script>
+    <script src="{% static 'front/assets/js/jquery.plugin.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/jquery.magnific-popup.min.js' %}"></script>
+    <!-- Main JS File -->
+    <script src="{% static 'front/assets/js/main.js' %}"></script>
+  </body>
+</html>

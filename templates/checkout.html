@@ -1,0 +1,252 @@
+{% extends "index_layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <title>Checkout</title>
+  </head>
+
+  <body>
+    {% block front_content %}
+
+    <div class="page-wrapper">
+      {% include 'includes/navbar.html' %}
+      <!-- End .header -->
+
+      <main class="main">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+          <div class="container">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'shop' %}">Shop</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Checkout
+              </li>
+            </ol>
+          </div>
+          <!-- End .container -->
+        </nav>
+        <!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+          <div class="checkout">
+            <div class="container">
+              <form
+                class="form-container"
+                id="orderForm"
+                action="{% url 'order_confirmation' %}"
+                method="post"
+              >
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-lg-6">
+                    <h2 class="checkout-title">Shipping address</h2>
+                    <p class="mb-5">
+                      To proceed with the payment, Fill out the form if not, the
+                      Shipping address is required.
+                    </p>
+                    <!-- End .checkout-title -->
+                    <label>Location address *</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="location"
+                      placeholder="Location"
+                      value="{{user.client_profile.shipping_location}}"
+                      name="shipping_location"
+                      required
+                    />
+
+                    <label>Street *</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="street"
+                      placeholder="Street"
+                      value="{{user.client_profile.shipping_street}}"
+                      name="shipping_street"
+                      required
+                    />
+                    <input
+                      type="hidden"
+                      name="pay_method"
+                      value="Cash on Delivery"
+                    />
+                    <input type="hidden" name="payment_id" value="" />
+                  </div>
+                  <!-- End .col-lg-9 -->
+                  <aside class="col-lg-6">
+                    <div class="summary">
+                      <h3 class="summary-title">Your Order</h3>
+                      <!-- End .summary-title -->
+
+                      <table class="table table-summary">
+                        <thead>
+                          <tr>
+                            <th colspan="2">Product</th>
+                            <th>Total</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {% for item in cart_items %}
+                          <tr>
+                            <td>{{item.p_data.product_name}}:</td>
+                            <td>{{item.quantity}}</td>
+                            <td>Frw {{item.subtotal}}</td>
+                          </tr>
+                          {% endfor %}
+                          <tr class="summary-subtotal">
+                            <td colspan="2">Subtotal:</td>
+                            <td>Frw {{total_price}}</td>
+                          </tr>
+                          <!-- End .summary-subtotal -->
+                          <tr>
+                            <td colspan="2">Shipping:</td>
+                            <td>Free</td>
+                          </tr>
+                          <tr class="summary-total">
+                            <td colspan="2">Total:</td>
+                            <td>Frw {{total_price}}</td>
+                          </tr>
+                          <!-- End .summary-total -->
+                        </tbody>
+                      </table>
+                      <!-- End .table table-summary -->
+
+                      <div
+                        class="accordion-summary py-5"
+                        id="accordion-payment"
+                      >
+                        <hr />
+                        <h6 class="">Shipping address</h6>
+                        <div class="card">
+                          <div class="card-header" id="heading-1">
+                            <h2 class="card-title">
+                              <a
+                                class="collapsed"
+                                role="button"
+                                data-toggle="collapse"
+                                href="#collapse-1"
+                                aria-expanded="false"
+                                aria-controls="collapse-1"
+                              >
+                                Cash on delivery
+                              </a>
+                            </h2>
+                          </div>
+                          <!-- End .card-header -->
+                          <div
+                            id="collapse-1"
+                            class="collapse"
+                            aria-labelledby="heading-1"
+                            data-parent="#accordion-payment"
+                          >
+                            <div class="card-body">
+                              Quisque volutpat mattis eros. Lorem ipsum dolor
+                              sit amet, consectetuer adipiscing elit. Donec
+                              odio. Quisque volutpat mattis eros.
+                            </div>
+                            <!-- End .card-body -->
+                            <div class="card-footer py-5">
+                              <button
+                                class="btn btn-outline-primary-2 btn-order btn-block"
+                                id="pay_on_delivery"
+                                name="place_order"
+                                type="submit"
+                              >
+                                Place Order
+                              </button>
+                            </div>
+                          </div>
+                          <!-- End .collapse -->
+                        </div>
+                        <!-- End .card -->
+
+                        <div class="card">
+                          <div class="card-header" id="heading-2">
+                            <h2 class="card-title">
+                              <a
+                                class="collapsed"
+                                role="button"
+                                data-toggle="collapse"
+                                href="#collapse-2"
+                                aria-expanded="false"
+                                aria-controls="collapse-2"
+                              >
+                                PayPal
+                                <small class="float-right paypal-link"
+                                  >What is PayPal?</small
+                                >
+                              </a>
+                            </h2>
+                          </div>
+                          <!-- End .card-header -->
+                          <div
+                            id="collapse-2"
+                            class="collapse"
+                            aria-labelledby="heading-2"
+                            data-parent="#accordion-payment"
+                          >
+                            <div class="card-body">
+                              Nullam malesuada erat ut turpis. Suspendisse urna
+                              nibh, viverra non, semper suscipit, posuere a,
+                              pede. Donec nec justo eget felis facilisis
+                              fermentum.
+                            </div>
+                            <!-- End .card-body -->
+                            <div class="card-footer py-5">
+                              <!-- Set up a container element for the button -->
+                              <div id="paypal-button-container"></div>
+                            </div>
+                          </div>
+                          <!-- End .collapse -->
+                        </div>
+                        <!-- End .card -->
+                      </div>
+                      <!-- End .accordion -->
+                    </div>
+                    <!-- End .summary -->
+                  </aside>
+                  <!-- End .col-lg-3 -->
+                </div>
+                <!-- End .row -->
+              </form>
+            </div>
+            <!-- End .container -->
+          </div>
+          <!-- End .checkout -->
+        </div>
+        <!-- End .page-content -->
+      </main>
+      <!-- End .main -->
+
+      {% include 'includes/footer.html' %}
+      <!-- End .footer -->
+    </div>
+    <!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top">
+      <i class="icon-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div>
+    <!-- End .mobil-menu-overlay -->
+
+    {% include 'includes/mobile_menu.html' %}
+    <!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    {% include 'includes/login_register.html' %}
+    <!-- End .modal -->
+
+    {% include 'includes/paypay.html' %}
+    <!-- End -->
+
+    {% endblock %}
+  </body>
+</html>

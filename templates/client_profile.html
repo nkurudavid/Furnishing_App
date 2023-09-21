@@ -1,0 +1,369 @@
+{% extends "index_layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <title>client account</title>
+  </head>
+
+  <body>
+    {% block front_content %}
+
+    <div class="page-wrapper">
+      {% include 'includes/navbar.html' %}
+      <!-- End .header -->
+
+      <main class="main">
+        <div
+          class="page-header text-center"
+          style="background-image: url('front/assets/images/page-header-bg.jpg')"
+        >
+          <div class="container">
+            <h1 class="page-title">
+              {{user.first_name}} {{user.last_name}}<span>My Account</span>
+            </h1>
+            <p class="text-muted lead">If you have any questions, please feel free to <a href="{% url 'contact' %}">contact us</a>, our customer service center is working for you 24/7.</p>
+          </div>
+          <!-- End .container -->
+        </div>
+        <!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+          <div class="container">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'shop' %}">Shop</a></li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'client_account' %}">Account</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                My Profile
+              </li>
+            </ol>
+          </div>
+          <!-- End .container -->
+        </nav>
+        <!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+          <div class="dashboard">
+            <div class="container">
+              <div class="row">
+                {% include 'includes/client_sidebar.html' %}
+                <!-- End .col-lg-3 -->
+
+                <div class="col-md-8 col-lg-9">
+                  <div class="tab-content">
+
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="card card-dashboard">
+                            <div class="card-body">
+                              <h3 class="card-title">My Profile</h3>
+                              <!-- End .card-title -->
+
+                              <p>
+                                Names: {{user.first_name}} {{user.last_name}}<br />
+                                Gender: {{user.gender}}<br />
+                                Phone: {{user.client_profile.phone_number}}<br />
+                                Location: {{user.client_profile.location}}<br />
+                                Email: {{user.email}}<br />
+                                <a class="icon-edit" data-toggle="modal" data-target="#update_profile" href="#">Update profile</a>
+                                <a class="icon-edit float-right" data-toggle="modal" data-target="#update_password" href="#">Change password</a>
+                              </p>
+                            </div>
+                            <!-- End .card-body -->
+                          </div>
+                          <!-- End .card-dashboard -->
+                        </div>
+                        <!-- End .col-lg-6 -->
+
+                        <div class="col-lg-12">
+                          <div class="card card-dashboard">
+                            <div class="card-body">
+                              <h3 class="card-title">Shipping Address</h3>
+                              <!-- End .card-title -->
+                              {% if not user.client_profile.shipping_location %}
+                              <p>
+                                You have not set up this type of address yet.<br />
+                              </p>
+                              {% else %}
+                              <p>
+                                Address: {{user.client_profile.shipping_location}}<br />
+                                Street: {{user.client_profile.shipping_street}}<br />
+                              </p>
+                              {% endif %}
+                              <a class="icon-edit"  data-toggle="modal" data-target="#update_shipping_address" href="#">Update</a>
+                            </div>
+                            <!-- End .card-body -->
+                          </div>
+                          <!-- End .card-dashboard -->
+                        </div>
+                        <!-- End .col-lg-6 -->
+                      </div>
+                      <!-- End .row -->
+                </div>
+                <!-- End .col-lg-9 -->
+              </div>
+              <!-- End .row -->
+            </div>
+            <!-- End .container -->
+          </div>
+          <!-- End .dashboard -->
+        </div>
+        <!-- End .page-content -->
+      </main>
+      <!-- End .main -->
+      
+        <!-- Modal -->
+        <div class="modal fade" id="update_profile" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true"><i class="icon-close"></i></span>
+                  </button>
+
+                  <div class="form-box">
+                    <h4 class="form-title text-center mb-3">
+                      <a class="icon-edit" href="#">Update profile</a>
+                    </h4>
+                    <hr>
+                    <form action="" method="POST">
+                      {% csrf_token %}
+                      <div class="row">
+                        <div class="form-group col-6">
+                          <label for="id_first_name">First Name</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="id_first_name"
+                            name="first_name"
+                            value="{{user.first_name}}"
+                            required
+                          />
+                        </div>
+                        <div class="form-group col-6">
+                          <label for="id_last_name">Last Name</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="id_last_name"
+                            name="last_name"
+                            value="{{user.last_name}}"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="id_gender">Gender</label>
+                        <select
+                          class="form-control"
+                          id="id_gender"
+                          name="gender"
+                          required
+                        >
+                          <option disabled>Select Gender</option>
+                          <option {% if user.gender == 'Male' %} selected {% endif %} value="Male">Male</option>
+                          <option {% if user.gender == 'Female' %} selected {% endif %}  value="Female">Female</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="id_phone_number">Phone Number</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="id_phone_number"
+                          name="phone_number"
+                          value="{{user.client_profile.phone_number}}"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="id_location">Location</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="id_location"
+                          name="location"
+                          value="{{user.client_profile.location}}"
+                          required
+                        />
+                      </div>
+                      <div class="form-footer">
+                        <button
+                          type="submit"
+                          name="update_profile"
+                          class="btn btn-outline-primary-2"
+                        >
+                          <span>SAVE CHANGES</span>
+                          <i class="icon-save"></i>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- End .form-box -->
+                </div>
+                <!-- End .modal-body -->
+              </div>
+          </div>
+        </div>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="update_password" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true"><i class="icon-close"></i></span>
+                  </button>
+
+                  <div class="form-box">
+                    <h4 class="form-title text-center mb-3">
+                      <a class="icon-edit" href="#">Update password</a>
+                    </h4>
+                    <hr>
+                    <form action="" method="POST">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <label for="old_password">Old Password *</label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="old_password"
+                          name="old_pass"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="password1">New Password *</label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="password1"
+                          name="pass1"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="password2">Confirm Password *</label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="password2"
+                          name="pass2"
+                          required
+                        />
+                      </div>
+                      <div class="form-footer">
+                        <button
+                          type="submit"
+                          name="update_password"
+                          class="btn btn-outline-primary-2"
+                        >
+                          <span>SAVE CHANGES</span>
+                          <i class="icon-save"></i>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- End .form-box -->
+                </div>
+                <!-- End .modal-body -->
+              </div>
+          </div>
+        </div>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="update_shipping_address" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true"><i class="icon-close"></i></span>
+                  </button>
+
+                  <div class="form-box">
+                    <h4 class="form-title text-center mb-3">
+                      <a class="icon-edit" href="#">Update shipping address</a>
+                    </h4>
+                    <hr>
+                    <form action="" method="POST">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <label for="shipping_location">Shipping location</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="shipping_location"
+                          name="shipping_location"
+                          value="{{user.client_profile.shipping_location}}"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="shipping_street">Shipping street</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="shipping_street"
+                          name="shipping_street"
+                          value="{{user.client_profile.shipping_street}}"
+                          required
+                        />
+                      </div>
+                      <div class="form-footer">
+                        <button
+                          type="submit"
+                          name="update_shipping_address"
+                          class="btn btn-outline-primary-2"
+                        >
+                          <span>SAVE CHANGES</span>
+                          <i class="icon-save"></i>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- End .form-box -->
+                </div>
+                <!-- End .modal-body -->
+              </div>
+          </div>
+        </div>
+
+      {% include 'includes/footer.html' %}
+      <!-- End .footer -->
+    </div>
+    <!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top">
+      <i class="icon-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div>
+    <!-- End .mobil-menu-overlay -->
+
+    {% include 'includes/mobile_menu.html' %}
+    <!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    {% include 'includes/login_register.html' %}
+    <!-- End .modal -->
+
+    {% endblock %}
+  </body>
+</html>

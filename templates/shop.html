@@ -1,0 +1,182 @@
+{% extends "index_layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <title>Shop</title>
+  </head>
+
+  <body>
+    {% block front_content %}
+
+    <div class="page-wrapper">
+      {% include 'includes/navbar.html' %}
+      <!-- End .header -->
+
+      <main class="main">
+        <!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+          <div class="container">
+            {% if not selectedCategory %}
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'shop' %}">Shop</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">List</li>
+            </ol>
+            {% else %}
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'shop' %}">Shop</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Category - {{selectedCategory.category_name}}
+              </li>
+            </ol>
+            {% endif %}
+          </div>
+          <!-- End .container -->
+        </nav>
+        <!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-9">
+                <div class="toolbox">
+                  <div class="toolbox-left">
+                    {% if not selectedCategory %}
+                    <div class="toolbox-info">ALL Products</div>
+                    {% else %}
+                    <div class="toolbox-info">
+                      {{selectedCategory.category_name}} Products
+                    </div>
+                    {% endif %}
+                    <!-- End .toolbox-info -->
+                  </div>
+                  <!-- End .toolbox-left -->
+                </div>
+                <!-- End .toolbox -->
+                <div class="products mb-3">
+                  <div class="row justify-content-center">
+                    {% if products %}{% for data in products %}
+                    <div class="col-6 col-md-4 col-lg-3">
+                      <div class="product product-11 text-center">
+                        <figure class="product-media">
+                          <a href="{% url 'product_details' data.id %}">
+                            {% if data.product_images.first.picture %}
+                            <img
+                              src="{{data.product_images.first.picture.url}}"
+                              alt="{{data.product_name}} Image"
+                              class="product-image"
+                            />
+                            {% else %}
+                            <img
+                              src=""
+                              alt="Product image"
+                              class="product-image"
+                            />
+                            {% endif %}
+                          </a>
+                        </figure>
+                        <!-- End .product-media -->
+
+                        <div class="product-body">
+                          <h3 class="product-title">
+                            <a href="{% url 'product_details' data.id %}">
+                              {{data.product_name }}
+                            </a>
+                          </h3>
+                          <!-- End .product-title -->
+                          <div class="product-price">Frw {{data.price}}</div>
+                          <!-- End .product-price -->
+                        </div>
+                        <!-- End .product-body -->
+                        <div class="product-action">
+                          <a
+                            href="{% url 'add_to_cart' data.id %}"
+                            class="btn-product btn-cart"
+                            ><span>add to cart</span></a
+                          >
+                        </div>
+                        <!-- End .product-action -->
+                      </div>
+                      <!-- End .product -->
+                    </div>
+                    <!-- End .col-sm-6 col-lg-4 -->
+                    {% endfor %} {% else %}
+                    <p>No product found.</p>
+                    {% endif %}
+                  </div>
+                  <!-- End .row -->
+                </div>
+              </div>
+              <!-- End .col-lg-9 -->
+              <aside class="col-lg-3 order-lg-first">
+                <div class="sidebar sidebar-shop">
+                  <div class="widget widget-collapsible">
+                    <h3 class="widget-title">Category</h3>
+                    <!-- End .widget-title -->
+                    <div class="widget-body">
+                      <nav class="side-nav">
+                        {% if categories %}
+                        <ul class="menu-vertical sf-arrows sf-js-enabled">
+                          <li>
+                            <a href="{% url 'shop' %}"> All </a>
+                          </li>
+                          {% for data in categories %}
+                          <li>
+                            <a
+                              href="{% url 'shop_category' data.category_name %}"
+                            >
+                              {{data.category_name}}
+                            </a>
+                          </li>
+                          {% endfor %}
+                        </ul>
+                        {% endif %}
+                      </nav>
+                    </div>
+                  </div>
+                  <!-- End .widget -->
+                </div>
+                <!-- End .sidebar sidebar-shop -->
+              </aside>
+              <!-- End .col-lg-3 -->
+            </div>
+            <!-- End .row -->
+          </div>
+          <!-- End .container -->
+        </div>
+        <!-- End .page-content -->
+      </main>
+      <!-- End .main -->
+
+      {% include 'includes/footer.html' %}
+      <!-- End .footer -->
+    </div>
+    <!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top">
+      <i class="icon-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div>
+    <!-- End .mobil-menu-overlay -->
+
+    {% include 'includes/mobile_menu.html' %}
+    <!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    {% include 'includes/login_register.html' %}
+    <!-- End .modal -->
+
+    {% endblock %}
+  </body>
+</html>

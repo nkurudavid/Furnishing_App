@@ -1,0 +1,232 @@
+{% extends "staff/craftsman/layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  {% load mathfilters %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Completed Custom Order Details</title>
+  </head>
+
+  <body>
+    {% block page_content%}
+    <div class="page-heading">
+      <h1 class="page-title">Completed Custom Order Details</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'craftsman_dashboard' %}">
+            <i class="fa fa-home font-20"></i>
+            Dashboard
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'craftsman_completedCustomOrders' %}">
+            <i class="fa fa-shopping-basket font-20"></i>
+            Custom Orders List
+          </a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <i class="fa fa-file font-20"></i>
+          Order Details
+        </li>
+      </ol>
+    </div>
+    <div class="page-content fade-in-up">
+      <div class="ibox">
+        <div class="ibox-head">
+          <div class="ibox-title">Custom Order Details</div>
+        </div>
+        <div class="ibox-body">
+          <!-- Container fluid  -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card card-body printableArea pb-5">
+                  <h4>
+                    <b>Client Order</b>
+                    <span class="">No. #{{clientOrder.order_number}}</span>
+                  </h4>
+                  <hr class="{% if clientOrder.status == "Pending" %}bg-warning{% else %} bg-cyan {% endif %} py-1" />
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="pull-left">
+                        <address>
+                          <h3>
+                            <b class="text-info">
+                              <i class="fa fa-user"></i>
+                              {{clientOrder.client.first_name}}
+                              {{clientOrder.client.last_name}}
+                            </b>
+                          </h3>
+                          <p class="m-l-5">
+                            <div class="mb-1">
+                              Email: {{clientOrder.client.email}},
+                            </div>
+                            <div class="mb-1">
+                              <b>Created Date: </b>
+                              <i class="fa fa-calendar"></i>
+                              {{clientOrder.created_date}}
+                            </div>
+                            {% if clientOrder.status == "Processing" %}
+                            <div class="mb-1">
+                              Shipping Address:
+                              {{clientOrder.shipping_address}},
+                            </div>
+                            <div class="mb-1">
+                              Payment Method: {{clientOrder.payment_method}},
+                            </div>
+                            <div class="mb-1">
+                              Total Amount: Frw {{clientOrder.total_amount}},
+                            </div>
+                            {% endif %}
+                            <br />
+                            <div class="mb-1">
+                              Order status:
+                              <span class="p-1 {% if clientOrder.status == "Completed" %}bg-success{% else %} bg-danger {% endif %} font-bold">
+                                {{clientOrder.status}}
+                              </span>
+                            </div>
+                          </p>
+                        </address>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="table-responsive m-t-40" style="clear: both">
+                        <table class="table table-hover">
+                          <thead class="bg-light font-bold">
+                            <tr>
+                              <th width="35%">TITLE</th>
+                              <th class="text-left">INFO</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th>MATERIAL</th>
+                              <td>{{clientOrder.material.name}}</td>
+                            </tr>
+                            <tr>
+                              <th>DESIGN</th>
+                              <td>
+                                {% if clientOrder.picture %}
+                                <a href="{{clientOrder.picture.url}}" target="_blank">
+                                  <img
+                                    src="{{clientOrder.picture.url}}"
+                                    alt="{{clientOrder.order_number}} Image"
+                                    width="200px"
+                                  />
+                                </a>
+                                {% else %}
+                                <img src="" alt="#{{clientOrder.order_number}} Design" />
+                                {% endif %}
+
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>DESCRIPTION</th>
+                              <td>
+                                <p>{{clientOrder.description}}</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>QUANTITY</th>
+                              <td>{{clientOrder.quantity}}</td>
+                            </tr>
+                            <tr>
+                              <th>ASSIGNED</th>
+                              <td>
+                                {{clientOrder.processed_by}}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Container fluid  -->
+        </div>
+      </div>
+
+      {% if clientOrder.feedbacks %}
+      <div class="ibox my-3">
+        <div class="ibox-head">
+          <div class="ibox-title">Pro-forma</div>
+        </div>
+        <div class="ibox-body">
+          <!-- Container fluid  -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card card-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="table-responsive m-t-40" style="clear: both">
+                        <table class="table table-hover">
+                          <thead class="bg-light font-bold">
+                            <tr>
+                              <th width="35%">TITLE</th>
+                              <th class="text-left">INFO</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th>Status</th>
+                              <td>
+                                <p>{{clientOrder.feedbacks.status}}</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>Processing Period</th>
+                              <td>
+                                <p>{{clientOrder.feedbacks.processing_period}}</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>Payment Amount</th>
+                              <td>
+                                <p>Frw {{clientOrder.feedbacks.payment_amount}}</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <th>
+                                Client Reaction
+                              </th>
+                              <td>
+                                {% if clientOrder.feedbacks.client_reaction == "Pending" %}
+                                <span class="badge bg-warning">
+                                  {{clientOrder.feedbacks.client_reaction}}
+                                </span>
+                                {% elif clientOrder.feedbacks.client_reaction == "Accepted" %}
+                                <span class="badge bg-success">
+                                  {{clientOrder.feedbacks.client_reaction}}
+                                </span>
+                                {% else %}
+                                <span class="badge bg-danger">
+                                  {{clientOrder.feedbacks.client_reaction}}
+                                </span>
+                                {% endif %}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Container fluid  -->
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

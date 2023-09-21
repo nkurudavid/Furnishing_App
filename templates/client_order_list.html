@@ -1,0 +1,138 @@
+{% extends "index_layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <title>client account</title>
+  </head>
+
+  <body>
+    {% block front_content %}
+
+    <div class="page-wrapper">
+      {% include 'includes/navbar.html' %}
+      <!-- End .header -->
+
+      <main class="main">
+        <div
+          class="page-header text-center"
+          style="background-image: url('front/assets/images/page-header-bg.jpg')"
+        >
+          <div class="container">
+            <h1 class="page-title">
+              {{user.first_name}} {{user.last_name}}<span>My Account</span>
+            </h1>
+            <p class="text-muted lead">If you have any questions, please feel free to <a href="{% url 'contact' %}">contact us</a>, our customer service center is working for you 24/7.</p>
+          </div>
+          <!-- End .container -->
+        </div>
+        <!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+          <div class="container">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'shop' %}">Shop</a></li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'client_account' %}">Account</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                My Orders
+              </li>
+            </ol>
+          </div>
+          <!-- End .container -->
+        </nav>
+        <!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+          <div class="dashboard">
+            <div class="container">
+              <div class="row">
+                {% include 'includes/client_sidebar.html' %}
+                <!-- End .col-lg-3 -->
+
+                <div class="col-md-8 col-lg-9">
+                    {% if not orders %}
+                      <p>No order has been made yet.</p>
+                      <a href="{% url 'shop' %}" class="btn btn-outline-primary-2">
+                        <span>GO SHOP</span>
+                        <i class="icon-long-arrow-right"></i>
+                      </a>
+                      {% else %}
+                        <p class="text-muted lead"><i class="icon-list"></i> Order List</p>
+                        <!-- ORDERS TABLE-->
+                        <div class="table-responsive">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr class="text-sm">
+                                        <th class="border-gray-300 border-top py-3">Order No.</th>
+                                        <th class="border-gray-300 border-top py-3">Status</th>
+                                        <th class="border-gray-300 border-top py-3">Payment</th>
+                                        <th class="border-gray-300 border-top py-3">Payment Method</th>
+                                        <th class="border-gray-300 border-top py-3">When Created</th>
+                                        <th class="border-gray-300 border-top py-3"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for order in orders %}
+
+                                        <tr class="text-sm">
+                                            <th class="align-middle py-3"># {{order.order_number}}</th>
+                                            <td class="align-middle py-3">
+                                                <span 
+                                                class="badge fw-light text-uppercase {% if order.status == "Pending" %}bg-warning{% elif order.status == "Processing" %}bg-info{% else %}bg-success{% endif %}">
+                                                {{order.status}}
+                                              </span>
+                                            </td>
+                                            <td class="align-middle py-3">Frw {{order.total_amount}}</td>
+                                            <td class="align-middle py-3">{{order.payment_method}}</td>
+                                            <td class="align-middle py-3">{{order.created_date|date:'Y-m-d H:i'}}</td>
+                                            <td class="align-middle py-3">
+                                              <a class="btn btn-outline-primary btn-sm" href="{% url 'client_order_details' order.id %}">
+                                                View
+                                              </a>
+                                            </td>
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                      {% endif %}
+                </div>
+                <!-- End .col-lg-9 -->
+              </div>
+              <!-- End .row -->
+            </div>
+            <!-- End .container -->
+          </div>
+          <!-- End .dashboard -->
+        </div>
+        <!-- End .page-content -->
+      </main>
+      <!-- End .main -->
+
+      {% include 'includes/footer.html' %}
+      <!-- End .footer -->
+    </div>
+    <!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top">
+      <i class="icon-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div>
+    <!-- End .mobil-menu-overlay -->
+
+    {% include 'includes/mobile_menu.html' %}
+    <!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    {% include 'includes/login_register.html' %}
+    <!-- End .modal -->
+
+    {% endblock %}
+  </body>
+</html>

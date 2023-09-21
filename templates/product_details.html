@@ -1,0 +1,156 @@
+{% extends "index_layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <title>Shop</title>
+  </head>
+
+  <body>
+    {% block front_content %}
+
+    <div class="page-wrapper">
+      {% include 'includes/navbar.html' %}
+      <!-- End .header -->
+
+      <main class="main">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+          <div class="container d-flex align-items-center">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'shop' %}">Shop</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Product Details
+              </li>
+            </ol>
+          </div>
+          <!-- End .container -->
+        </nav>
+        <!-- End .breadcrumb-nav -->
+
+        <div class="page-content py-5">
+          <div class="container">
+            <div class="product-details-top">
+              <div class="row">
+                <div class="col-md-6">
+                  <div id="carouselControls" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                      {% for p_image in p_data.product_images.all %}
+                      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <!-- Single Slide -->
+                        {% if p_image.picture %}
+                        <img class="d-block w-100"
+                          src="{{p_image.picture.url}}"
+                          alt="{{p_data.product_name}} Image"
+                        />
+                        {% else %}
+                        <img class="d-block w-100"
+                          src=""
+                          alt="{{p_data.product_name}} Image"
+                        />
+                        {% endif %}
+                      </div>
+                      {% endfor %}
+                      <a class="carousel-control-prev" href="#carouselControls" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon text-primary" aria-hidden="true"><span>
+                        <span class="sr-only">Previous<span>
+                      </a>
+                      <a class="carousel-control-next" href="#carouselControls" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon text-primary" aria-hidden="true"><span>
+                        <span class="sr-only">Next<span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <!-- End .col-md-6 -->
+
+                <div class="col-md-6">
+                  <div class="product-details">
+                    <h1 class="product-title">{{p_data.product_name}}</h1>
+                    <!-- End .product-title -->
+
+                    <div class="product-price">Frw {{p_data.price}}</div>
+                    <!-- End .product-price -->
+
+                    <div class="product-content">
+                      <p>{{p_data.description}}</p>
+                    </div>
+                    <!-- End .product-content -->
+                    <form action="{% url 'add_to_cart' p_data.id %}" method="post">
+                      {% csrf_token %}
+                    <div class="details-filter-row details-row-size">
+                      <label for="qty">Quantity:</label>
+                      <div class="product-details-quantity">
+                        <input
+                          type="number"
+                          id="qty"
+                          class="form-control"
+                          name="qty"
+                          value="1"
+                          min="1"
+                          max="100"
+                          step=".01"
+                          data-decimals="0"
+                          required=""
+                        />
+                      </div>
+                      <!-- End .product-details-quantity -->
+                    </div>
+                    <!-- End .details-filter-row -->
+
+                    <div class="product-details-action">
+                      <button type="submit" class="btn-product btn-cart">
+                        <span>add to cart</span>
+                      </button>
+                    </div>
+                    <!-- End .product-details-action -->
+                    </form>
+
+                    <div class="product-details-footer">
+                      <div class="product-cat">
+                        <span>Category:</span>
+                        <a href="#">{{p_data.category.category_name}}</a>
+                      </div>
+                      <!-- End .product-cat -->
+                    </div>
+                    <!-- End .product-details-footer -->
+                  </div>
+                  <!-- End .product-details -->
+                </div>
+                <!-- End .col-md-6 -->
+              </div>
+              <!-- End .row -->
+            </div>
+          </div>
+          <!-- End .container -->
+        </div>
+        <!-- End .page-content -->
+      </main>
+      <!-- End .main -->
+
+      {% include 'includes/footer.html' %}
+      <!-- End .footer -->
+    </div>
+    <!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top">
+      <i class="icon-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div>
+    <!-- End .mobil-menu-overlay -->
+
+    {% include 'includes/mobile_menu.html' %}
+    <!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    {% include 'includes/login_register.html' %}
+    <!-- End .modal -->
+
+    {% endblock %}
+  </body>
+</html>
