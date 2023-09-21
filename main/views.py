@@ -1154,22 +1154,18 @@ def manager_productDetails(request, pk):
                         return redirect(manager_productDetails, pk)
                     else:
                         # Update product
-                        productUpdated = Product.objects.filter(id=product_id).update(
-                            category=ProductCategory.objects.get(
-                                id=category_id),
-                            product_name=product_name,
-                            description=description,
-                            price=price,
-                            color=color,
-                            quantity=quantity,
-                        )
-                        if productUpdated:
-                            messages.success(
-                                request, "Product "+product_name+", Updated successfully.")
-                            return redirect(manager_productDetails, pk)
-                        else:
-                            messages.error(request, ('Process Failed.'))
-                            return redirect(manager_productDetails, pk)
+                        foundData.category = ProductCategory.objects.get(
+                            id=category_id)
+                        foundData.product_name = product_name
+                        foundData.description = description
+                        foundData.price = float(price)
+                        foundData.color = color
+                        foundData.quantity = int(quantity)
+                        foundData.save()
+
+                        messages.success(request, "Product " +
+                                         product_name+", Updated successfully.")
+                        return redirect(manager_productDetails, pk)
                 else:
                     messages.error(
                         request, ('Error!, All fields are required.'))
