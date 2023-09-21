@@ -1,0 +1,356 @@
+{% extends "index_layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <title>client account</title>
+  </head>
+
+  <body>
+    {% block front_content %}
+
+    <div class="page-wrapper">
+      {% include 'includes/navbar.html' %}
+      <!-- End .header -->
+
+      <main class="main">
+        <div
+          class="page-header text-center"
+          style="
+            background-image: url('front/assets/images/page-header-bg.jpg');
+          "
+        >
+          <div class="container">
+            <h1 class="page-title">
+              {{user.first_name}} {{user.last_name}}<span>My Account</span>
+            </h1>
+            <p class="text-muted lead">
+              If you have any questions, please feel free to
+              <a href="{% url 'contact' %}">contact us</a>, our customer service
+              center is working for you 24/7.
+            </p>
+          </div>
+          <!-- End .container -->
+        </div>
+        <!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+          <div class="container">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'shop' %}">Shop</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'client_account' %}">Account</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'client_order_list' %}">MyOrder</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Custom Order Details
+              </li>
+            </ol>
+          </div>
+          <!-- End .container -->
+        </nav>
+        <!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+          <div class="dashboard">
+            <div class="container">
+              <div class="row">
+                {% include 'includes/client_sidebar.html' %}
+                <!-- End .col-lg-3 -->
+
+                <div class="col-md-8 col-lg-9">
+                  <p class="lead">
+                    Order #{{order.order_number}} was placed on
+                    <strong>{{order.created_date|date:'Y-m-d H:i'}}</strong>
+                    and is currently
+                    <strong>{{order.status}}</strong>.
+                  </p>
+                  <!-- ORDER TABLE-->
+                  <div class="table-responsive">
+                    <div class="ibox">
+                      <div class="ibox-head">
+                        <div class="ibox-title">Custom Order Details</div>
+                      </div>
+                      <div class="ibox-body">
+                        <!-- Container fluid  -->
+                        <div class="container-fluid">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="card card-body printableArea pb-5">
+                                <h4 class=" m-0">
+                                  <b>Order</b>
+                                  <span>No. #{{customOrder.order_number}}</span>
+                                </h4>
+                                <hr class="{% if customOrder.status == "Pending" %}bg-warning{% elif customOrder.status == "Processing" %}bg-info{% elif customOrder.status == "Completed" %}bg-success{% else %} bg-danger {% endif %} py-1" />
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="pull-left">
+                                      <address>
+                                        <p class="m-l-5">
+                                          <div class="mb-1">
+                                            <b>Created Date: </b>
+                                            <i class="fa fa-calendar"></i>
+                                            {{customOrder.created_date}}
+                                          </div>
+                                          {% if not customOrder.status == "Pending" %}
+                                          <div class="mb-1">
+                                            Shipping Address:
+                                            {{customOrder.client.shipping_address}},
+                                          </div>
+                                          <div class="mb-1">
+                                            Payment Method: {{customOrder.client.payment_method}},
+                                          </div>
+                                          <div class="mb-1">
+                                            Total Amount: Frw {{customOrder.client.total_amount}},
+                                          </div>
+                                          {% endif %}
+                                          <br />
+                                          <div class="mb-1">
+                                            Order status:
+                                            <span class="p-1 {% if customOrder.status == "Pending" %}bg-warning{% elif customOrder.status == "Processing" %}bg-info{% elif customOrder.status == "Completed" %}bg-success{% else %} bg-light text-danger {% endif %} font-bold">
+                                              {{customOrder.status}}
+                                            </span>
+                                          </div>
+                                        </p>
+                                      </address>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-12">
+                                    <div class="table-responsive m-t-40" style="clear: both">
+                                      <table class="table table-hover">
+                                        <thead class="bg-light font-bold">
+                                          <tr>
+                                            <th width="35%">TITLE</th>
+                                            <th class="text-left">INFO</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <th>MATERIAL</th>
+                                            <td>{{customOrder.material.name}}</td>
+                                          </tr>
+                                          <tr>
+                                            <th>DESIGN</th>
+                                            <td>
+                                              {% if customOrder.picture %}
+                                              <a href="{{customOrder.picture.url}}" target="_blank">
+                                                <img
+                                                  src="{{customOrder.picture.url}}"
+                                                  alt="{{customOrder.order_number}} Image"
+                                                  width="200px"
+                                                />
+                                              </a>
+                                              {% else %}
+                                              <img src="" alt="#{{customOrder.order_number}} Design" />
+                                              {% endif %}
+              
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <th>DESCRIPTION</th>
+                                            <td>
+                                              <p>{{customOrder.description}}</p>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <th>QUANTITY</th>
+                                            <td>{{customOrder.quantity}}</td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- End Container fluid  -->
+                      </div>
+                    </div>
+              
+                    {% if customOrder.feedbacks %}
+                    <div class="ibox my-3">
+                      <div class="ibox-head">
+                        <div class="ibox-title">Pro-forma</div>
+                      </div>
+                      <div class="ibox-body">
+                        <!-- Container fluid  -->
+                        <div class="container-fluid">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="card card-body">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <div class="table-responsive m-t-40" style="clear: both">
+                                      <table class="table table-hover">
+                                        <thead class="bg-light font-bold">
+                                          <tr>
+                                            <th width="35%">TITLE</th>
+                                            <th class="text-left">INFO</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <th>Status</th>
+                                            <td>
+                                              <p>Your order is <b>{{customOrder.feedbacks.status}}</b></p>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <th>Processing Period</th>
+                                            <td>
+                                              <p>It will be processed in <b>{{customOrder.feedbacks.processing_period}} days<br></p>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <th>Payment Amount</th>
+                                            <td>
+                                              <p>Frw {{customOrder.feedbacks.payment_amount}}</p>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <th>
+                                              Client Reaction
+                                            </th>
+                                            <td>
+                                              Your reaction on Pro-Forma is <b>
+                                              {% if customOrder.feedbacks.client_reaction == "Pending" %}
+                                              <span class="badge bg-warning">
+                                                {{customOrder.feedbacks.client_reaction}}
+                                              </span>
+                                              {% elif customOrder.feedbacks.client_reaction == "Accepted" %}
+                                              <span class="badge bg-success">
+                                                {{customOrder.feedbacks.client_reaction}}
+                                              </span>
+                                              {% else %}
+                                              <span class="badge bg-danger">
+                                                {{customOrder.feedbacks.client_reaction}}
+                                              </span>
+                                              {% endif %}
+                                            </b>
+                                              <br />
+                                              {% if customOrder.status == "Pending" %}
+                                              <hr />
+                                              <button
+                                                data-toggle="modal"
+                                                data-target="#rectionModal"
+                                                class="btn btn-sm btn-outline-primary"
+                                              >
+                                                <i class="fa fa-cogs"></i>
+                                                Responce
+                                              </button>
+                                              {% endif %}
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- End Container fluid  -->
+                      </div>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+                <!-- End .col-lg-9 -->
+              </div>
+              <!-- End .row -->
+            </div>
+            <!-- End .container -->
+          </div>
+          <!-- End .dashboard -->
+        </div>
+        <!-- End .page-content -->
+      </main>
+      <!-- End .main -->
+
+        
+      <div
+        class="modal fade"
+        id="rectionModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="rectionModalTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+          <div class="modal-content p-5">
+            <div class="modal-header">
+              <h5 class="modal-title text-center" id="rectionModalTitle">
+                <i class="fa fa-cogs"></i> Reaction on Pro-Forma
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form
+              action=""
+              method="post"
+              role="form"
+            >
+              {% csrf_token %}
+              <div class="modal-body p-5">
+                <div class="form-group">
+                  <label class="col-form-label">You reaction to Pro-Forma</label>
+                  <select
+                    id="reaction"
+                    name="reaction"
+                    class="form-control custom-select"
+                    required
+                  >
+                    <option value="" disabled selected>Pending</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Declined">Declined</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="modal-footer">
+                <button type="submit" name="client_reaction" class="btn btn-primary">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {% include 'includes/footer.html' %}
+      <!-- End .footer -->
+    </div>
+    <!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top">
+      <i class="icon-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div>
+    <!-- End .mobil-menu-overlay -->
+
+    {% include 'includes/mobile_menu.html' %}
+    <!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    {% include 'includes/login_register.html' %}
+    <!-- End .modal -->
+
+    {% endblock %}
+  </body>
+</html>

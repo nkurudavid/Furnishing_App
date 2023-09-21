@@ -169,10 +169,8 @@
                     <a
                       tabindex="0"
                       class="btn btn-outline-primary-2 btn-order btn-block"
-                      role="button" data-toggle="popover"
-                      data-trigger="focus"
-                      title="PROCEED TO CHECKOUT"
-                      data-content="You have to sign in to client account to proceed to checkout page"
+                      href="#warningModel"
+                      data-toggle="modal"
                     >
                       PROCEED TO CHECKOUT
                     </a>
@@ -200,6 +198,59 @@
           <!-- End .cart -->
         </div>
         <!-- End .page-content -->
+
+        
+      {% if not user.is_authenticated %}
+      <div
+        class="modal fade"
+        id="warningModel"
+        tabindex="-1"
+        role="dialog"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true"><i class="icon-close"></i></span>
+              </button>
+
+              <div class="form-box">
+                <h4 class="form-title text-center">
+                  <i class="fa fa-exclamation-triangle text-warning"></i>
+                  Warning
+                </h4>
+                <hr />
+
+                <div class="justify-content-center">
+                  <p class="text-center">
+                    You have to login first to proceed checkout.
+                    <br />
+                    <a
+                      href="#signin-modal"
+                      data-toggle="modal"
+                      class="btn btn-outline-primary-2 mt-5"
+                    >
+                      <i class="icon-user"></i>Login
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <!-- End .form-box -->
+            </div>
+            <!-- End .modal-body -->
+          </div>
+          <!-- End .modal-content -->
+        </div>
+        <!-- End .modal-dialog -->
+      </div>
+      {% endif %} 
+
       </main>
       <!-- End .main -->
 

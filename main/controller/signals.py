@@ -1,10 +1,10 @@
-from django.db.models.signals import post_save, pre_save
-from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import send_mail
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 
-from main.models import Product, Order, StockMovement
+from main.models import Product, Order, StockMovement, Pro_forma, CustomOrder
 
 # Signal handler for new Product creation (stock in)
 
@@ -111,3 +111,18 @@ def product_quantity_change(sender, instance, **kwargs):
                 total_price=instance.price * quantity_change,
                 processed_by=None,  # Set this to the user who made the change if applicable
             )
+
+
+@receiver(post_save, sender=Pro_forma)
+def update_custom_order_status(sender, instance, **kwargs):
+    # Check if the Pro_forma's client_reaction is Accepted
+    if instance.client_reaction == Pro_forma.Reaction.ACCEPTED:
+        # Update the related CustomOrder's status to Processing
+        instance.custom_order.status = CustomOrder.OrderStatus.PROCESSING
+        instance.custom_order.save()
+
+    # Check if the Pro_forma's client_reaction is Declined
+    elif instance.client_reaction == Pro_forma.Reaction.DECLINED:
+        # Update the related CustomOrder's status to Cancelled
+        instance.custom_order.status = CustomOrder.OrderStatus.CANCELLED
+        instance.custom_order.save()

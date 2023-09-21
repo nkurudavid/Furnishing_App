@@ -59,6 +59,7 @@ def home(request):
         selected_products = selected_products[:6]
         context = {
             'title': 'Welcome',
+            'home_active': 'active',
             'categories': categories,
             'products': selected_products,
         }
@@ -77,6 +78,7 @@ def about(request):
     else:
         context = {
             'title': 'About us',
+            'about_active': 'active',
         }
         return render(request, 'about.html', context)
 
@@ -93,6 +95,7 @@ def contact(request):
     else:
         context = {
             'title': 'Contact us',
+            'contact_active': 'active',
         }
         return render(request, 'contact.html', context)
 
@@ -111,10 +114,84 @@ def shop(request):
         products = Product.objects.filter()
         context = {
             'title': 'Shop',
+            'shop_active': 'active',
             'categories': categories,
             'products': products,
         }
         return render(request, 'shop.html', context)
+
+
+def customOrder(request):
+    if 'search' in request.POST:
+        search_data = request.POST.get("search_data")
+
+        if search_data:
+            # Call the search_result function and pass the data
+            return search_result(request, search_data)
+        else:
+            return redirect(shop)
+    else:
+        materials = Material.objects.filter()
+        context = {
+            'title': 'Shop - Custom order',
+            'custom_active': 'active',
+            'materials': materials,
+        }
+        return render(request, 'custom_order_material.html', context)
+
+
+def customOrderForm(request, pk):
+    material_id = pk
+    # check if material exist
+    if Material.objects.filter(id=material_id).exists():
+        # if exists
+        selectedMaterial = Material.objects.get(id=material_id)
+
+        if 'search' in request.POST:
+            search_data = request.POST.get("search_data")
+
+            if search_data:
+                # Call the search_result function and pass the data
+                return search_result(request, search_data)
+            else:
+                return redirect(shop)
+        elif 'new_order' in request.POST:
+            design = request.FILES["design"]
+            quantity = request.POST.get("quantity")
+            description = request.POST.get("description")
+            if design and quantity and description:
+                if request.user.is_authenticated and request.user.is_client == True:
+                    # Generate a random number for order number
+                    order_no = random.randint(1, 100000)
+                    # submit custom order
+                    CustomOrder.objects.create(
+                        client=request.user,
+                        order_number=order_no,
+                        material=selectedMaterial,
+                        description=description,
+                        quantity=quantity,
+                        picture=design,
+                    )
+                    messages.success(
+                        request, ('Your order is on waiting list!'))
+                    return redirect(client_order_list)
+                else:
+                    messages.warning(
+                        request, ('You have to login to view the page!'))
+                    return redirect(customOrderForm, pk)
+            else:
+                messages.error(request, "Error , All fields are required!")
+                return redirect(customOrderForm, pk)
+        else:
+            context = {
+                'title': 'Shop - Custom order',
+                'custom_active': 'active',
+                'material': selectedMaterial,
+            }
+            return render(request, 'custom_order_form.html', context)
+    else:
+        messages.error(request, ('Material not found'))
+        return redirect(customOrder)
 
 
 def search_result(request, search_data=None):
@@ -125,6 +202,7 @@ def search_result(request, search_data=None):
         categoryData = ProductCategory.objects.filter()
         context = {
             'title': 'Shop - Search Result',
+            'shop_active': 'active',
             'categories': categoryData,
             'products': filtered_products,
         }
@@ -154,6 +232,7 @@ def shopCategory(request, name):
             categories = ProductCategory.objects.filter()
             context = {
                 'title': 'Shop - category',
+                'shop_active': 'active',
                 'categories': categories,
                 'products': products,
                 'selectedCategory': selectedCategory,
@@ -183,6 +262,7 @@ def product_details(request, pk):
             categories = ProductCategory.objects.filter()
             context = {
                 'title': 'Shop - Product details',
+                'shop_active': 'active',
                 'categories': categories,
                 'p_data': selected_product,
             }
@@ -217,6 +297,7 @@ def shop_cart(request):
             # return the value to template
             context = {
                 'title': 'Shop - Cart',
+                'shop_active': 'active',
                 'cart_items': cart_items,
                 'total_price': total_price,
             }
@@ -298,7 +379,7 @@ def order_confirmation(request):
 
             # add new order
             client_order = Order(
-                client=get_user_model().objects.get(email=request.user.email),
+                client=request.user,
                 order_number=order_no,
                 status='Pending',
                 shipping_address=shipping_location+"/ "+shipping_street,
@@ -416,10 +497,15 @@ def client_dashboard(request):
     if request.user.is_authenticated and request.user.is_client == True:
         # client orders
         orders = Order.objects.filter(client=request.user)
+
+        customOrders_data = CustomOrder.objects.filter(client=request.user).exclude(
+            Q(status="Completed") | Q(status="Cancelled"))
+
         new_orders = Order.objects.filter(
-            client=request.user).exclude(status='Success').count()
+            client=request.user).exclude(status='Success').count() + customOrders_data.count()
         context = {
             'title': 'Client Account',
+            'account_active': 'active',
             'orders': orders,
             'new_orders': new_orders,
             'dashboard_active': 'active',
@@ -436,12 +522,14 @@ def client_order_list(request):
         # client orders
         orders = Order.objects.filter(
             client=request.user).order_by('-created_date', 'status')
-        new_orders = Order.objects.filter(
-            client=request.user).exclude(status='Success').count()
+
+        customOrders = CustomOrder.objects.filter(
+            client=request.user).order_by('-created_date', 'status')
         context = {
             'title': 'Client Account',
+            'account_active': 'active',
             'orders': orders,
-            'new_orders': new_orders,
+            'customOrders': customOrders,
             'orders_active': 'active',
         }
         return render(request, 'client_order_list.html', context)
@@ -461,11 +549,53 @@ def client_order_details(request, pk):
                 client=request.user).exclude(status='Success').count()
             context = {
                 'title': 'Client Account',
+                'account_active': 'active',
                 'order': order,
                 'new_orders': new_orders,
                 'orders_active': 'active',
             }
             return render(request, 'client_order_details.html', context)
+        else:
+            messages.warning(request, ('Order not found'))
+            return redirect(client_order_list)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(shop)
+
+
+@login_required(login_url='shop')
+def client_customOrder_details(request, pk):
+    if request.user.is_authenticated and request.user.is_client == True:
+        customOrder_id = pk
+        if CustomOrder.objects.filter(client=request.user, pk=customOrder_id).exists():
+            # client orders
+            customOrder = CustomOrder.objects.get(
+                client=request.user, pk=customOrder_id)
+
+            if 'client_reaction' in request.POST:
+                # Retrieve the form data from the request
+                reaction = request.POST.get("reaction")
+
+                if reaction:
+                    # Assuming there is only one Pro_forma related to the CustomOrder
+                    pro_forma = customOrder.feedbacks
+                    pro_forma.client_reaction = reaction
+                    pro_forma.save()
+                    messages.success(
+                        request, "Reaction submitted successfully")
+                    return redirect(client_customOrder_details, pk)
+                else:
+                    messages.error(
+                        request, "Your react is required.")
+                    return redirect(client_customOrder_details, pk)
+            else:
+                context = {
+                    'title': 'Client Account',
+                    'account_active': 'active',
+                    'customOrder': customOrder,
+                    'orders_active': 'active',
+                }
+                return render(request, 'client_customOrder_details.html', context)
         else:
             messages.warning(request, ('Order not found'))
             return redirect(client_order_list)
@@ -563,6 +693,7 @@ def client_profile(request):
                 client=request.user).exclude(status='Success').count()
             context = {
                 'title': 'Client Profile',
+                'account_active': 'active',
                 'new_orders': new_orders,
                 'profile_active': 'active',
             }

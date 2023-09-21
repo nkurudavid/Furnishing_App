@@ -1,0 +1,126 @@
+{% extends "index_layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <title>Shop</title>
+  </head>
+
+  <body>
+    {% block front_content %}
+
+    <div class="page-wrapper">
+      {% include 'includes/navbar.html' %}
+      <!-- End .header -->
+
+      <main class="main">
+        <!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+          <div class="container">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'shop' %}">Shop</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Custom Order
+              </li>
+            </ol>
+          </div>
+          <!-- End .container -->
+        </nav>
+        <!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="toolbox">
+                  <div class="toolbox-left">
+                    <div class="toolbox-info">ALL Materials</div>
+                    <!-- End .toolbox-info -->
+                  </div>
+                  <!-- End .toolbox-left -->
+                </div>
+                <!-- End .toolbox -->
+                <div class="mb-3 row">
+                  {% if materials %}{% for data in materials %}
+                  <div class="col-6 col-md-12 col-lg-6 my-3">
+                    <div class="product product-2 py-2">
+                      <div class="row no-gutters">
+                        <div class="col-md-4">
+                          {% if data.picture %}
+                          <img
+                            src="{{data.picture.url}}"
+                            alt="{{data.name}} Image"
+                            class="product-image"
+                          />
+                          {% else %}
+                          <img
+                            src=""
+                            alt="Product image"
+                            class="product-image"
+                          />
+                          {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                          <div class="card-body">
+                            <h5 class="card-title">{{data.name }}</h5>
+                            <p class="card-text">
+                              {{data.description|truncatechars:100 }}
+                            </p>
+                            <p class="card-text">
+                              <a
+                                href="{% url 'customOrderForm' data.id %}"
+                                class="btn btn-outline-primary"
+                              >
+                                <i class="icon-shop-cart">
+                                <span>New order</span>
+                              </a>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End .col-sm-6 col-lg-4 -->
+                  {% endfor %} {% else %}
+                  <p>No material found.</p>
+                  {% endif %}
+                </div>
+                <!-- End .row -->
+              </div>
+              <!-- End .col-lg-12 -->
+            </div>
+            <!-- End .row -->
+          </div>
+          <!-- End .container -->
+        </div>
+        <!-- End .page-content -->
+      </main>
+      <!-- End .main -->
+
+      {% include 'includes/footer.html' %}
+      <!-- End .footer -->
+    </div>
+    <!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top">
+      <i class="icon-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div>
+    <!-- End .mobil-menu-overlay -->
+
+    {% include 'includes/mobile_menu.html' %}
+    <!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    {% include 'includes/login_register.html' %}
+    <!-- End .modal -->
+
+    {% endblock %}
+  </body>
+</html>

@@ -52,55 +52,115 @@
                 <!-- End .col-lg-3 -->
 
                 <div class="col-md-8 col-lg-9">
+                  <div class="mb-3">
                     {% if not orders %}
-                      <p>No order has been made yet.</p>
-                      <a href="{% url 'shop' %}" class="btn btn-outline-primary-2">
-                        <span>GO SHOP</span>
-                        <i class="icon-long-arrow-right"></i>
-                      </a>
-                      {% else %}
-                        <p class="text-muted lead"><i class="icon-list"></i> Order List</p>
-                        <!-- ORDERS TABLE-->
-                        <div class="table-responsive">
+                    <p>No Product order has been made yet.</p>
+                    <a href="{% url 'shop' %}" class="btn btn-outline-primary-2">
+                      <span>GO SHOP</span>
+                      <i class="icon-long-arrow-right"></i>
+                    </a>
+                    {% else %}
+                    <p class="text-muted lead"><i class="icon-list"></i> Product Order List</p>
+                    <!-- ORDERS TABLE-->
+                    <div class="table-responsive">
                             <table class="table table-hover text-nowrap">
                                 <thead>
-                                    <tr class="text-sm">
-                                        <th class="border-gray-300 border-top py-3">Order No.</th>
-                                        <th class="border-gray-300 border-top py-3">Status</th>
-                                        <th class="border-gray-300 border-top py-3">Payment</th>
-                                        <th class="border-gray-300 border-top py-3">Payment Method</th>
-                                        <th class="border-gray-300 border-top py-3">When Created</th>
-                                        <th class="border-gray-300 border-top py-3"></th>
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th>ORDER No.</th>
+                                        <th>PAYMENT</th>
+                                        <th>PAYMENT METHOD</th>
+                                        <th>STATUS</th>
+                                        <th>DATE</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
                                     {% for order in orders %}
 
-                                        <tr class="text-sm">
-                                            <th class="align-middle py-3"># {{order.order_number}}</th>
-                                            <td class="align-middle py-3">
+                                        <tr>
+                                            <td>
+                                              {{ forloop.counter }}.
+                                            </td>
+                                            <td>
+                                              <a href="{% url 'client_order_details' order.id %}">
+                                                #{{order.order_number}}
+                                              </a>
+                                            </td>
+                                            <td>Frw {{order.total_amount}}</td>
+                                            <td>{{order.payment_method}}</td>
+                                            <td>
                                                 <span 
                                                 class="badge fw-light text-uppercase {% if order.status == "Pending" %}bg-warning{% elif order.status == "Processing" %}bg-info{% else %}bg-success{% endif %}">
                                                 {{order.status}}
                                               </span>
                                             </td>
-                                            <td class="align-middle py-3">Frw {{order.total_amount}}</td>
-                                            <td class="align-middle py-3">{{order.payment_method}}</td>
-                                            <td class="align-middle py-3">{{order.created_date|date:'Y-m-d H:i'}}</td>
-                                            <td class="align-middle py-3">
-                                              <a class="btn btn-outline-primary btn-sm" href="{% url 'client_order_details' order.id %}">
-                                                View
-                                              </a>
-                                            </td>
+                                            <td>{{order.created_date|date:'Y-m-d H:i'}}</td>
                                         </tr>
 
                                     {% endfor %}
 
                                 </tbody>
                             </table>
-                        </div>
-                      {% endif %}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="mb-3">
+                    {% if not orders %}
+                    <p>No Custom order has been made yet.</p>
+                    <a href="{% url 'customOrder' %}" class="btn btn-outline-primary-2">
+                      <span>GO PLACE CUSTOM ORDER</span>
+                      <i class="icon-long-arrow-right"></i>
+                    </a>
+                    {% else %}
+                    <p class="text-muted lead"><i class="icon-list"></i> Custom Order List</p>
+                    <!-- ORDERS TABLE-->
+                    <div class="table-responsive">
+                      <table class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>ORDER No.</th>
+                            <th>MATERIAL</th>
+                            <th>DESIGN</th>
+                            <th>STATUS</th>
+                            <th>DATE</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for order in customOrders %}
+                          <tr>
+                            <td>{{ forloop.counter }}.</td>
+                            <td>
+                              <a href="{% url 'client_customOrder_details' order.id %}">
+                                #{{order.order_number}}
+                              </a>
+                            </td>
+                            <td>{{order.material.name}}</td>
+                            <td>
+                              {% if order.picture %}
+                              <img
+                                src="{{order.picture.url}}"
+                                alt="{{order.order_number}} Image"
+                                width="100px"
+                              />
+                              {% else %}
+                              <img src="" alt="#{{order.order_number}} Design" class="product-image" />
+                              {% endif %}
+                            </td>
+                            <td>
+                              <span class="badge font-bold {% if order.status == "Pending" %}bg-warning {% elif order.status == "Processing" %}bg-info {% elif order.status == "Completed" %}bg-success{% else %}bg-danger{% endif %}">
+                              {{order.status}}
+                              </span>
+                            </td>
+                            <td>{{order.created_date|date:'d/m/Y'}}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    {% endif %}
+                  </div>
                 </div>
                 <!-- End .col-lg-9 -->
               </div>

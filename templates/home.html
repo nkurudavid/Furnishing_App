@@ -309,9 +309,9 @@
             <span>More products</span><i class="icon-long-arrow-down"></i>
           </a>
         </div>
-        <!-- End .more-container -->
         {% endif %}
-
+        <!-- End .more-container -->
+        {% if not user.is_authenticated %}
         <div
           class="cta cta-display bg-image pt-4 pb-4"
           style="
@@ -355,6 +355,7 @@
           </div>
           <!-- End .container -->
         </div>
+        {% endif %}
         <!-- End .cta -->
       </main>
       <!-- End .main -->

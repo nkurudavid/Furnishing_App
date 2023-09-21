@@ -1,0 +1,244 @@
+{% extends "index_layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <title>Shop</title>
+  </head>
+
+  <body>
+    {% block front_content %}
+
+    <div class="page-wrapper">
+      {% include 'includes/navbar.html' %}
+      <!-- End .header -->
+
+      <main class="main">
+        <!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+          <div class="container">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{% url 'shop' %}">Shop</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Custom Order
+              </li>
+            </ol>
+          </div>
+          <!-- End .container -->
+        </nav>
+        <!-- End .breadcrumb-nav -->
+
+        <div class="page-content">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="toolbox">
+                  <div class="toolbox-left">
+                    <div class="toolbox-info">
+                      CUSTOM ORDER WITH A SELECTED MATERIAL
+                    </div>
+                    <!-- End .toolbox-info -->
+                  </div>
+                  <!-- End .toolbox-left -->
+                </div>
+                <!-- End .toolbox -->
+                <div class="mb-3">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                      <div class="py-2">
+                        <div class="row no-gutters">
+                          <div class="col-md-4">
+                            {% if material.picture %}
+                            <img
+                              src="{{material.picture.url}}"
+                              alt="{{material.name}} Image"
+                              class="product-image"
+                            />
+                            {% else %}
+                            <img
+                              src=""
+                              alt="Product image"
+                              class="product-image"
+                            />
+                            {% endif %}
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h5 class="card-title">{{material.name }}</h5>
+                              <p class="card-text">{{material.description}}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr />
+                      <h2 class="title mb-1">Fill the custom order form</h2>
+                      <!-- End .title mb-2 -->
+                      <p class="mb-2">
+                        Use the form below to get in touch with the sales team
+                      </p>
+
+                      <form
+                        action=""
+                        method="post"
+                        enctype="multipart/form-data"
+                        class="contact-form mb-5"
+                      >
+                        {% csrf_token %}
+                        <div class="row">
+                          <div class="col-12">
+                            <label for="design" class=""
+                              >Upload Image design</label
+                            >
+                            <input
+                              type="file"
+                              class="form-control"
+                              id="design"
+                              name="design"
+                              placeholder="design"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <!-- End .row -->
+
+                        <div class="row">
+                          <div class="col-sm-4 mb-2">
+                            <label for="quantity" class="">Quantity</label>
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="quantity"
+                              name="quantity"
+                              min="1"
+                              placeholder="Qty"
+                            />
+                          </div>
+                          <!-- End .col-sm-6 -->
+                        </div>
+                        <!-- End .row -->
+
+                        <label for="description" class="">Description</label>
+                        <textarea
+                          class="form-control"
+                          cols="30"
+                          rows="4"
+                          id="description"
+                          name="description"
+                          required
+                          placeholder="Order description *"
+                        ></textarea>
+
+                        {% if user.is_authenticated %}
+                        <button
+                          type="submit"
+                          class="btn btn-outline-primary-2 btn-minwidth-sm"
+                          name="new_order"
+                        >
+                          <span>SUBMIT</span>
+                          <i class="icon-long-arrow-right"></i>
+                        </button>
+                        {% else %}
+                        <a
+                          class="btn btn-outline-primary-2 btn-minwidth-sm"
+                          href="#warningModel"
+                          data-toggle="modal"
+                        >
+                          <span>SUBMIT</span>
+                          <i class="icon-long-arrow-right"></i>
+                        </a>
+                        {% endif %}
+                      </form>
+                      <!-- End .contact-form -->
+                    </div>
+                  </div>
+                  <!-- End .row -->
+                </div>
+              </div>
+              <!-- End .col-lg-12 -->
+            </div>
+            <!-- End .row -->
+          </div>
+          <!-- End .container -->
+        </div>
+        <!-- End .page-content -->
+
+        {% if not user.is_authenticated %}
+        <div
+          class="modal fade"
+          id="warningModel"
+          tabindex="-1"
+          role="dialog"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true"><i class="icon-close"></i></span>
+                </button>
+
+                <div class="form-box">
+                  <h4 class="form-title text-center">
+                    <i class="fa fa-exclamation-triangle text-warning"></i>
+                    Warning
+                  </h4>
+                  <hr />
+
+                  <div class="justify-content-center">
+                    <p class="text-center">
+                      You have to login first to submit custom order.
+                      <br />
+                      <a
+                        href="#signin-modal"
+                        data-toggle="modal"
+                        class="btn btn-outline-primary-2 mt-5"
+                      >
+                        <i class="icon-user"></i>Login
+                      </a>
+                    </p>
+                  </div>
+                </div>
+                <!-- End .form-box -->
+              </div>
+              <!-- End .modal-body -->
+            </div>
+            <!-- End .modal-content -->
+          </div>
+          <!-- End .modal-dialog -->
+        </div>
+        {% endif %}
+      </main>
+      <!-- End .main -->
+
+      {% include 'includes/footer.html' %}
+      <!-- End .footer -->
+    </div>
+    <!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top">
+      <i class="icon-arrow-up"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div>
+    <!-- End .mobil-menu-overlay -->
+
+    {% include 'includes/mobile_menu.html' %}
+    <!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    {% include 'includes/login_register.html' %}
+    <!-- End .modal -->
+
+    {% endblock %}
+  </body>
+</html>

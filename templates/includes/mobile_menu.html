@@ -21,17 +21,23 @@
 
     <nav class="mobile-nav">
       <ul class="mobile-menu">
-        <li class="active">
-          <a href="index.html">Home</a>
+        <li class="{{home_active}}">
+          <a href="{% url 'home' %}">Home</a>
         </li>
-        <li>
-          <a href="category.html">Shop</a>
+        <li class="{{shop_active}}">
+          <a href="{% url 'shop' %}">Shop</a>
         </li>
-        <li>
-          <a href="about.html">About</a>
+        <li class="{{custom_active}}">
+          <a href="{% url 'customOrder' %}">Custom Order</a>
         </li>
-        <li>
-          <a href="blog.html">Contact</a>
+        <li class="{{about_active}}">
+          <a href="{% url 'about' %}">About</a>
+        </li>
+        <li class="{{contact_active}}">
+          <a href="{% url 'contact' %}">Contact</a>
+        </li>
+        <li class="{{account_active}}">
+          <a href="{% url 'client_account' %}">My Account</a>
         </li>
       </ul>
     </nav>
