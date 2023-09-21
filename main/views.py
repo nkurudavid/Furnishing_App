@@ -1812,11 +1812,13 @@ def craftsman_customOrderDetails(request, pk):
 
                 if proforma_status:
                     if proforma_status and payment_amount and processing_period:
-                        if clientOrder.feedbacks:
-                            clientOrder.feedbacks.status = proforma_status
-                            clientOrder.feedbacks.payment_amount = payment_amount
-                            clientOrder.feedbacks.processing_period = processing_period
-                            clientOrder.feedbacks.save()
+                        if Pro_forma.objects.filter(custom_order=clientOrder).exists():
+                            proforma = Pro_forma.objects.get(
+                                custom_order=clientOrder)
+                            proforma.status = proforma_status
+                            proforma.payment_amount = payment_amount
+                            proforma.processing_period = processing_period
+                            proforma.save()
                         else:
                             proForma = Pro_forma.objects.create(
                                 custom_order=clientOrder,
@@ -1826,12 +1828,14 @@ def craftsman_customOrderDetails(request, pk):
                                 processed_by=request.user,
                             )
                     else:
-                        if clientOrder.feedbacks:
-                            clientOrder.feedbacks.status = proforma_status
-                            clientOrder.feedbacks.payment_amount = 0
-                            clientOrder.feedbacks.processing_period = 0
-                            clientOrder.feedbacks.client_reaction = "None"
-                            clientOrder.feedbacks.save()
+                        if Pro_forma.objects.filter(custom_order=clientOrder).exists():
+                            proforma = Pro_forma.objects.get(
+                                custom_order=clientOrder)
+                            proforma.status = proforma_status
+                            proforma.payment_amount = 0
+                            proforma.processing_period = 0
+                            proforma.client_reaction = "None"
+                            proforma.save()
                         else:
                             proForma = Pro_forma.objects.create(
                                 custom_order=clientOrder,
@@ -1840,7 +1844,7 @@ def craftsman_customOrderDetails(request, pk):
                                 client_reaction="None",
                             )
 
-                    if not clientOrder.feedbacks:
+                    if not Pro_forma.objects.filter(custom_order=clientOrder).exists():
                         if proForma:
                             subject = "Pro-forma Information for Your Custom Order"
                             if proForma.status == "Doable":

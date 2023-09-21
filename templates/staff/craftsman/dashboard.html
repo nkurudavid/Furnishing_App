@@ -72,7 +72,7 @@
                     <td>
                       <a
                         class="text-info"
-                        href="{% url 'manager_newCustomOrderDetails' order.id %}"
+                        href="{% url 'craftsman_customOrderDetails' order.id %}"
                       >
                         #{{order.order_number}}
                       </a>
@@ -116,7 +116,7 @@
                 </tbody>
               </table>
               <hr />
-              <a class="btn btn-primary" href="">
+              <a class="btn btn-primary" href="{% url 'craftsman_customOrders' %}">
                 <i class="fa fa-list"></i> More Orders
               </a>
             </div>

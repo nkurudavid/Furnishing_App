@@ -1,9 +1,21 @@
 {% load static %}
 <header class="header">
   <div class="page-brand">
-    <a class="link" href="index.html">
-      <span class="brand"> Manager </span>
-      <span class="brand-mini">AC</span>
+    <a class="link" href="{% url 'manager_dashboard' %}">
+      <span class="brand">
+        <img
+          src="{% static 'front/assets/images/icons/favicon.ico' %}"
+          class="mr-2"
+          width="35px"
+        />
+        Manager
+      </span>
+      <span class="brand-mini">
+        <img
+          src="{% static 'front/assets/images/icons/favicon.ico' %}"
+          width="35px"
+        />
+      </span>
     </a>
   </div>
   <div class="flexbox flex-1">
