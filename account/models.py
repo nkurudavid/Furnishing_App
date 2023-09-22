@@ -21,7 +21,7 @@ class User(AbstractUser):
                               max_length=255, unique=True, blank=False)
     gender = models.CharField(
         verbose_name="Gender", choices=Gender.choices, default=Gender.SELECT, max_length=10)
-    is_manager = models.BooleanField(verbose_name="Is Manger", default=False)
+    is_manager = models.BooleanField(verbose_name="Is Manager", default=False)
     is_craftsman = models.BooleanField(
         verbose_name="Is Craftsman", default=False)
     is_client = models.BooleanField(verbose_name="Is Client", default=False)

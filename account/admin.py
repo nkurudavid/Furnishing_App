@@ -6,7 +6,7 @@ from .models import User, ClientProfile
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    list_display = ('email', 'first_name', 'last_name', 'gender', 'is_active', 'last_login',)
+    list_display = ('email', 'first_name', 'last_name', 'gender', 'is_superuser','is_manager','is_craftsman','is_client','is_active','last_login',)
     search_fields = ('email', 'first_name', 'last_name')
     list_filter = ('is_client', 'is_manager', 'is_superuser', 'is_active')
     fieldsets = (
@@ -26,13 +26,12 @@ class CustomUserAdmin(UserAdmin):
         }),
         ('Permission', {
             'classes': ('whide',),
-            'fields': (('is_manager','is_client'),('is_active', 'is_staff', 'is_superuser'), 'user_permissions',),
+            'fields': (('is_manager','is_client','is_craftsman'),('is_active', 'is_superuser'),),
         }),
     )
     ordering = ('email',)
     list_editable = ()
     list_per_page = 20
-    filter_horizontal = ('groups', 'user_permissions',)
 
 
 
