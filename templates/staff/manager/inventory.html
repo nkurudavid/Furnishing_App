@@ -73,9 +73,70 @@
               {% endfor %}
             </tbody>
           </table>
+          
+        <div class="mt-3">
+          <p>Click to generate report. <button class="btn btn-sm btn-primary" onclick="printReport()"> <i class="fa fa-save"></i> Report</button></p>
         </div>
+        </div>
+        
       </div>
     </div>
+
+
+    
+    <script>
+      function printReport() {
+        var additionalContent =
+        "<h4>Furnishing Order System</h4>" +
+        "<p>This list contains information of stock movements throughout different periods.</p>";
+        var selectedSection = '<div class="card">'+
+          '<table class="table table-bordered" id="example-table" cellspacing="0" width="100%">'+
+            '<thead>'+
+              '<tr>'+
+                '<th>#</th>'+
+                '<th>PRODUCT</th>'+
+                '<th>QTY</th>'+
+                '<th>UNIT/PRICE</th>'+
+                '<th>TOTAL PRICE</th>'+
+                '<th>STATUS</th>'+
+                '<th>DATE</th>'+
+              '</tr>'+
+            '</thead>'+
+            '<tbody>'+
+              '{% for inventory in inventories %}'+
+              '<tr>'+
+                '<td>{{ forloop.counter }}.</td>'+
+                '<td>'+
+                  'Name: {{inventory.product.product_name}} <br />'+
+                  'Category: {{inventory.product.category.category_name}}'+
+                  '<br />'+
+                '</td>'+
+                '<td>{{inventory.quantity}}</td>'+
+                '<td>Frw {{inventory.product.price}}</td>'+
+                '<td>Frw {{inventory.total_price}}</td>'+
+                '<td>'+
+                  '<span class="font-bold {% if inventory.movement_type == "Stock In" %} text-success{% else %} text-cyan {% endif %}">'+
+                    '{{inventory.movement_type}}'+
+                  '</span>'+
+                '</td>'+
+                '<td>{{inventory.date_time}}</td>'+
+              '</tr>'+
+              '{% endfor %}'+
+            '</tbody>'+
+          '</table></div>';
+
+        // Create a new page content by combining the selected sections' content with additional content
+        var printContent = additionalContent + selectedSection;
+
+        var originalContent = document.body.innerHTML;
+        document.body.innerHTML = printContent;
+        window.print();
+        document.body.innerHTML = originalContent;
+      }
+    </script>
+
+
+
     {% endblock %}
   </body>
 </html>

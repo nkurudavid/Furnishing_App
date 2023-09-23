@@ -183,13 +183,18 @@
                             <tr>
                               <th>Processing Period</th>
                               <td>
-                                <p>{{clientOrder.feedbacks.processing_period}}</p>
+                                <p>Processed in <b>{{clientOrder.feedbacks.processing_period}} days<br></p>
                               </td>
                             </tr>
                             <tr>
                               <th>Payment Amount</th>
                               <td>
                                 <p>Frw {{clientOrder.feedbacks.payment_amount}}</p>
+                                {% if not clientOrder.feedbacks.payment_id %}
+                                <span class="badge bg-warning h6">Not Paid</span>
+                                {% else %}
+                                <span class="badge bg-success h6">Paid</span>
+                                {% endif %}
                               </td>
                             </tr>
                             <tr>

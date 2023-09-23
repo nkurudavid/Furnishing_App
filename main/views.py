@@ -1,4 +1,5 @@
 import random
+from django.utils import timezone
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.core.mail import EmailMessage
@@ -605,6 +606,33 @@ def client_customOrder_details(request, pk):
 
 
 @login_required(login_url='shop')
+def customOrderPayment(request):
+    if request.user.is_authenticated and request.user.is_client == True:
+        if 'order_payment' in request.POST:
+            pay_method = request.POST.get("pay_method")
+            payment_id = request.POST.get("payment_id")
+            proforma_id = request.POST.get("proforma_id")
+
+            # add new order
+            # get proforma with id = proforma_id
+            customOrderPayment = Pro_forma.objects.get(id=proforma_id)
+
+            customOrderPayment.payment_method = pay_method
+            customOrderPayment.payment_id = payment_id
+            customOrderPayment.payment_date = timezone.now()
+            customOrderPayment.save()
+
+            messages.success(request, ('Payment success!'))
+            return redirect(client_order_list)
+        else:
+            messages.success(request, ('Oops! error in placing order.'))
+            return redirect(shop_checkout)
+    else:
+        messages.warning(request, ('You have to login to view the page!'))
+        return redirect(shop_checkout)
+
+
+@login_required(login_url='shop')
 def client_profile(request):
     if request.user.is_authenticated and request.user.is_client == True:
         if 'update_profile' in request.POST:
@@ -1083,20 +1111,19 @@ def manager_product(request):
                     return redirect(manager_product)
                 else:
                     # add new product
-                    addProduct = Product(
+                    newProduct = Product.objects.create(
                         category=ProductCategory.objects.get(pk=category_id),
                         product_name=product_name,
                         description=description,
                         color=color,
-                        price=price,
-                        quantity=quantity,
+                        price=float(price),
+                        quantity=int(quantity),
                     )
-                    addProduct.save()
                     # Create ProductImage instances and associate them with the product
                     ProductImage.objects.create(
-                        product=addProduct, picture=product_image1)
+                        product=newProduct, picture=product_image1)
                     ProductImage.objects.create(
-                        product=addProduct, picture=product_image2)
+                        product=newProduct, picture=product_image2)
 
                     messages.success(
                         request, "New product created successfully.")
@@ -1691,14 +1718,16 @@ def craftsman_dashboard(request):
             status="Pending", processed_by=request.user).order_by('created_date')
         tasks_data = CustomOrder.objects.filter(
             status="Processing", processed_by=request.user).order_by('created_date')
+        # getting new request
+        customOrders_data = CustomOrder.objects.filter(processed_by=request.user).exclude(
+            Q(status="Completed") | Q(status="Cancelled")).order_by('status', 'created_date')
 
         context = {
             'title': 'Craftsman - Dashboard',
             'dash_active': 'active',
             'customOrders_count': newCustomOrder.count(),
             'tasks_count': tasks_data.count(),
-            'newCustomOrder': newCustomOrder[:5],
-            'tasks_data': tasks_data[:5],
+            'customOrders_data': customOrders_data[:5],
         }
         return render(request, 'staff/craftsman/dashboard.html', context)
     else:
@@ -1747,11 +1776,12 @@ def craftsman_profile(request):
 
         else:
             # getting data
-            newCustomOrder = CustomOrder.objects.filter(
-                status="Pending", processed_by=request.user).order_by('created_date')
+            # getting new request
+            customOrders_data = CustomOrder.objects.filter(processed_by=request.user).exclude(
+                Q(status="Completed") | Q(status="Cancelled")).order_by('status', 'created_date')
             context = {
                 'title': 'My Profile',
-                'newCustomOrder': newCustomOrder,
+                'customOrders_data': customOrders_data,
             }
             return render(request, 'staff/craftsman/profile.html', context)
     else:
@@ -1763,14 +1793,15 @@ def craftsman_profile(request):
 def craftsman_materials(request):
     if request.user.is_authenticated and request.user.is_craftsman == True:
         # getting data
-        newCustomOrder = CustomOrder.objects.filter(
-            status="Pending", processed_by=request.user).order_by('created_date')
+        # getting new request
+        customOrders_data = CustomOrder.objects.filter(processed_by=request.user).exclude(
+            Q(status="Completed") | Q(status="Cancelled")).order_by('status', 'created_date')
         materialsData = Material.objects.filter().order_by('name')
         context = {
             'title': 'Materials List',
             'materialActive': 'active',
             'materialsData': materialsData,
-            'newCustomOrder': newCustomOrder,
+            'customOrders_data': customOrders_data,
         }
         return render(request, 'staff/craftsman/materialsList.html', context)
     else:

@@ -64,9 +64,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% if newCustomOrder %}
+                  {% if customOrders_data %}
                   <!-- orders -->
-                  {% for order in newCustomOrder %}
+                  {% for order in customOrders_data %}
                   <tr>
                     <td>{{ forloop.counter }}.</td>
                     <td>
@@ -98,7 +98,7 @@
                       {% endif %}
                     </td>
                     <td>
-                      <span class="badge font-bold {% if order.status == "Pending" %}bg-warning{% else %}bg-cyan{% endif %}">
+                      <span class="badge font-bold {% if order.status == "Pending" %}bg-warning{% else %}bg-info{% endif %}">
                       {{order.status}}
                       </span>
                     </td>

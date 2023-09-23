@@ -40,6 +40,8 @@ urlpatterns = [
          views.client_order_details, name='client_order_details'),
     path('shop/client/order_list/<int:pk>/custom_order/',
          views.client_customOrder_details, name='client_customOrder_details'),
+    path('shop/client/custom_order/payment/',
+         views.customOrderPayment, name='customOrderPayment'),
 
     # manager urls
     path('staff/login/', views.staffLogin, name='staffLogin'),

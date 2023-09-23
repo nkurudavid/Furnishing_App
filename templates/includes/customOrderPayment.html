@@ -1,0 +1,119 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Load the required checkout.js script -->
+
+<!-- Load the required checkout.js script -->
+<script
+  src="https://www.paypalobjects.com/api/checkout.js"
+  data-version-4
+></script>
+<!-- Load the required Braintree components. -->
+<script src="https://js.braintreegateway.com/web/3.39.0/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.39.0/js/paypal-checkout.min.js"></script>
+
+<script>
+
+  // Function to convert RWF to USD
+  function convertRwfToUsd(amountInRwf) {
+    // Fixed conversion rate: 1 RWF = 0.00086 USD
+    var conversionRate = 0.00086;
+    // Calculate the equivalent amount in USD
+    var amountInUsd = amountInRwf * conversionRate;
+    // Round the amount to two decimal places
+    amountInUsd = amountInUsd.toFixed(2);
+    // Return the converted amount
+    return amountInUsd;
+  }
+  window.addEventListener("load", function() {
+    var cartItems = [
+      {
+        name: "Order No: #{{customOrder.order_number}}, Material: {{customOrder.material.name}},",
+        quantity: 1,
+        price: convertRwfToUsd({{customOrder.feedbacks.payment_amount}}),
+        sku: "Product",
+        currency: "USD"
+      },
+    ];
+
+    var total = 0;
+    for (var a = 0; a < cartItems.length; a++) {
+      total += (cartItems[a].price * cartItems[a].quantity);
+    }
+
+    // Render the PayPal button
+    paypal.Button.render({
+
+      // Set your environment
+      env: 'sandbox', // sandbox | production
+
+      // Specify the style of the button
+      style: {
+        label: 'checkout',
+        size: 'responsive', // small | medium | large | responsive
+        shape: 'rect', // pill | rect
+        color: 'gold', // gold | blue | silver | black,
+        layout: 'vertical'
+      },
+
+      // PayPal Client IDs - replace with your own
+      // Create a PayPal app: https://developer.paypal.com/developer/applications/create
+
+      client: {
+        sandbox: 'AavW2aI_AmWyMbAcHIusR7s_daPGye5qtduCZed7kjkeUdVjXCnAFBylweCLWK6F-AlY2NtmZnFaztdJ',
+        production: ''
+      },
+
+      funding: {
+        allowed: [
+          paypal.FUNDING.CARD,
+          paypal.FUNDING.ELV
+        ]
+      },
+
+      // set up transaction when a payment button is clicked
+      payment: (data, actions) => {
+        return actions.payment.create({
+          payment: {
+            transactions: [{
+              amount: {
+                total: total,
+                currency: 'USD'
+              },
+              item_list: {
+                // custom cartItems array created specifically for PayPal
+                items: cartItems
+              }
+            }]
+          }
+        });
+      },
+      // finally the transaction after payer approval
+      onAuthorize: (data, actions) => {
+        return actions.payment.execute().then(function(orderData) {
+            var pay_method = "PayPal";
+            var proforma_id = {{customOrder.feedbacks.id}};
+            var dataForm = {
+              'pay_method': pay_method,
+              'payment_id': data.paymentID,
+              'proforma_id': proforma_id,
+              'order_payment': true,
+              'csrfmiddlewaretoken': '{{ csrf_token }}',
+            };
+            $.ajax({
+              method: "POST",
+              url: "{% url 'customOrderPayment' %}",
+              data: dataForm,
+              dataType: "json",
+            });
+            alert('Payment Completed successfully');
+            // Or go to another URL
+            window.location.href = "{% url 'client_customOrder_details' customOrder.id %}";
+        });
+      },
+
+      onCancel: function(data, actions) {
+        console.log(data);
+      }
+
+    }, '#paypal-button-container');
+  });
+</script>

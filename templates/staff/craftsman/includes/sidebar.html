@@ -28,7 +28,11 @@
       <li class="{{customOrder_active}}">
         <a href="javascript:;">
           <i class="sidebar-item-icon fa fa-shopping-basket"></i>
-          <span class="nav-label">Custom Orders</span>
+          <span class="nav-label"
+            >Custom Orders {% if customOrders_data %}
+            <span class="badge badge-warning">New</span>
+            {% endif %}
+          </span>
           <i class="fa fa-angle-left arrow"></i>
         </a>
         <ul class="nav-2-level collapse">
@@ -37,7 +41,11 @@
               class="{{newCustomOrder}}"
               href="{% url 'craftsman_customOrders' %}"
             >
-              New Orders
+              New Orders {% if customOrders_data %}
+              <span class="badge badge-warning"
+                >{{customOrders_data.count}}</span
+              >
+              {% endif %}
             </a>
           </li>
           <li>
