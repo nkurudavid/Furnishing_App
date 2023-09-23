@@ -1083,20 +1083,19 @@ def manager_product(request):
                     return redirect(manager_product)
                 else:
                     # add new product
-                    addProduct = Product(
+                    newProduct = Product.objects.create(
                         category=ProductCategory.objects.get(pk=category_id),
                         product_name=product_name,
                         description=description,
                         color=color,
-                        price=price,
-                        quantity=quantity,
+                        price=float(price),
+                        quantity=int(quantity),
                     )
-                    addProduct.save()
                     # Create ProductImage instances and associate them with the product
                     ProductImage.objects.create(
-                        product=addProduct, picture=product_image1)
+                        product=newProduct, picture=product_image1)
                     ProductImage.objects.create(
-                        product=addProduct, picture=product_image2)
+                        product=newProduct, picture=product_image2)
 
                     messages.success(
                         request, "New product created successfully.")
