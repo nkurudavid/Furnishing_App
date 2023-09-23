@@ -6,8 +6,12 @@ from .models import User, ClientProfile
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
+<<<<<<< HEAD
     list_display = ('email', 'first_name', 'last_name', 'gender', 'is_superuser',
                     'is_manager', 'is_craftsman', 'is_client', 'is_active', 'last_login',)
+=======
+    list_display = ('email', 'first_name', 'last_name', 'gender', 'is_superuser','is_manager','is_craftsman','is_client','is_active','last_login',)
+>>>>>>> dfd72fedef7872723ebac7996e8ae1cf3a953f59
     search_fields = ('email', 'first_name', 'last_name')
     list_filter = ('is_client', 'is_craftsman',
                    'is_manager', 'is_superuser', 'is_active')
@@ -29,12 +33,20 @@ class CustomUserAdmin(UserAdmin):
         }),
         ('Permission', {
             'classes': ('whide',),
+<<<<<<< HEAD
             'fields': ('is_superuser', 'is_manager', 'is_craftsman', 'is_client', 'is_active',),
+=======
+            'fields': (('is_manager','is_client','is_craftsman'),('is_active', 'is_superuser'),),
+>>>>>>> dfd72fedef7872723ebac7996e8ae1cf3a953f59
         }),
     )
     ordering = ('email',)
     list_editable = ()
     list_per_page = 20
+<<<<<<< HEAD
+=======
+
+>>>>>>> dfd72fedef7872723ebac7996e8ae1cf3a953f59
 
 
 @admin.register(ClientProfile)
