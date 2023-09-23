@@ -87,7 +87,7 @@
                                   <b>Order</b>
                                   <span>No. #{{customOrder.order_number}}</span>
                                 </h4>
-                                <hr class="{% if customOrder.status == "Pending" %}bg-warning{% elif customOrder.status == "Processing" %}bg-info{% elif customOrder.status == "Completed" %}bg-success{% else %} bg-danger {% endif %} py-1" />
+                                <hr class="{% if customOrder.status == 'Pending' %}bg-warning{% elif customOrder.status == 'Processing' %}bg-info{% elif customOrder.status == 'Cancelled' %}bg-danger{% else %} bg-success {% endif %} py-1" />
                                 <div class="row">
                                   <div class="col-md-12">
                                     <div class="pull-left">
