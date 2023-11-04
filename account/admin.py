@@ -32,7 +32,7 @@ class CustomUserAdmin(UserAdmin):
         ('Permission', {
             'classes': ('whide',),
             'fields': ('is_superuser', 'is_manager', 'is_craftsman', 'is_client', 'is_active',),
-            'fields': (('is_manager', 'is_client', 'is_craftsman'), ('is_active', 'is_superuser'),),
+            'fields': (('is_manager', 'is_craftsman', 'is_client'), ('is_active', 'is_superuser'),),
         }),
     )
     ordering = ('email',)

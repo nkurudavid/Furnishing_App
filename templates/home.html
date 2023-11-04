@@ -313,10 +313,8 @@
         <!-- End .more-container -->
         {% if not user.is_authenticated %}
         <div
-          class="cta cta-display bg-image pt-4 pb-4"
-          style="
-            background-image: url('{%static 'front/assets/images/backgrounds/bg-6.jpg' %}');
-          "
+          class="cta cta-display bg-image pt-4 pb-4 bg-primary"
+          
         >
           <div class="container">
             <div class="row justify-content-center">
@@ -374,10 +372,6 @@
 
     {% include 'includes/mobile_menu.html' %}
     <!-- End .mobile-menu-container -->
-
-    <!-- Sign in / Register Modal -->
-    {% include 'includes/login_register.html' %}
-    <!-- End .modal -->
 
     {% endblock %}
   </body>

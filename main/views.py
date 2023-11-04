@@ -39,6 +39,7 @@ def handle_not_found(request, exception):
         return render(request, '404.html', context)
 
 
+@login_required(login_url='client_login')
 def home(request):
     if 'search' in request.POST:
         search_data = request.POST.get("search_data")
@@ -67,6 +68,7 @@ def home(request):
         return render(request, 'home.html', context)
 
 
+@login_required(login_url='client_login')
 def about(request):
     if 'search' in request.POST:
         search_data = request.POST.get("search_data")
@@ -84,6 +86,7 @@ def about(request):
         return render(request, 'about.html', context)
 
 
+@login_required(login_url='client_login')
 def contact(request):
     if 'search' in request.POST:
         search_data = request.POST.get("search_data")
@@ -101,6 +104,7 @@ def contact(request):
         return render(request, 'contact.html', context)
 
 
+@login_required(login_url='client_login')
 def shop(request):
     if 'search' in request.POST:
         search_data = request.POST.get("search_data")
@@ -122,6 +126,7 @@ def shop(request):
         return render(request, 'shop.html', context)
 
 
+@login_required(login_url='client_login')
 def customOrder(request):
     if 'search' in request.POST:
         search_data = request.POST.get("search_data")
@@ -141,6 +146,7 @@ def customOrder(request):
         return render(request, 'custom_order_material.html', context)
 
 
+@login_required(login_url='client_login')
 def customOrderForm(request, pk):
     material_id = pk
     # check if material exist
@@ -195,6 +201,7 @@ def customOrderForm(request, pk):
         return redirect(customOrder)
 
 
+@login_required(login_url='client_login')
 def search_result(request, search_data=None):
     if search_data:
         # Call the search_products_filter function to get the filtered products
@@ -212,6 +219,7 @@ def search_result(request, search_data=None):
         return redirect(shop)
 
 
+@login_required(login_url='client_login')
 def shopCategory(request, name):
     category_name = name
     # check if category exist
@@ -244,6 +252,7 @@ def shopCategory(request, name):
         return redirect(shop)
 
 
+@login_required(login_url='client_login')
 def product_details(request, pk):
     product_id = pk
     # check if category exist
@@ -273,6 +282,7 @@ def product_details(request, pk):
         return redirect(shop)
 
 
+@login_required(login_url='client_login')
 def shop_cart(request):
     if 'search' in request.POST:
         search_data = request.POST.get("search_data")
@@ -342,7 +352,7 @@ def removeFromCart(request, product_id):
     return redirect(shop_cart)
 
 
-@login_required(login_url='shop')
+@login_required(login_url='client_login')
 def shop_checkout(request):
     if request.user.is_authenticated and request.user.is_client == True:
         if 'search' in request.POST:
@@ -359,7 +369,7 @@ def shop_checkout(request):
         return redirect(shop)
 
 
-@login_required(login_url='shop')
+@login_required(login_url='client_login')
 def order_confirmation(request):
     if request.user.is_authenticated and request.user.is_client == True:
         if 'place_order' in request.POST:
@@ -411,8 +421,10 @@ def order_confirmation(request):
 
 
 def client_login(request):
-    if not request.user.is_authenticated or request.user.is_client != True:
-        if 'login' in request.POST:
+    if request.user.is_authenticated and request.user.is_client == True:
+        return redirect(home)
+    else:
+        if request.method == "POST":
             email = request.POST.get('email')
             password = request.POST.get('password')
 
@@ -426,74 +438,20 @@ def client_login(request):
             else:
                 messages.error(
                     request, ('User Email or Password is not correct! Try agin...'))
-                return redirect(shop)
-    else:
-        return redirect(client_dashboard)
+                return redirect(client_login)
+        else:
+            context = {'title': 'Login', }
+            return render(request, 'clientStaffLogin.html', context)
 
 
-def client_register(request):
-    if not request.user.is_authenticated or request.user.is_client != True:
-        if 'sign_up' in request.POST:
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            gender = request.POST.get('gender')
-            phone_number = request.POST.get('phone_number')
-            location = request.POST.get('location')
-            email = request.POST.get('email')
-            password1 = request.POST.get('password1')
-            password2 = request.POST.get('password2')
-
-            if first_name and last_name and gender and phone_number and location and email and password1 and password2:
-                if get_user_model().objects.filter(email=email).exists():
-                    messages.error(request, ('Email address already taken'))
-                    return redirect(home)
-                if password1 and password2 and password1 != password2:
-                    messages.error(request, ('Passwords do not match'))
-                    return redirect(home)
-                else:
-                    # Create a new user object with the submitted data
-                    user = get_user_model().objects.create_user(
-                        first_name=first_name,
-                        last_name=last_name,
-                        gender=gender,
-                        is_client=True,
-                        email=email,
-                        password=password1,
-                    )
-                    if user:
-                        # get client account
-                        client = get_user_model().objects.get(email=email)
-                        # get client profile
-                        client_profile, created = ClientProfile.objects.get_or_create(
-                            client=client)
-
-                        # update client profile and save
-                        client_profile.phone_number = phone_number
-                        client_profile.location = location
-                        client_profile.save()
-
-                    user = authenticate(
-                        request, email=email, password=password1)
-                    if user is not None and user.is_client == True:
-                        login(request, user)
-                        messages.success(
-                            request, ('Hi '+user.first_name+', you are logged in'))
-                        return redirect(client_dashboard)
-            else:
-                messages.error(request, ('All field are required'))
-                return redirect(shop)
-    else:
-        return redirect(client_dashboard)
-
-
-@login_required(login_url='shop')
+@login_required(login_url='client_login')
 def client_logout(request):
     logout(request)
     messages.info(request, ('You are now Logged out.'))
-    return redirect(shop)
+    return redirect(client_login)
 
 
-@login_required(login_url='shop')
+@login_required(login_url='client_login')
 def client_dashboard(request):
     if request.user.is_authenticated and request.user.is_client == True:
         # client orders
@@ -517,7 +475,7 @@ def client_dashboard(request):
         return redirect(shop)
 
 
-@login_required(login_url='shop')
+@login_required(login_url='client_login')
 def client_order_list(request):
     if request.user.is_authenticated and request.user.is_client == True:
         # client orders
@@ -539,7 +497,7 @@ def client_order_list(request):
         return redirect(shop)
 
 
-@login_required(login_url='shop')
+@login_required(login_url='client_login')
 def client_order_details(request, pk):
     if request.user.is_authenticated and request.user.is_client == True:
         order_id = pk
@@ -564,7 +522,7 @@ def client_order_details(request, pk):
         return redirect(shop)
 
 
-@login_required(login_url='shop')
+@login_required(login_url='client_login')
 def client_customOrder_details(request, pk):
     if request.user.is_authenticated and request.user.is_client == True:
         customOrder_id = pk
@@ -605,7 +563,7 @@ def client_customOrder_details(request, pk):
         return redirect(shop)
 
 
-@login_required(login_url='shop')
+@login_required(login_url='client_login')
 def customOrderPayment(request):
     if request.user.is_authenticated and request.user.is_client == True:
         if 'order_payment' in request.POST:
@@ -632,7 +590,7 @@ def customOrderPayment(request):
         return redirect(shop_checkout)
 
 
-@login_required(login_url='shop')
+@login_required(login_url='client_login')
 def client_profile(request):
     if request.user.is_authenticated and request.user.is_client == True:
         if 'update_profile' in request.POST:
@@ -730,7 +688,10 @@ def client_profile(request):
         messages.warning(request, ('You have to login to view the page!'))
         return redirect(shop)
 
-#     # staff
+
+
+
+## workshop
 
 
 def staffLogin(request):

@@ -1,17 +1,13 @@
 {% load static %}
 <header class="header bg-white">
-  <div class="header-top pt-3">
+  <div class="header-top pt-3 bg-primary">
     <div class="container py-3">
-      <div class="header-left">
+      <div class="header-left text-white">
         <a href="tel:#"> <i class="icon-phone"></i> Call: +250 788 442 210 </a>
       </div>
       <!-- End .header-left -->
       <div class="header-right">
-        {% if not user.is_authenticated %}
-        <a href="#signin-modal" data-toggle="modal" class="btn btn-light">
-          <i class="icon-user"></i>Login
-        </a>
-        {% else %}
+        {% if user.is_authenticated %}
         <a
           href="#"
           class="dropdown-toggle btn btn-light"
@@ -49,7 +45,16 @@
         </button>
 
         <a href="{% url 'home' %}" class="logo">
-          <h3 class="pt-1">Furnishing Order System</h3>
+          <h3 class="pt-1">
+            <span class="d-flex">
+              <img
+                src="{% static 'front/assets/images/icons/logo.jpg' %}"
+                class="mr-2"
+                width="70px"
+              />
+              <b class="text-secondary">AUCA <br/>WorkShop</b>
+            </span>
+          </h3>
         </a>
 
         <nav class="main-nav">

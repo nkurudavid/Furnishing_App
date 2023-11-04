@@ -28,8 +28,6 @@ urlpatterns = [
     path('shop/order_confirmation/',
          views.order_confirmation, name='order_confirmation'),
     path('shop/client/login/', views.client_login, name='client_login'),
-    path('shop/client/register/',
-         views.client_register, name='client_register'),
     path('shop/client/logout/', views.client_logout, name='client_logout'),
     path('shop/client/dashboard/',
          views.client_dashboard, name='client_account'),
